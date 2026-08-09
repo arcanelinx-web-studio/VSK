@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
-  <meta name="theme-color" content="#0f1414" />
-  <meta name="description" content="VSK Electro-Mech Solutions — premium Manufact + Omnis opening concept." />
-  <title>VSK Electro-Mech Solutions — Premium Opening V2</title>
+  <meta name="theme-color" content="#f3f0e9" />
+  <meta name="description" content="VSK Electro-Mech Solutions — special purpose machines, machine reconditioning and retrofit, precision manufacturing and industrial engineering from Bengaluru." />
+  <title>VSK Electro-Mech Solutions — Engineering for Production</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="icon" href="media/brand/vsk-logo.webp" type="image/webp" />
   <link rel="preload" as="image" href="media/retrofit/kellenberg.webp" />
   <link rel="stylesheet" href="premium-v2.css" />
@@ -17,111 +17,215 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <div class="ambient-backdrop" aria-hidden="true">
-    <img src="media/retrofit/kellenberg.webp" alt="" />
-  </div>
+  <header class="topbar" data-header>
+    <a class="brand" href="#hero" aria-label="VSK Electro-Mech Solutions home">
+      <img src="media/brand/vsk-logo.webp" alt="VSK logo" />
+      <span class="brand-copy">
+        <strong>VSK Electro-Mech Solutions</strong>
+        <small>Machine building · Retrofit · Precision manufacturing</small>
+      </span>
+    </a>
 
-  <div class="site-wrap">
-    <div class="site-frame">
-      <header class="topbar">
-        <a class="brand" href="#hero" aria-label="VSK Electro-Mech Solutions home">
-          <span class="logo-box"><img src="media/brand/vsk-logo.webp" alt="VSK logo" /></span>
-          <span class="brand-copy">
-            <strong>VSK Electro-Mech Solutions</strong>
-            <small>Machine building · Retrofit · Precision manufacturing</small>
-          </span>
-        </a>
+    <nav class="nav" aria-label="Primary navigation" data-nav>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#projects">Projects</a>
+      <a href="#retrofit">Retrofit</a>
+      <a href="#company">Company</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
-        <nav class="nav" aria-label="Primary navigation">
-          <a class="is-active" href="#hero">Home</a>
-          <a href="#scope">Capabilities</a>
-          <a href="#scope">Projects</a>
-          <a href="#scope">Company</a>
-        </nav>
+    <a class="enquiry" href="#contact">Discuss a requirement <span>↗</span></a>
+    <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" data-menu><span></span><span></span></button>
+  </header>
 
-        <a class="enquiry" href="mailto:vsk.electromech@gmail.com">
-          <span>Discuss a requirement</span>
-          <i>↗</i>
-        </a>
-      </header>
-
-      <main id="main">
-        <section class="hero" id="hero">
-          <img class="hero-image" src="media/retrofit/kellenberg.webp" alt="VSK Kellenberg OD grinding machine retrofit" fetchpriority="high" />
-          <div class="hero-overlay" aria-hidden="true"></div>
-
-          <div class="hero-topline">
-            <span>Peenya, Bengaluru · Since 2011</span>
-            <span>Special Purpose Machines · Retrofit · Precision Manufacturing</span>
+  <main id="main">
+    <section class="hero" id="hero">
+      <div class="hero-intro wrap">
+        <div class="hero-heading reveal">
+          <span class="kicker">Engineering partner · Peenya, Bengaluru · Since 2011</span>
+          <h1>Machines made for<br /><em>real production.</em></h1>
+        </div>
+        <div class="hero-side reveal">
+          <p>VSK brings machine design, controls, fluid power, retrofit and precision manufacturing together around the production requirement.</p>
+          <div class="hero-actions">
+            <a class="text-link" href="#projects">Selected work <span>↘</span></a>
+            <a class="text-link muted" href="#capabilities">Explore capabilities</a>
           </div>
+        </div>
+      </div>
 
-          <div class="hero-center">
-            <p class="eyebrow">Engineering for real production requirements</p>
-            <h1>
-              <span>From requirement</span>
-              <em>to working machine.</em>
-            </h1>
-            <p class="hero-copy">VSK brings machine design, controls, fluid power, reconditioning and precision manufacturing together around the production problem.</p>
-            <a class="primary-cta" href="#scope"><span>Explore capabilities</span><i>→</i></a>
+      <div class="hero-image-stage reveal-media">
+        <img src="media/retrofit/kellenberg.webp" alt="Kellenberg OD grinding machine retrofit by VSK" fetchpriority="high" />
+        <div class="hero-shade"></div>
+        <div class="hero-image-meta">
+          <div><span>Selected engineering</span><strong>Kellenberg OD Grinding</strong><small>Reconditioning & controls modernization</small></div>
+          <a href="#retrofit">View retrofit capability ↗</a>
+        </div>
+      </div>
+
+      <div class="proof-strip wrap reveal">
+        <div><strong>300+</strong><span>machines delivered</span></div>
+        <div><strong>40+</strong><span>SPM variants</span></div>
+        <div><strong>2011</strong><span>engineering since</span></div>
+        <div><strong>India</strong><span>field execution</span></div>
+      </div>
+    </section>
+
+    <section class="capabilities section" id="capabilities">
+      <div class="wrap section-head reveal">
+        <span class="section-label">What VSK delivers</span>
+        <h2>One production problem.<br /><em>Three ways to solve it.</em></h2>
+        <p>Machine building, machine second-life engineering and precision manufacturing — connected by the same practical machine-tool knowledge.</p>
+      </div>
+
+      <div class="capability-explorer wrap reveal" data-capabilities>
+        <div class="capability-list">
+          <button class="capability-row is-active" type="button" data-capability="build" data-image="media/projects/slotting.webp">
+            <span>01</span><div><strong>Build</strong><small>Special Purpose Machines</small></div><i>↗</i>
+          </button>
+          <button class="capability-row" type="button" data-capability="revive" data-image="media/retrofit/jig-grinding.webp">
+            <span>02</span><div><strong>Revive</strong><small>Reconditioning & Retrofit</small></div><i>↗</i>
+          </button>
+          <button class="capability-row" type="button" data-capability="make" data-image="media/solutions/precision.webp">
+            <span>03</span><div><strong>Make</strong><small>Precision Component Manufacturing</small></div><i>↗</i>
+          </button>
+        </div>
+
+        <div class="capability-preview">
+          <div class="capability-image"><img src="media/projects/slotting.webp" alt="VSK engineering capability" data-capability-image /></div>
+          <div class="capability-copy">
+            <p data-capability-copy>Application study, machine concept, mechanical design, hydraulic and pneumatic systems, controls, assembly, trials and commissioning.</p>
+            <div class="capability-tags" data-capability-tags><span>Mechanical design</span><span>Fluid power</span><span>CNC / PLC / HMI / Servo</span><span>Electrical integration</span></div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <div class="hero-bottom">
-            <div class="selected-project">
-              <span>Selected project</span>
-              <strong>Kellenberg OD Grinding</strong>
-              <small>Machine reconditioning & controls modernization</small>
-            </div>
+    <section class="projects section" id="projects">
+      <div class="wrap project-intro reveal">
+        <div><span class="section-label">Selected work</span><h2>Built around the<br /><em>operation.</em></h2></div>
+        <p>Real VSK projects, shown as engineering references rather than catalogue products. Each machine begins with a process requirement and ends with a working production solution.</p>
+      </div>
 
-            <div class="proof-row" aria-label="VSK proof points">
-              <div><strong>300+</strong><span>Machines delivered</span></div>
-              <div><strong>40+</strong><span>SPM variants</span></div>
-              <div><strong>India</strong><span>Field execution</span></div>
-            </div>
+      <div class="project-layout wrap">
+        <button class="project-feature reveal-media" type="button" data-project="4-Servo Seal Slotting Machine" data-type="Special Purpose Machine" data-copy="A dedicated servo machine developed around a seal-slotting production requirement, integrating mechanical architecture, servo motion and application-specific tooling." data-image="media/projects/slotting.webp">
+          <img src="media/projects/slotting.webp" alt="VSK four-servo seal slotting machine" loading="lazy" />
+          <span class="project-caption"><b>01</b><strong>4-Servo Seal Slotting</strong><small>Special Purpose Machine</small><i>↗</i></span>
+        </button>
 
-            <a class="scroll-cue" href="#scope"><span>Scroll</span><i>↓</i></a>
+        <div class="project-pair">
+          <button class="project-tile reveal-media" type="button" data-project="Z-Cut Machine" data-type="Precision Application" data-copy="A dedicated production machine developed for the Z-cut process, with a recorded application tolerance reference of 0.02 mm." data-image="media/projects/z-cut.webp">
+            <img src="media/projects/z-cut.webp" alt="VSK Z-Cut machine" loading="lazy" />
+            <span class="project-caption"><b>02</b><strong>Z-Cut Machine</strong><small>0.02 mm application reference</small><i>↗</i></span>
+          </button>
+          <button class="project-tile project-tile-tall reveal-media" type="button" data-project="Air Leak Testing Machine" data-type="Inspection Equipment" data-copy="Application-specific leak-testing equipment with dedicated fixtures and integrated pneumatic control for repeatable inspection." data-image="media/projects/air-leak.webp">
+            <img src="media/projects/air-leak.webp" alt="VSK air leak testing machine" loading="lazy" />
+            <span class="project-caption"><b>03</b><strong>Air Leak Testing</strong><small>Inspection equipment</small><i>↗</i></span>
+          </button>
+        </div>
+
+        <div class="project-wide-row">
+          <button class="project-wide reveal-media" type="button" data-project="Rod Boring Machine" data-type="CNC Application" data-copy="A CNC boring solution developed for repeatable rod processing, combining application engineering with machine-tool process knowledge." data-image="media/projects/rod-boring.webp">
+            <img src="media/projects/rod-boring.webp" alt="VSK rod boring machine" loading="lazy" />
+            <span class="project-caption"><b>04</b><strong>Rod Boring Machine</strong><small>CNC application</small><i>↗</i></span>
+          </button>
+          <button class="project-wide reveal-media" type="button" data-project="Vertical Turning CNC Machine" data-type="Production Machine" data-copy="A vertical-turning production platform supplied as part of VSK's application-led machine-building portfolio." data-image="media/projects/vertical-turning.webp">
+            <img src="media/projects/vertical-turning.webp" alt="VSK vertical turning CNC machine" loading="lazy" />
+            <span class="project-caption"><b>05</b><strong>Vertical Turning CNC</strong><small>Production machine</small><i>↗</i></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="retrofit" id="retrofit">
+      <div class="retrofit-grid wrap">
+        <div class="retrofit-copy reveal">
+          <span class="section-label light">Machine second life</span>
+          <h2>Keep the capability.<br /><em>Renew the machine.</em></h2>
+          <p>VSK approaches retrofit as a complete machine-engineering problem — mechanical condition, electrification, controls, drives, feedback systems and recommissioning considered together.</p>
+          <div class="retrofit-list">
+            <span>Mechanical reconditioning</span><span>CNC / PLC / HMI modernization</span><span>Servo & drive integration</span><span>Electrical panel rebuilding</span><span>Hydraulic & pneumatic restoration</span><span>Trials & recommissioning</span>
           </div>
-        </section>
+          <a class="light-link" href="#contact">Discuss a retrofit requirement ↗</a>
+        </div>
+        <div class="retrofit-images reveal-media">
+          <figure class="retrofit-main"><img src="media/retrofit/jig-grinding.webp" alt="VSK jig grinding retrofit" loading="lazy" /><figcaption>Jig grinding · retrofit reference</figcaption></figure>
+          <figure class="retrofit-small"><img src="media/retrofit/kellenberg.webp" alt="VSK Kellenberg retrofit" loading="lazy" /><figcaption>Kellenberg · OD grinding</figcaption></figure>
+        </div>
+      </div>
+    </section>
 
-        <section class="scope" id="scope">
-          <div class="scope-head">
-            <div>
-              <span class="section-label">What VSK delivers</span>
-              <h2>Three capabilities.<br />One engineering partner.</h2>
-            </div>
-            <p>Clear, practical engineering from the first production requirement to the working machine, restored asset or finished component.</p>
-          </div>
+    <section class="precision section" id="precision">
+      <div class="wrap precision-layout">
+        <div class="precision-image reveal-media"><img src="media/solutions/precision.webp" alt="VSK precision manufacturing" loading="lazy" /></div>
+        <div class="precision-copy reveal">
+          <span class="section-label">Precision manufacturing</span>
+          <h2>Process knowledge<br /><em>behind the part.</em></h2>
+          <p>Turning, machining and grinding are supported by the same machine-tool knowledge used to build and restore production equipment. That means the discussion can start with the drawing, but it does not stop there.</p>
+          <div class="precision-lines"><span>Turning</span><span>Machining</span><span>Grinding</span><span>Fixtures & process support</span></div>
+        </div>
+      </div>
+    </section>
 
-          <div class="scope-list" data-scope-list>
-            <article class="scope-row is-active" tabindex="0">
-              <span class="scope-no">01</span>
-              <div class="scope-title"><strong>Build</strong><small>Special Purpose Machines</small></div>
-              <p>Application study, machine design, hydraulic and pneumatic systems, controls, assembly, trials and commissioning.</p>
-              <span class="scope-arrow">↗</span>
-            </article>
-            <article class="scope-row" tabindex="0">
-              <span class="scope-no">02</span>
-              <div class="scope-title"><strong>Revive</strong><small>Reconditioning & Retrofit</small></div>
-              <p>Mechanical restoration and controls modernization that preserves the machine capability worth keeping.</p>
-              <span class="scope-arrow">↗</span>
-            </article>
-            <article class="scope-row" tabindex="0">
-              <span class="scope-no">03</span>
-              <div class="scope-title"><strong>Make</strong><small>Precision Manufacturing</small></div>
-              <p>Turning, machining and grinding supported by the same machine-tool and process knowledge used to build the equipment.</p>
-              <span class="scope-arrow">↗</span>
-            </article>
-          </div>
+    <section class="proof section">
+      <div class="wrap proof-heading reveal"><span class="section-label">Engineering proof</span><h2>Measured where<br /><em>it matters.</em></h2></div>
+      <div class="wrap proof-grid reveal">
+        <div><strong>20 <small>µm</small></strong><span>Face-alignment reference</span></div>
+        <div><strong>0.02 <small>mm</small></strong><span>Z-Cut application reference</span></div>
+        <div><strong>12 <small>sec</small></strong><span>Facing-cycle reference</span></div>
+        <div><strong>300+</strong><span>Machines delivered</span></div>
+      </div>
+    </section>
 
-          <div class="scope-foot">
-            <span>Mechanical design</span>
-            <span>Hydraulic & pneumatic</span>
-            <span>CNC / PLC / HMI / Servo</span>
-            <span>Electrical integration</span>
-          </div>
-        </section>
-      </main>
-    </div>
-  </div>
+    <section class="reviews section" id="reviews">
+      <div class="wrap reviews-layout reveal">
+        <div class="review-score"><span class="section-label">Customer signal</span><strong>4.9</strong><div aria-label="5 stars">★★★★★</div><small>14 Google reviews · current snapshot</small></div>
+        <div class="review-stage" data-review-stage>
+          <blockquote data-review>“Custom built machines, CNC retrofit solution services provider.”</blockquote>
+          <div class="review-controls"><button type="button" data-review-prev aria-label="Previous review">←</button><span data-review-count>01 / 03</span><button type="button" data-review-next aria-label="Next review">→</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="company section" id="company">
+      <div class="wrap company-layout">
+        <div class="company-statement reveal"><span class="section-label">VSK Electro-Mech Solutions</span><h2>Built by people who<br /><em>understand machines.</em></h2></div>
+        <div class="company-copy reveal"><p>Established in February 2011, VSK combines machine building, retrofit and precision manufacturing with practical knowledge across mechanical, electrical, controls and fluid-power engineering.</p><p>From Peenya, Bengaluru, the team supports production requirements across India — from a new SPM or machine retrofit to component manufacturing, automation, spindle work, industrial spares and engineering support.</p></div>
+      </div>
+      <div class="wrap capability-ribbon reveal"><span>SolidWorks mechanical design</span><span>Hydraulics & pneumatics</span><span>CNC / PLC / HMI</span><span>Servo & VFD</span><span>Electrical panels</span><span>Spindle engineering</span><span>Gantry / handling</span><span>Vision & conveyors</span></div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap contact-layout">
+        <div class="contact-copy reveal">
+          <span class="section-label light">Start with the requirement</span>
+          <h2>Tell VSK what the<br /><em>machine needs to achieve.</em></h2>
+          <p>Share the operation, component, machine condition, controller or production challenge. The enquiry is prepared for direct email — this preview does not store your information.</p>
+          <div class="contact-direct"><a href="tel:+919880336714">+91 98803 36714</a><a href="tel:+917353100095">+91 73531 00095</a><a href="mailto:vsk.electromech@gmail.com">vsk.electromech@gmail.com</a><span>Peenya Industrial Area · Bengaluru 560058</span></div>
+        </div>
+
+        <form class="enquiry-form reveal" data-enquiry-form novalidate>
+          <div class="field-row"><label><span>Name *</span><input name="name" autocomplete="name" required /></label><label><span>Company</span><input name="company" autocomplete="organization" /></label></div>
+          <div class="field-row"><label><span>Phone *</span><input name="phone" inputmode="tel" autocomplete="tel" required /></label><label><span>Email *</span><input name="email" type="email" autocomplete="email" required /></label></div>
+          <label><span>Requirement type</span><select name="type"><option>Special Purpose Machine</option><option>Machine Reconditioning / Retrofit</option><option>Precision Manufacturing</option><option>Automation / Controls</option><option>Service / Spares</option><option>Other</option></select></label>
+          <label><span>Describe the requirement *</span><textarea name="requirement" rows="5" required placeholder="Operation, machine, component, controller, target, problem or expected output..."></textarea></label>
+          <p class="form-error" data-form-error aria-live="polite"></p>
+          <div class="form-actions"><button type="submit">Prepare engineering email <span>↗</span></button><a href="https://wa.me/919880336714" target="_blank" rel="noopener">WhatsApp VSK</a></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-main"><a class="footer-brand" href="#hero"><img src="media/brand/vsk-logo.webp" alt="" /><span><strong>VSK Electro-Mech Solutions</strong><small>Engineering for production.</small></span></a><div class="footer-links"><a href="#capabilities">Capabilities</a><a href="#projects">Projects</a><a href="#retrofit">Retrofit</a><a href="#company">Company</a><a href="#contact">Contact</a></div></div>
+    <div class="wrap footer-bottom"><span>© VSK Electro-Mech Solutions</span><span>GST 29ABHPH4480R1ZW</span><a href="https://www.google.com/maps/search/?api=1&query=VSK%20Electro-Mech%20Solutions&query_place_id=ChIJTZoOP5s9rjsRkZX4voa_8mk" target="_blank" rel="noopener">Open in Google Maps ↗</a></div>
+  </footer>
+
+  <dialog class="project-dialog" data-project-dialog>
+    <button type="button" class="dialog-close" data-dialog-close aria-label="Close project">×</button>
+    <img src="" alt="" data-dialog-image />
+    <div class="dialog-copy"><span data-dialog-type></span><h2 data-dialog-title></h2><p data-dialog-copy></p><a href="#contact" data-dialog-close>Discuss a similar requirement ↗</a></div>
+  </dialog>
 
   <script src="premium-v2.js" defer></script>
 </body>
