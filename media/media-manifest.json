@@ -1,0 +1,311 @@
+{
+  "images": [
+    {
+      "source": "assets-source/VSK LOGO.png",
+      "output": "media/brand/vsk-logo.webp",
+      "source_bytes": 1483098,
+      "output_bytes": 92018,
+      "dimensions": [
+        512,
+        512
+      ],
+      "role": "brand"
+    },
+    {
+      "source": "assets-source/4 servo Seal  slotting machine/SLOTTING MC 3.JPG",
+      "output": "media/hero/slotting-main.webp",
+      "source_bytes": 195396,
+      "output_bytes": 41788,
+      "dimensions": [
+        1128,
+        589
+      ],
+      "role": "hero"
+    },
+    {
+      "source": "assets-source/rod boring machine/Picture_088[1].JPG",
+      "output": "media/hero/rod-boring.webp",
+      "source_bytes": 182136,
+      "output_bytes": 40534,
+      "dimensions": [
+        640,
+        480
+      ],
+      "role": "hero"
+    },
+    {
+      "source": "assets-source/Air leak testing machine/Machine Front view.JPG",
+      "output": "media/hero/air-leak.webp",
+      "source_bytes": 122195,
+      "output_bytes": 17188,
+      "dimensions": [
+        900,
+        428
+      ],
+      "role": "hero"
+    },
+    {
+      "source": "assets-source/VERTICAL TURNING CNC MACHINE/1520917541365.jpg",
+      "output": "media/solutions/vertical-turning.webp",
+      "source_bytes": 23870,
+      "output_bytes": 14730,
+      "dimensions": [
+        306,
+        408
+      ],
+      "role": "solution"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/Jig Grinding machine/EKNG2128.JPG",
+      "output": "media/solutions/jig-grinding.webp",
+      "source_bytes": 2515526,
+      "output_bytes": 503886,
+      "dimensions": [
+        1400,
+        2489
+      ],
+      "role": "solution"
+    },
+    {
+      "source": "assets-source/rod boring machine/Picture_089[1].JPG",
+      "output": "media/solutions/precision.webp",
+      "source_bytes": 106628,
+      "output_bytes": 21590,
+      "dimensions": [
+        640,
+        480
+      ],
+      "role": "solution"
+    },
+    {
+      "source": "assets-source/4 servo Seal  slotting machine/SLOTTING MC 1.JPG",
+      "output": "media/projects/slotting.webp",
+      "source_bytes": 120128,
+      "output_bytes": 23260,
+      "dimensions": [
+        1128,
+        589
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/Air leak testing machine/Machine Front view.JPG",
+      "output": "media/projects/air-leak.webp",
+      "source_bytes": 122195,
+      "output_bytes": 22556,
+      "dimensions": [
+        1151,
+        547
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/rod boring machine/Picture_088[1].JPG",
+      "output": "media/projects/rod-boring.webp",
+      "source_bytes": 182136,
+      "output_bytes": 40534,
+      "dimensions": [
+        640,
+        480
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/Z CUT MACHINE/BEXX0731.JPG",
+      "output": "media/projects/z-cut.webp",
+      "source_bytes": 2052408,
+      "output_bytes": 384910,
+      "dimensions": [
+        1400,
+        2489
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/VERTICAL TURNING CNC MACHINE/1520917541365.jpg",
+      "output": "media/projects/vertical-turning.webp",
+      "source_bytes": 23870,
+      "output_bytes": 13352,
+      "dimensions": [
+        306,
+        408
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/U DRILL MACHINE/1520917550194.jpg",
+      "output": "media/projects/u-drill.webp",
+      "source_bytes": 31412,
+      "output_bytes": 19948,
+      "dimensions": [
+        408,
+        306
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/paint aggitating machine/paint aggitating unit.jpg",
+      "output": "media/projects/paint-agitating.webp",
+      "source_bytes": 21997,
+      "output_bytes": 8896,
+      "dimensions": [
+        180,
+        320
+      ],
+      "role": "project"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0007.JPG",
+      "output": "media/retrofit/kellenberg.webp",
+      "source_bytes": 6387624,
+      "output_bytes": 162304,
+      "dimensions": [
+        1500,
+        1125
+      ],
+      "role": "retrofit"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/Jig Grinding machine/FHPF9264.JPG",
+      "output": "media/retrofit/jig-grinding.webp",
+      "source_bytes": 2628887,
+      "output_bytes": 578146,
+      "dimensions": [
+        1500,
+        2667
+      ],
+      "role": "retrofit"
+    },
+    {
+      "source": "assets-source/4 servo Seal  slotting machine/SLOTTING MC 3.JPG",
+      "output": "media/cases/slotting-main.webp",
+      "source_bytes": 195396,
+      "output_bytes": 41788,
+      "dimensions": [
+        1128,
+        589
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/4 servo Seal  slotting machine/SLOTTING MC CLOSE.JPG",
+      "output": "media/cases/slotting-detail.webp",
+      "source_bytes": 196499,
+      "output_bytes": 33624,
+      "dimensions": [
+        1000,
+        522
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/Jig Grinding machine/EKNG2128.JPG",
+      "output": "media/cases/jig-main.webp",
+      "source_bytes": 2515526,
+      "output_bytes": 503886,
+      "dimensions": [
+        1400,
+        2489
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/Jig Grinding machine/FHPF9264.JPG",
+      "output": "media/cases/jig-detail.webp",
+      "source_bytes": 2628887,
+      "output_bytes": 277046,
+      "dimensions": [
+        1000,
+        1778
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/Air leak testing machine/Machine Front view.JPG",
+      "output": "media/cases/air-leak-main.webp",
+      "source_bytes": 122195,
+      "output_bytes": 22556,
+      "dimensions": [
+        1151,
+        547
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/Air leak testing machine/Fixture Section View.JPG",
+      "output": "media/cases/air-leak-detail.webp",
+      "source_bytes": 126118,
+      "output_bytes": 19072,
+      "dimensions": [
+        1000,
+        459
+      ],
+      "role": "case"
+    },
+    {
+      "source": "assets-source/ELECTRIC OVEN/IMG_0021.JPG",
+      "output": "media/motion/electric-oven.webp",
+      "source_bytes": 6394563,
+      "output_bytes": 189382,
+      "dimensions": [
+        1400,
+        1867
+      ],
+      "role": "motion"
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0017.JPG",
+      "output": "media/motion/kellenberg-still.webp",
+      "source_bytes": 5859804,
+      "output_bytes": 83776,
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "role": "motion"
+    }
+  ],
+  "videos": [
+    {
+      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
+      "output": "media/motion/electric-oven-loop.mp4",
+      "source_bytes": 3387290,
+      "output_bytes": 30624
+    },
+    {
+      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
+      "output": "media/motion/electric-oven-loop.webm",
+      "source_bytes": 3387290,
+      "output_bytes": 108057
+    },
+    {
+      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
+      "output": "media/motion/electric-oven-loop-poster.webp",
+      "source_bytes": 3387290,
+      "output_bytes": 8
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0014.MOV",
+      "output": "media/motion/kellenberg-loop.mp4",
+      "source_bytes": 4356868,
+      "output_bytes": 281260
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0014.MOV",
+      "output": "media/motion/kellenberg-loop.webm",
+      "source_bytes": 4356868,
+      "output_bytes": 317258
+    },
+    {
+      "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0014.MOV",
+      "output": "media/motion/kellenberg-loop-poster.webp",
+      "source_bytes": 4356868,
+      "output_bytes": 113100
+    }
+  ],
+  "summary": {
+    "image_source_bytes": 34238494,
+    "image_output_bytes": 3156770,
+    "video_output_bytes": 850307
+  }
+}
