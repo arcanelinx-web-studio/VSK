@@ -1,0 +1,50 @@
+name: Build fresh concept preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fresh-concept-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source assets from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fetch fresh concept branch
+        run: git fetch origin fresh-01-editorial-accordion:fresh-01-editorial-accordion
+
+      - name: Assemble preview
+        run: |
+          rm -rf fresh-preview
+          mkdir -p fresh-preview
+          git show fresh-01-editorial-accordion:index.html > fresh-preview/index.html
+          git show fresh-01-editorial-accordion:fresh-accordion.css > fresh-preview/fresh-accordion.css
+          git show fresh-01-editorial-accordion:fresh-accordion.js > fresh-preview/fresh-accordion.js
+          cp -R media fresh-preview/media
+
+      - name: Validate preview
+        run: |
+          test -f fresh-preview/index.html
+          test -f fresh-preview/media/brand/vsk-logo.webp
+          test -f fresh-preview/media/projects/slotting.webp
+          node --check fresh-preview/fresh-accordion.js
+          ! grep -q 'styles-v' fresh-preview/index.html
+          ! grep -q 'hero-grid' fresh-preview/index.html
+          ! grep -q 'assets-source/' fresh-preview/index.html
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Fresh-Concept-01
+          path: fresh-preview/
+          retention-days: 14
