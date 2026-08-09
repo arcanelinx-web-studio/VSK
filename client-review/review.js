@@ -1,4 +1,9 @@
 (()=>{
+  const fixSheet=document.createElement('link');
+  fixSheet.rel='stylesheet';
+  fixSheet.href='review-fixes.css';
+  document.head.append(fixSheet);
+
   const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
   const chooser=$('[data-chooser]');
   const concepts=$$('[data-concept]');
@@ -38,6 +43,7 @@
     switcher.hidden=true;
     back.hidden=true;
     document.body.removeAttribute('data-active-concept');
+    header?.classList.remove('is-away');
     setTheme(null);
     scrollTo({top:0,behavior:'auto'});
     pauseHiddenVideos();
@@ -49,14 +55,12 @@
   back?.addEventListener('click',showChooser);
   $('[data-home]')?.addEventListener('click',e=>{if(active){e.preventDefault();showChooser()}});
 
-  // Option A capability tabs
   $$('[data-a-tab]').forEach(btn=>btn.addEventListener('click',()=>{
     const id=btn.dataset.aTab;
     $$('[data-a-tab]').forEach(b=>b.classList.toggle('is-active',b===btn));
     $$('[data-a-panel]').forEach(p=>p.classList.toggle('is-active',p.dataset.aPanel===id));
   }));
 
-  // Option A project detail dialog
   const dialog=$('[data-project-dialog]');
   $$('[data-project]').forEach(btn=>btn.addEventListener('click',()=>{
     const [title,copy,image]=btn.dataset.project.split('|');
@@ -69,14 +73,12 @@
   $$('[data-dialog-close]').forEach(btn=>btn.addEventListener('click',()=>dialog?.close()));
   dialog?.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 
-  // Option C register rows open/close into a subtle detail state.
   $$('.c-register button').forEach(row=>row.addEventListener('click',()=>{
     const was=row.classList.contains('is-open');
     $$('.c-register button').forEach(r=>r.classList.remove('is-open'));
     if(!was)row.classList.add('is-open');
   }));
 
-  // Active concept navigation + header behavior.
   const observeSections=()=>{
     const io=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
@@ -91,7 +93,6 @@
   };
   observeSections();
 
-  // Review header hides when scrolling inside a concept so the concept itself feels like the real site.
   let lastY=0;
   addEventListener('scroll',()=>{
     if(!active){header?.classList.remove('is-away');return}
@@ -100,7 +101,6 @@
     lastY=y;
   },{passive:true});
 
-  // Allow ?option=b links for easy client sharing later.
   const requested=new URLSearchParams(location.search).get('option');
   if(['a','b','c'].includes(requested))openConcept(requested);
 
