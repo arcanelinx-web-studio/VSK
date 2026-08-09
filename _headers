@@ -7,7 +7,7 @@
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
   Strict-Transport-Security: max-age=31536000
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto: https://wa.me https://api.whatsapp.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-MSMZmW2IMKIzNh9U4epQVHRjk/C+M5H/YXU0BzSvbNw='; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' mailto: https://wa.me https://api.whatsapp.com; upgrade-insecure-requests
 
 /assets-source/*
   Cache-Control: public, max-age=604800
