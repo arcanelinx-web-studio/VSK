@@ -1,0 +1,56 @@
+name: Build immersive showroom preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/showroom-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source assets
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch showroom concept branch
+        run: git fetch origin fresh-option-showroom-ui:fresh-option-showroom-ui
+
+      - name: Assemble preview
+        run: |
+          rm -rf preview
+          mkdir -p preview
+          git show fresh-option-showroom-ui:index.html > preview/index.html
+          git show fresh-option-showroom-ui:showroom.css > preview/showroom.css
+          git show fresh-option-showroom-ui:showroom.js > preview/showroom.js
+          cp -R media preview/media
+
+      - name: Validate preview
+        run: |
+          test -f preview/index.html
+          test -f preview/showroom.css
+          test -f preview/showroom.js
+          test -f preview/media/brand/vsk-logo.webp
+          test -f preview/media/motion/kellenberg-loop.webm
+          test -f preview/media/motion/kellenberg-loop.mp4
+          test -f preview/media/projects/z-cut.webp
+          test -f preview/media/projects/slotting.webp
+          test -f preview/media/hero/air-leak.webp
+          test -f preview/media/motion/electric-oven.webp
+          node --check preview/showroom.js
+          grep -q 'showroom.css' preview/index.html
+          grep -q 'showroom.js' preview/index.html
+          grep -q 'MACHINE SHOWROOM' preview/index.html
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Immersive-Machine-Showroom
+          path: preview/
+          retention-days: 14
