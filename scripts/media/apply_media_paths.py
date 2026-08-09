@@ -46,13 +46,24 @@ replace_all(ROOT / "script.js", [
     ("assets-source/Air leak testing machine/Fixture Section View.JPG", "media/cases/air-leak-detail.webp"),
 ])
 
-# Keep the motion layer as a separate, cacheable script. It is optional and
-# degrades cleanly if JavaScript is unavailable.
+# Advanced styling must not depend on JavaScript. Linking each layer in the
+# document head prevents a flash of the base design and preserves the premium
+# layout even when JavaScript is slow or disabled.
 index = ROOT / "index.html"
 text = index.read_text(encoding="utf-8")
+base_css = '<link rel="stylesheet" href="styles.css" />'
+advanced_css = (
+    '<link rel="stylesheet" href="styles.css" />\n'
+    '  <link rel="stylesheet" href="styles-v2.css" />\n'
+    '  <link rel="stylesheet" href="styles-v3.css" />\n'
+    '  <link rel="stylesheet" href="styles-v4.css" />\n'
+    '  <link rel="icon" href="media/brand/vsk-logo.webp" type="image/webp" />'
+)
+if 'href="styles-v4.css"' not in text:
+    text = text.replace(base_css, advanced_css)
 if 'src="motion.js"' not in text:
     text = text.replace('<script src="script.js" defer></script>', '<script src="script.js" defer></script>\n  <script src="motion.js" defer></script>')
-    index.write_text(text, encoding="utf-8")
+index.write_text(text, encoding="utf-8")
 
 headers = ROOT / "_headers"
 header_text = headers.read_text(encoding="utf-8")
