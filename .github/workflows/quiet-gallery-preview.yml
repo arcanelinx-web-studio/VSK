@@ -37,7 +37,7 @@ jobs:
           test -f preview/quiet-gallery.css
           test -f preview/quiet-gallery.js
           test -f preview/media/brand/vsk-logo.webp
-          test -f preview/media/hero/slotting-main.webp
+          test -f preview/media/projects/slotting.webp
           test -f preview/media/retrofit/kellenberg.webp
           test -f preview/media/hero/air-leak.webp
           test -f preview/media/projects/z-cut.webp
@@ -45,10 +45,11 @@ jobs:
           grep -q 'quiet-gallery.css' preview/index.html
           grep -q 'quiet-gallery.js' preview/index.html
           grep -q 'media/brand/vsk-logo.webp' preview/index.html
+          grep -q 'media/projects/slotting.webp' preview/index.html
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
         with:
-          name: VSK-Quiet-Gallery-Opening
+          name: VSK-Quiet-Gallery-Balanced-Opening
           path: preview/
           retention-days: 14
