@@ -70,3 +70,6 @@ header_text = headers.read_text(encoding="utf-8")
 media_rule = "\n/media/*\n  Cache-Control: public, max-age=604800, stale-while-revalidate=86400\n"
 if "/media/*" not in header_text:
     headers.write_text(header_text.rstrip() + "\n" + media_rule, encoding="utf-8")
+
+# This script is intentionally idempotent; re-running it after any source-media
+# change should produce the same production paths and document-head wiring.
