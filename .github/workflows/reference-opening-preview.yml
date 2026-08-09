@@ -1,4 +1,4 @@
-name: Build locked-reference opening preview
+name: Build Manufact Omnis opening preview
 
 on:
   push:
@@ -41,13 +41,13 @@ jobs:
           node --check preview/reference-opening.js
           grep -q 'VSK Electro-Mech Solutions' preview/index.html
           grep -q 'media/projects/z-cut.webp' preview/index.html
-          grep -q 'reference-opening.css' preview/index.html
-          grep -q 'reference-opening.js' preview/index.html
-          grep -q 'Three ways VSK delivers' preview/index.html
+          grep -q 'Built for the operation' preview/index.html
+          grep -q 'Hydraulic & pneumatic' preview/index.html
+          ! grep -q 'ui-monospace' preview/reference-opening.css
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
         with:
-          name: VSK-Top4-Refined-Opening
+          name: VSK-Manufact-Omnis-Premium-Opening
           path: preview/
           retention-days: 14
