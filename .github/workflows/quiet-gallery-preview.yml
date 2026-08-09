@@ -1,0 +1,54 @@
+name: Build quiet gallery concept preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/quiet-gallery-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source assets
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch concept branch
+        run: git fetch origin fresh-option-1-quiet-gallery:fresh-option-1-quiet-gallery
+
+      - name: Assemble preview
+        run: |
+          rm -rf preview
+          mkdir -p preview
+          git show fresh-option-1-quiet-gallery:index.html > preview/index.html
+          git show fresh-option-1-quiet-gallery:quiet-gallery.css > preview/quiet-gallery.css
+          git show fresh-option-1-quiet-gallery:quiet-gallery.js > preview/quiet-gallery.js
+          cp -R media preview/media
+
+      - name: Validate preview
+        run: |
+          test -f preview/index.html
+          test -f preview/quiet-gallery.css
+          test -f preview/quiet-gallery.js
+          test -f preview/media/brand/vsk-logo.webp
+          test -f preview/media/hero/slotting-main.webp
+          test -f preview/media/retrofit/kellenberg.webp
+          test -f preview/media/hero/air-leak.webp
+          test -f preview/media/projects/z-cut.webp
+          node --check preview/quiet-gallery.js
+          grep -q 'quiet-gallery.css' preview/index.html
+          grep -q 'quiet-gallery.js' preview/index.html
+          grep -q 'media/brand/vsk-logo.webp' preview/index.html
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Quiet-Gallery-Opening
+          path: preview/
+          retention-days: 14
