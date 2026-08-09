@@ -38,16 +38,16 @@ jobs:
           test -f preview/reference-opening.js
           test -f preview/media/brand/vsk-logo.webp
           test -f preview/media/projects/z-cut.webp
-          test -f preview/media/hero/air-leak.webp
           node --check preview/reference-opening.js
           grep -q 'VSK Electro-Mech Solutions' preview/index.html
           grep -q 'media/projects/z-cut.webp' preview/index.html
           grep -q 'reference-opening.css' preview/index.html
           grep -q 'reference-opening.js' preview/index.html
+          grep -q 'Three ways VSK delivers' preview/index.html
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
         with:
-          name: VSK-Locked-Reference-Opening
+          name: VSK-Top4-Refined-Opening
           path: preview/
           retention-days: 14
