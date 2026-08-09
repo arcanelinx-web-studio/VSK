@@ -41,7 +41,7 @@ jobs:
           node --check preview/premium-v2.js
           grep -q 'VSK Electro-Mech Solutions' preview/index.html
           grep -q 'media/retrofit/kellenberg.webp' preview/index.html
-          grep -q 'DM Sans' preview/index.html
+          grep -q 'DM+Sans' preview/index.html
           grep -q 'Hydraulic & pneumatic' preview/index.html
           ! grep -q 'ui-monospace' preview/premium-v2.css
 
