@@ -6,6 +6,7 @@ on:
     paths:
       - 'assets-source/**'
       - 'scripts/media/**'
+      - 'scripts/site/**'
       - '.github/workflows/media-pipeline.yml'
   workflow_dispatch:
 
@@ -43,6 +44,9 @@ jobs:
       - name: Wire optimized media into website
         run: python scripts/media/apply_media_paths.py
 
+      - name: Apply production UX and SEO polish
+        run: python scripts/site/apply_production_polish.py
+
       - name: Show media report
         run: |
           cat media/README.md
@@ -57,7 +61,7 @@ jobs:
             echo 'No generated media or site wiring changes.'
             exit 0
           fi
-          git commit -m 'chore: refresh optimized media and site paths [skip ci]'
+          git commit -m 'chore: refresh production media and site wiring'
           git push
 
       - name: Upload media artifact
