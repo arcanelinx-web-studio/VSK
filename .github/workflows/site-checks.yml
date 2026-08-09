@@ -10,7 +10,6 @@ on:
 permissions:
   contents: read
 
-# Lightweight integrity gate: no build framework is required for the static site.
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -23,5 +22,19 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate local assets, media paths and security headers
+      - name: Validate source site
         run: python scripts/validate_site.py
+
+      - name: Build production package
+        run: python scripts/site/build_dist.py
+
+      - name: Validate deployment package
+        run: python scripts/site/validate_dist.py
+
+      - name: Upload deploy-ready static site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsk-static-site
+          path: dist/
+          retention-days: 14
