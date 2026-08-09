@@ -1,0 +1,53 @@
+name: Build premium studio opening preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/premium-studio-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source assets
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch concept branch
+        run: git fetch origin fresh-option-1-premium-studio:fresh-option-1-premium-studio
+
+      - name: Assemble preview
+        run: |
+          rm -rf preview
+          mkdir -p preview
+          git show fresh-option-1-premium-studio:index.html > preview/index.html
+          git show fresh-option-1-premium-studio:premium-studio.css > preview/premium-studio.css
+          git show fresh-option-1-premium-studio:premium-studio.js > preview/premium-studio.js
+          cp -R media preview/media
+
+      - name: Validate preview
+        run: |
+          test -f preview/index.html
+          test -f preview/premium-studio.css
+          test -f preview/premium-studio.js
+          test -f preview/media/brand/vsk-logo.webp
+          test -f preview/media/hero/rod-boring.webp
+          test -f preview/media/retrofit/kellenberg.webp
+          test -f preview/media/projects/z-cut.webp
+          node --check preview/premium-studio.js
+          grep -q 'VSK Electro-Mech Solutions' preview/index.html
+          grep -q 'premium-studio.css' preview/index.html
+          grep -q 'premium-studio.js' preview/index.html
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Premium-Studio-Opening
+          path: preview/
+          retention-days: 14
