@@ -1,0 +1,56 @@
+name: Build client review pack
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client-review/**'
+      - 'media/**'
+      - '.github/workflows/client-review-pack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build self-contained review pack
+        run: |
+          rm -rf review-dist
+          mkdir -p review-dist
+          cp client-review/index.html review-dist/index.html
+          cp client-review/review.css review-dist/review.css
+          cp client-review/review-fixes.css review-dist/review-fixes.css
+          cp client-review/review.js review-dist/review.js
+          cp client-review/README.md review-dist/README.md
+          cp -R media review-dist/media
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('review-dist/index.html')
+          text = p.read_text(encoding='utf-8').replace('../media/', 'media/')
+          p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate interactive pack
+        run: |
+          test -f review-dist/index.html
+          test -f review-dist/media/brand/vsk-logo.webp
+          test -f review-dist/media/motion/kellenberg-loop.mp4
+          test -f review-dist/media/hero/slotting-main.webp
+          ! grep -R "assets-source/" review-dist
+          grep -q 'data-open="a"' review-dist/index.html
+          grep -q 'data-open="b"' review-dist/index.html
+          grep -q 'data-open="c"' review-dist/index.html
+          grep -q 'media/brand/vsk-logo.webp' review-dist/index.html
+
+      - name: Upload interactive client review
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Interactive-Website-Options
+          path: review-dist/
+          retention-days: 14
