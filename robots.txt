@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Add the final Sitemap URL after the public VSK domain is connected.
