@@ -3,16 +3,21 @@
   const ready=()=>document.body.classList.add('is-ready');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 
-  const orbit=document.querySelector('[data-orbit]');
-  if(orbit&&!reduce){
-    const stage=orbit.closest('.image-stage');
-    stage?.addEventListener('pointermove',e=>{
+  const stage=document.querySelector('[data-stage]');
+  const image=stage?.querySelector('.hero-image');
+  const plaque=stage?.querySelector('.project-plaque');
+  if(stage&&image&&plaque&&!reduce){
+    stage.addEventListener('pointermove',e=>{
       const r=stage.getBoundingClientRect();
       const x=(e.clientX-r.left)/r.width-.5;
       const y=(e.clientY-r.top)/r.height-.5;
-      orbit.style.transform=`translate(${x*10}px,${y*10}px)`;
+      image.style.transform=`scale(1.008) translate(${x*-5}px,${y*-4}px)`;
+      plaque.style.transform=`translate(${x*3}px,${y*3}px)`;
     });
-    stage?.addEventListener('pointerleave',()=>orbit.style.transform='');
+    stage.addEventListener('pointerleave',()=>{
+      image.style.transform='';
+      plaque.style.transform='';
+    });
   }
 
   const disciplines=[...document.querySelectorAll('.discipline')];
@@ -35,7 +40,7 @@
             io.disconnect();
           }
         });
-      },{threshold:.2});
+      },{threshold:.16});
       io.observe(transition);
     }
   }
