@@ -37,11 +37,11 @@ jobs:
           test -f preview/premium-studio.css
           test -f preview/premium-studio.js
           test -f preview/media/brand/vsk-logo.webp
-          test -f preview/media/hero/rod-boring.webp
           test -f preview/media/retrofit/kellenberg.webp
           test -f preview/media/projects/z-cut.webp
           node --check preview/premium-studio.js
           grep -q 'VSK Electro-Mech Solutions' preview/index.html
+          grep -q 'Kellenberg OD grinding retrofit' preview/index.html
           grep -q 'premium-studio.css' preview/index.html
           grep -q 'premium-studio.js' preview/index.html
 
