@@ -1,0 +1,55 @@
+name: Build reset collage concept preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/awwwards-collage-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout assets
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch reset concept
+        run: git fetch origin scratch-awwwards-collage:scratch-awwwards-collage
+
+      - name: Assemble preview
+        run: |
+          rm -rf preview
+          mkdir -p preview
+          git show scratch-awwwards-collage:index.html > preview/index.html
+          git show scratch-awwwards-collage:atelier.css > preview/atelier.css
+          git show scratch-awwwards-collage:atelier.js > preview/atelier.js
+          cp -R media preview/media
+
+      - name: Validate preview
+        run: |
+          test -f preview/index.html
+          test -f preview/atelier.css
+          test -f preview/atelier.js
+          test -f preview/media/brand/vsk-logo.webp
+          test -f preview/media/retrofit/kellenberg.webp
+          test -f preview/media/projects/z-cut.webp
+          test -f preview/media/hero/air-leak.webp
+          test -f preview/media/cases/slotting-detail.webp
+          test -f preview/media/retrofit/jig-grinding.webp
+          node --check preview/atelier.js
+          grep -q 'atelier.css' preview/index.html
+          grep -q 'atelier.js' preview/index.html
+          grep -q 'VSK Electro-Mech Solutions' preview/index.html
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Reset-Awwwards-Collage
+          path: preview/
+          retention-days: 14
