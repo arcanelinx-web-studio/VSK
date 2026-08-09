@@ -1,4 +1,4 @@
-name: Build Manufact Omnis premium V2 preview
+name: Build Manufact Omnis full VSK preview
 
 on:
   push:
@@ -19,35 +19,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch premium V2 concept
-        run: git fetch origin manufact-omnis-premium-v2:manufact-omnis-premium-v2
+      - name: Fetch complete V3 concept
+        run: git fetch origin manufact-omnis-unframed-v3:manufact-omnis-unframed-v3
 
       - name: Assemble preview
         run: |
           rm -rf preview
           mkdir -p preview
-          git show manufact-omnis-premium-v2:index.html > preview/index.html
-          git show manufact-omnis-premium-v2:premium-v2.css > preview/premium-v2.css
-          git show manufact-omnis-premium-v2:premium-v2.js > preview/premium-v2.js
+          git show manufact-omnis-unframed-v3:index.html > preview/index.html
+          git show manufact-omnis-unframed-v3:premium-v2.css > preview/premium-v2.css
+          git show manufact-omnis-unframed-v3:premium-full-base.css > preview/premium-full-base.css
+          git show manufact-omnis-unframed-v3:premium-full-sections.css > preview/premium-full-sections.css
+          git show manufact-omnis-unframed-v3:premium-v2.js > preview/premium-v2.js
           cp -R media preview/media
 
       - name: Validate preview
         run: |
           test -f preview/index.html
           test -f preview/premium-v2.css
+          test -f preview/premium-full-base.css
+          test -f preview/premium-full-sections.css
           test -f preview/premium-v2.js
           test -f preview/media/brand/vsk-logo.webp
           test -f preview/media/retrofit/kellenberg.webp
+          test -f preview/media/retrofit/jig-grinding.webp
+          test -f preview/media/projects/slotting.webp
+          test -f preview/media/projects/z-cut.webp
+          test -f preview/media/projects/air-leak.webp
+          test -f preview/media/solutions/precision.webp
           node --check preview/premium-v2.js
           grep -q 'VSK Electro-Mech Solutions' preview/index.html
-          grep -q 'media/retrofit/kellenberg.webp' preview/index.html
-          grep -q 'DM+Sans' preview/index.html
-          grep -q 'Hydraulic & pneumatic' preview/index.html
-          ! grep -q 'ui-monospace' preview/premium-v2.css
+          grep -q 'One production problem' preview/index.html
+          grep -q '4.9' preview/index.html
+          grep -q 'Start with the requirement' preview/index.html
+          grep -q "premium-full-base.css" preview/premium-v2.css
+          grep -q "premium-full-sections.css" preview/premium-v2.css
+          ! grep -R -q 'ui-monospace' preview/*.css
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
         with:
-          name: VSK-Manufact-Omnis-Premium-V2
+          name: VSK-Manufact-Omnis-Full-Website
           path: preview/
           retention-days: 14
