@@ -3,7 +3,12 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageFile
+
+# Some legacy machine photographs are valid enough for browsers but contain a
+# small truncated tail. Pillow is stricter than browsers, so explicitly allow
+# those archived files while keeping the originals untouched.
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "media"
@@ -43,7 +48,8 @@ VIDEO_TARGETS = [
 ]
 
 
-def human(n: int) -> str:
+def human(n: int | float) -> str:
+    n = float(n)
     for unit in ("B", "KB", "MB", "GB"):
         if n < 1024 or unit == "GB":
             return f"{n:.0f} {unit}" if unit == "B" else f"{n:.1f} {unit}"
