@@ -1,0 +1,91 @@
+name: Build V2 client review pack
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'client-review-v2/**'
+      - '.github/workflows/client-review-v2-pack.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main and fetch concept branches
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch V2 concept branches
+        run: |
+          git fetch origin v2-machine-compass v2-machine-theatre v2-field-manual
+      - name: Assemble interactive review
+        run: |
+          rm -rf review-dist
+          mkdir -p review-dist/a review-dist/b review-dist/c
+          cp client-review-v2/index.html review-dist/index.html
+          cp client-review-v2/review.css review-dist/review.css
+          cp client-review-v2/review.js review-dist/review.js
+          cp -R media review-dist/media
+
+          git show origin/v2-machine-compass:index.html > review-dist/a/index.html
+          git show origin/v2-machine-compass:concept-a.css > review-dist/a/concept-a.css
+          git show origin/v2-machine-compass:concept-a.js > review-dist/a/concept-a.js
+
+          git show origin/v2-machine-theatre:index.html > review-dist/b/index.html
+          git show origin/v2-machine-theatre:concept-b.css > review-dist/b/concept-b.css
+          git show origin/v2-machine-theatre:theatre-core.js > review-dist/b/theatre-core.js
+          git show origin/v2-machine-theatre:theatre-gallery.js > review-dist/b/theatre-gallery.js
+          git show origin/v2-machine-theatre:theatre-proof.js > review-dist/b/theatre-proof.js
+
+          git show origin/v2-field-manual:index.html > review-dist/c/index.html
+          git show origin/v2-field-manual:concept-c.css > review-dist/c/concept-c.css
+          git show origin/v2-field-manual:concept-c.js > review-dist/c/concept-c.js
+
+          python - <<'PY'
+          from pathlib import Path
+          for folder in ('a','b','c'):
+              for p in Path('review-dist', folder).glob('*'):
+                  if p.suffix.lower() not in {'.html','.js','.css'}:
+                      continue
+                  text=p.read_text(encoding='utf-8')
+                  text=text.replace('media/','../media/')
+                  p.write_text(text,encoding='utf-8')
+          PY
+      - name: Validate review pack
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          root=Path('review-dist')
+          errors=[]
+          class P(HTMLParser):
+              def __init__(self,base):
+                  super().__init__(); self.base=base
+              def handle_starttag(self,tag,attrs):
+                  d=dict(attrs)
+                  for key in ('src','href','poster'):
+                      v=d.get(key)
+                      if not v or v.startswith(('#','http:','https:','mailto:','tel:','data:','about:')): continue
+                      path=(self.base/v.split('?',1)[0].split('#',1)[0]).resolve()
+                      if not path.exists(): errors.append(f'missing {v} referenced by {self.base}')
+          for html in root.rglob('*.html'):
+              p=P(html.parent); p.feed(html.read_text(encoding='utf-8'))
+          for needed in ['media/brand/vsk-logo.webp','a/index.html','b/index.html','c/index.html','b/theatre-gallery.js']:
+              if not (root/needed).exists(): errors.append(f'missing required {needed}')
+          for path in root.rglob('*'):
+              if path.is_file() and path.suffix.lower() in {'.html','.js','.css'}:
+                  if 'assets-source/' in path.read_text(encoding='utf-8'): errors.append(f'raw source reference in {path}')
+          if errors:
+              print('\n'.join(errors)); raise SystemExit(1)
+          print('V2 client review pack validated')
+          PY
+      - name: Upload interactive V2 review
+        uses: actions/upload-artifact@v4
+        with:
+          name: VSK-Interactive-Website-Options-V2
+          path: review-dist/
+          retention-days: 14
