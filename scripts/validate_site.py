@@ -52,7 +52,7 @@ for page in (ROOT / "index.html", ROOT / "404.html"):
     validate_html(page)
 
 # Dynamic markup in the JavaScript files can reference local production media.
-for script_name in ("script.js", "motion.js"):
+for script_name in ("script.js", "motion.js", "ux-v2.js"):
     path = ROOT / script_name
     text = path.read_text(encoding="utf-8")
     raw_media = re.findall(r"assets-source/[^\"'`<>]+\.(?:jpe?g|png|webp|avif|mov|mp4|webm)", text, flags=re.I)
@@ -61,12 +61,37 @@ for script_name in ("script.js", "motion.js"):
     for ref in sorted(media_refs):
         check((ROOT / ref).exists(), f"{script_name}: missing generated media: {ref}")
 
-# Ensure all design layers are part of normal HTML loading, not JS-only styling.
+# Ensure all design and behavior layers are part of normal HTML loading.
 index = (ROOT / "index.html").read_text(encoding="utf-8")
-for css in ("styles.css", "styles-v2.css", "styles-v3.css", "styles-v4.css"):
+for css in ("styles.css", "styles-v2.css", "styles-v3.css", "styles-v4.css", "styles-v5.css"):
     check(f'href="{css}"' in index, f"index.html: missing direct stylesheet link for {css}")
-for script in ("script.js", "motion.js"):
+for script in ("script.js", "motion.js", "ux-v2.js"):
     check(f'src="{script}"' in index, f"index.html: missing script {script}")
+
+# Search and social-discovery baseline. Canonical URL, sitemap URL and absolute
+# social image are intentionally deferred until the final public domain exists.
+for marker in (
+    'name="robots"',
+    'property="og:site_name"',
+    'property="og:title"',
+    'property="og:description"',
+    'name="twitter:card"',
+    'type="application/ld+json"',
+):
+    check(marker in index, f"index.html: missing SEO marker {marker}")
+check((ROOT / "robots.txt").is_file(), "robots.txt is missing")
+check("User-agent: *" in (ROOT / "robots.txt").read_text(encoding="utf-8"), "robots.txt: crawler policy missing")
+
+# Conversion and accessibility UX baseline.
+for marker in (
+    'class="enquiry-trust"',
+    'name="machine"',
+    'name="controller"',
+    'name="location"',
+    'aria-describedby="phone-help phone-error"',
+    'class="mobile-contact-dock"',
+):
+    check(marker in index, f"index.html: missing production UX marker {marker}")
 
 # Minimum security baseline for static deployment.
 headers = (ROOT / "_headers").read_text(encoding="utf-8")
@@ -82,6 +107,7 @@ for directive in (
 ):
     check(directive in headers, f"_headers: missing security directive: {directive}")
 check("/media/*" in headers, "_headers: missing cache policy for generated media")
+check("sha256-" in headers, "_headers: JSON-LD CSP hash is missing")
 
 # Production media should exist and never replace the source archive.
 check((ROOT / "assets-source").is_dir(), "assets-source archive is missing")
@@ -97,5 +123,7 @@ if ERRORS:
 print("VSK site validation passed.")
 print("- Local resources resolve")
 print("- No raw image/video references remain in web-facing code")
-print("- Advanced CSS loads directly")
+print("- All design and UX layers load directly")
+print("- SEO / structured-data baseline is present")
+print("- Enquiry and mobile conversion UX is present")
 print("- Security header baseline is present")
