@@ -40,21 +40,24 @@ jobs:
       - name: Generate optimized media
         run: python scripts/media/build_media.py
 
+      - name: Wire optimized media into website
+        run: python scripts/media/apply_media_paths.py
+
       - name: Show media report
         run: |
           cat media/README.md
           du -sh media
 
-      - name: Commit generated media
+      - name: Commit generated media and site wiring
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add media
+          git add media index.html script.js 404.html _headers
           if git diff --cached --quiet; then
-            echo 'No generated media changes.'
+            echo 'No generated media or site wiring changes.'
             exit 0
           fi
-          git commit -m 'chore: refresh optimized media [skip ci]'
+          git commit -m 'chore: refresh optimized media and site paths [skip ci]'
           git push
 
       - name: Upload media artifact
