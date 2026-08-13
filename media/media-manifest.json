@@ -267,24 +267,6 @@
   ],
   "videos": [
     {
-      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
-      "output": "media/motion/electric-oven-loop.mp4",
-      "source_bytes": 3387290,
-      "output_bytes": 30624
-    },
-    {
-      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
-      "output": "media/motion/electric-oven-loop.webm",
-      "source_bytes": 3387290,
-      "output_bytes": 108057
-    },
-    {
-      "source": "assets-source/ELECTRIC OVEN/IMG_0028.MOV",
-      "output": "media/motion/electric-oven-loop-poster.webp",
-      "source_bytes": 3387290,
-      "output_bytes": 8
-    },
-    {
       "source": "assets-source/Retrofitted Machine/kelingberg od grinding machine/IMG_0014.MOV",
       "output": "media/motion/kellenberg-loop.mp4",
       "source_bytes": 4356868,
@@ -306,6 +288,6 @@
   "summary": {
     "image_source_bytes": 34238494,
     "image_output_bytes": 3156770,
-    "video_output_bytes": 850307
+    "video_output_bytes": 711618
   }
 }

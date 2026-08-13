@@ -1,98 +1,311 @@
+(() => {
+  'use strict';
+  const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const page=document.body.dataset.page||'home';
+  let activeDialog=null,lastFocus=null;
 
-(()=>{'use strict';
-const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const page=document.body.dataset.page||'home';
-const header=$('[data-header]'), progress=$('[data-progress]');
-let raf=false;
-const onScroll=()=>{if(raf)return;raf=true;requestAnimationFrame(()=>{header?.classList.toggle('is-scrolled',scrollY>24);if(progress){const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);progress.style.transform=`scaleX(${Math.min(1,scrollY/max)})`;}if(page==='home'&&!reduce){const hero=$('[data-hero-image]');if(hero&&scrollY<innerHeight*1.2)hero.style.transform=`scale(1.055) translateY(${scrollY*.035}px)`;}raf=false;});};
-addEventListener('scroll',onScroll,{passive:true});onScroll();
+  function lockBody(on){document.body.classList.toggle('is-locked',on)}
+  function progress(){const bar=$('[data-progress]'); if(!bar)return; const h=document.documentElement; const max=h.scrollHeight-innerHeight; bar.style.width=`${max?Math.min(100,scrollY/max*100):0}%`;}
+  function headerState(){const h=$('[data-header]'); if(h)h.classList.toggle('is-scrolled',scrollY>28)}
+  addEventListener('scroll',()=>{progress();headerState();},{passive:true});progress();headerState();
 
-const menu=$('[data-menu-toggle]'),nav=$('[data-nav]');
-menu?.addEventListener('click',()=>{const open=nav.classList.toggle('is-open');document.body.classList.toggle('nav-open',open);menu.setAttribute('aria-expanded',String(open));});
-$$('.nav a').forEach(a=>a.addEventListener('click',()=>{nav?.classList.remove('is-open');document.body.classList.remove('nav-open');menu?.setAttribute('aria-expanded','false')}));
+  // Reveals
+  if(reduced){$$('.reveal').forEach(el=>el.classList.add('is-visible'));}
+  else {const ro=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');ro.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -40px'});$$('.reveal').forEach(el=>ro.observe(el));}
 
-if(!reduce&&window.gsap){
-  gsap.set('.reveal',{opacity:0,y:18});const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){gsap.to(e.target,{opacity:1,y:0,duration:.72,ease:'power3.out'});io.unobserve(e.target)}}),{rootMargin:'0px 0px -8%',threshold:.08});$$('.reveal').forEach(el=>io.observe(el));
-  if(page==='home'){const tl=gsap.timeline({defaults:{ease:'power3.out'}});tl.from('[data-hero-line]',{opacity:0,y:42,duration:.72,stagger:.1}).from('[data-hero-piece]',{opacity:0,y:12,duration:.5,stagger:.07},'-=.38');}
-}else{$$('.reveal').forEach(el=>{el.style.opacity=1;el.style.transform='none'})}
+  // Mobile navigation: closed by default, opens only on an intentional tap.
+  const menu=$('[data-mobile-menu]'); const menuToggle=$('[data-menu-toggle]');
+  if(menu){menu.hidden=true;menu.setAttribute('aria-hidden','true')}
+  function openMenu(){if(!menu||!menu.hidden)return;menu.hidden=false;menu.setAttribute('aria-hidden','false');menuToggle?.setAttribute('aria-expanded','true');menuToggle?.setAttribute('aria-label','Close navigation');lockBody(true)}
+  function closeMenu(){if(!menu)return;menu.setAttribute('aria-hidden','true');menu.hidden=true;menuToggle?.setAttribute('aria-expanded','false');menuToggle?.setAttribute('aria-label','Open navigation');if(!activeDialog)lockBody(false)}
+  function toggleMenu(){if(!menu)return;menu.hidden?openMenu():closeMenu()}
+  menuToggle?.addEventListener('click',toggleMenu);
+  $$('[data-menu-close]').forEach(b=>b.addEventListener('click',closeMenu));
+  $$('.mobile-menu nav a').forEach(a=>a.addEventListener('click',closeMenu));
 
-// Fast, restrained number count.
-if(!reduce&&'IntersectionObserver'in window){const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,target=Number(el.dataset.count),suffix=el.dataset.suffix||'';const start=performance.now(),dur=700;const tick=t=>{const p=Math.min(1,(t-start)/dur),v=Math.round(target*(1-Math.pow(1-p,3)));el.textContent=v+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick);cio.unobserve(el)}),{threshold:.5});$$('[data-count]').forEach(el=>cio.observe(el));}
+  // Counts
+  const countObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const el=e.target;countObserver.unobserve(el);if(reduced)return;const end=Number(el.dataset.count||0),suffix=el.dataset.suffix||'';const start=performance.now(),dur=650;function tick(now){const p=Math.min(1,(now-start)/dur),ease=1-Math.pow(1-p,3);el.textContent=Math.round(end*ease)+suffix;if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)}),{threshold:.6});$$('[data-count]').forEach(el=>countObserver.observe(el));
 
-const idxLabel=m=>`${m.type==='spm'?'SPM':'RTF'} / ${String(machineArchive.filter(x=>x.type===m.type).indexOf(m)+1).padStart(2,'0')}`;
-const cat=categoryNames;
-const searchText=m=>[m.title,m.customer,m.control,m.note,cat[m.category],archiveTypeName[m.type]].filter(Boolean).join(' ').toLowerCase();
-const photoCount=machineArchive.filter(m=>m.media?.length).length;
-const placeholder=(label='VSK / ARCHIVE')=>`<div class="blueprint-placeholder"><span>VSK / ENGINEERING ARCHIVE</span><b>${label}</b><i></i></div>`;
+  // Hero subtle parallax
+  const heroImg=$('[data-hero-image]'); if(heroImg&&!reduced){addEventListener('scroll',()=>{if(scrollY<innerHeight*1.15)heroImg.style.transform=`translateY(${scrollY*.055}px) scale(1.015)`},{passive:true});}
 
-// Feature/project catalog data.
-const projectOrder=['zcut','slotting','airleak','rod','jig','kellenberg','vertical','wheel','facing','paint','udrill','oven','tabletop','conveyor','spindle'];
-const projectSubtitle={zcut:'0.02 mm tolerance reference',slotting:'Four-axis servo machine family',airleak:'Festo servo testing reference',rod:'Siemens 802D · 2-axis CNC',jig:'PLC / HMI + 3 servo axes',kellenberg:'Fanuc 0i-TF Plus',vertical:'PTFE rod · 900 mm reference',wheel:'20 μm alignment reference',facing:'12 second cycle reference',paint:'Process equipment · Prestige',udrill:'Original VSK project image',oven:'Original image + motion clip',tabletop:'PTFE rods · ±0.1 mm reference',conveyor:'Centerless grinding feeding',spindle:'Machine-tool interface detail'};
-const projectTile=(id,klass='')=>{const d=featureData[id],media=d.media?.[0];return `<button class="${klass}" type="button" data-feature-open="${id}" id="${id}">${media?`<img src="${media}" alt="${d.title}" loading="lazy" />`:placeholder(id.toUpperCase())}<span class="tile-copy"><span>${d.index||d.type}</span><strong>${d.title}</strong><small>${projectSubtitle[id]||d.summary}</small></span></button>`};
-if($('[data-home-projects]'))$('[data-home-projects]').innerHTML=['zcut','slotting','airleak','rod','jig','kellenberg'].map(id=>projectTile(id,'project-tile')).join('');
-if($('[data-project-catalog]'))$('[data-project-catalog]').innerHTML=projectOrder.map(id=>projectTile(id,'catalog-project')).join('');
+  // Capability index
+  const capImg=$('[data-capability-image]');
+  if(capImg){$$('[data-capability]').forEach(btn=>{const activate=()=>{const d=capabilityData[btn.dataset.capability];if(!d)return;$$('[data-capability]').forEach(x=>x.classList.toggle('is-active',x===btn));capImg.style.opacity='.15';setTimeout(()=>{capImg.src=d.image;capImg.alt=d.alt;capImg.style.opacity='1'},120);$('[data-capability-index]').textContent=d.index;$('[data-capability-title]').textContent=d.title;$('[data-capability-copy]').textContent=d.copy;$('[data-capability-tags]').innerHTML=d.tags.map(t=>`<b>${t}</b>`).join('');};btn.addEventListener('mouseenter',activate);btn.addEventListener('focus',activate);btn.addEventListener('click',activate);});}
 
-// Homepage discipline interaction.
-const disciplineData={build:{src:'media/cases/slotting-main.webp',label:'APPLICATION / CUSTOM MACHINE',title:'Four-servo slotting architecture',href:'machines.html?type=spm'},restore:{src:'media/retrofit/kellenberg.webp',label:'RETROFIT / MACHINE TOOL',title:'Kellenberg CNC grinding modernization',href:'machines.html?type=retrofit'},manufacture:{src:'media/solutions/precision.webp',label:'PROCESS / PRECISION',title:'Machine-tool knowledge applied to manufacturing',href:'index.html#systems'}};
-$$('[data-discipline]').forEach(btn=>btn.addEventListener('mouseenter',()=>setDiscipline(btn.dataset.discipline)));$$('[data-discipline]').forEach(btn=>btn.addEventListener('focus',()=>setDiscipline(btn.dataset.discipline)));function setDiscipline(key){const d=disciplineData[key];if(!d)return;$$('[data-discipline]').forEach(b=>b.classList.toggle('is-active',b.dataset.discipline===key));const im=$('[data-discipline-image]');if(im&&im.src.indexOf(d.src)<0){im.style.opacity=.25;setTimeout(()=>{im.src=d.src;im.style.opacity=1},130)}$('[data-discipline-label]')&&($('[data-discipline-label]').textContent=d.label);$('[data-discipline-title]')&&($('[data-discipline-title]').textContent=d.title);const a=$('.discipline-preview a');if(a)a.href=d.href;}
+  // Project cards
+  function projectCard(p,full=false,index=0){
+    const mode=p.mediaMode||'photo';
+    const pos=p.position||'center';
+    const media=`<div class="${full?'project-page-media':'project-image'} media-mode-${mode}"><img src="${p.cover}" alt="${p.title}" loading="lazy" style="object-position:${pos}"></div>`;
+    if(full){
+      return `<button class="project-page-card project-layout-${index%6} media-card-${mode}" type="button" data-feature-open="${p.id}" id="${p.id}">${media}<div class="project-page-copy"><span>${p.code} · ${p.category}</span><h3>${p.title}</h3><p>${p.summary}</p><div class="project-page-meta"><b>VIEW ENGINEERING CASE</b><i>→</i></div></div></button>`;
+    }
+    return `<button class="project-card project-layout-${index%5} media-card-${mode}" type="button" data-feature-open="${p.id}" id="${p.id}">${media}<div class="project-shade"></div><span class="project-label">${p.code}</span><div class="project-copy"><div><small>${p.category}</small><strong>${p.title}</strong></div><i>↗</i></div></button>`;
+  }
+  const homeProjects=$('[data-home-projects]');
+  if(homeProjects){
+    const selected=siteProjects.filter(p=>p.id!=='rod').slice(0,5);
+    homeProjects.innerHTML=selected.map((p,i)=>projectCard(p,false,i)).join('');
+  }
+  const projectGrid=$('[data-project-page-grid]');
+  if(projectGrid){projectGrid.innerHTML=siteProjects.map((p,i)=>projectCard(p,true,i)).join('');}
 
-// Homepage system index.
-const systemData={
-mechanical:{src:'media/legacy/spindle-interface.webp',k:'MACHINE / WORKHOLDING',t:'Mechanical architecture around the process',p:'Machine structure, spindle, workholding and fixture decisions are treated as one production system.',tags:['Machine architecture','Workholding','Fixtures']},
-controls:{src:'media/retrofit/jig-grinding.webp',k:'CNC / PLC / HMI',t:'Controls integrated to real machine behaviour',p:'CNC, PLC, HMI and servo systems are selected around motion, sequencing, interlocks and operator use.',tags:['CNC','PLC / HMI','Servo']},
-fluid:{src:'media/cases/air-leak-detail.webp',k:'HYDRAULIC / PNEUMATIC',t:'Fluid power engineered into the application',p:'Hydraulic and pneumatic systems support clamping, movement, testing and process control where the machine requires them.',tags:['Hydraulics','Pneumatics','Testing']},
-electrical:{src:'media/cases/jig-main.webp',k:'ELECTRICAL / RETROFIT',t:'Electrical systems built around maintainable machine function',p:'Panels, wiring, drives, controls and field devices are integrated back to machine performance and serviceability.',tags:['Control panels','Field wiring','Drives']},
-automation:{src:'media/legacy/centerless-conveyor.webp',k:'AUTOMATION / HANDLING',t:'Production flow beyond the cutting operation',p:'Feeding, unloading, indexing, conveyors and inspection are engineered as part of the wider production cell.',tags:['Feeding','Conveyors','Handling']},
-precision:{src:'media/legacy/wheel-balancing-unit.webp',k:'PRECISION / PROCESS',t:'Machine-tool knowledge closes the engineering loop',p:'Turning, machining and grinding knowledge connects machine condition, workholding, measurement and component requirements.',tags:['Grinding','Alignment','Process']}
-};
-$$('[data-system]').forEach(btn=>{const fn=()=>setSystem(btn.dataset.system);btn.addEventListener('mouseenter',fn);btn.addEventListener('focus',fn)});function setSystem(key){const d=systemData[key];if(!d)return;$$('[data-system]').forEach(b=>b.classList.toggle('is-active',b.dataset.system===key));const im=$('[data-system-image]');if(im){im.style.opacity=.15;setTimeout(()=>{im.src=d.src;im.alt=d.t;im.style.opacity=1},110)}$('[data-system-kicker]')&&($('[data-system-kicker]').textContent=d.k);$('[data-system-title]')&&($('[data-system-title]').textContent=d.t);$('[data-system-copy]')&&($('[data-system-copy]').textContent=d.p);const tags=$('[data-system-tags]');if(tags)tags.innerHTML=(d.tags||[]).map(x=>`<span>${x}</span>`).join('');}
+  // Archive sampler
+  $$('[data-sample]').forEach(btn=>{const act=()=>{const d=sampleData[btn.dataset.sample];if(!d)return;$$('[data-sample]').forEach(x=>x.classList.toggle('is-active',x===btn));const im=$('[data-sample-image]');im.style.opacity='.1';setTimeout(()=>{im.src=d.image;im.alt=d.alt;im.style.opacity='1'},100);$('[data-sample-label]').textContent=d.label;$('[data-sample-title]').textContent=d.title;};btn.addEventListener('mouseenter',act);btn.addEventListener('focus',act);btn.addEventListener('click',act);});
 
-// Process progression.
-if('IntersectionObserver'in window){const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');sio.unobserve(e.target)}}),{threshold:.3});const steps=$$('[data-process-step]'),bar=$('[data-process-progress]');if(steps.length){const pio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=steps.indexOf(e.target);steps.forEach((s,j)=>s.classList.toggle('is-active',j<=i));if(bar)bar.style.width=`${((i+1)/steps.length)*100}%`;}})},{rootMargin:'-30% 0px -50%',threshold:.15});steps.forEach(s=>pio.observe(s));}}
+  // Process progress
+  const processTrack=$('[data-process-track]');if(processTrack&&!reduced){const po=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const bar=$('[data-process-progress]',processTrack);let start=null;function step(ts){start??=ts;const p=Math.min(1,(ts-start)/1300);bar.style.width=`${p*100}%`;if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step);po.unobserve(processTrack)}),{threshold:.35});po.observe(processTrack)}
 
-// Lazy machine video only when close to viewport.
-$$('[data-lazy-video]').forEach(v=>{if(reduce)return;const vio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){v.querySelectorAll('source[data-src]').forEach(s=>s.src=s.dataset.src);v.load();v.play().catch(()=>{});vio.unobserve(v)}}),{rootMargin:'250px'});vio.observe(v)});
+  // Lazy videos
+  const lazyVideos=$$('[data-lazy-video]');if(lazyVideos.length){const vo=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const v=e.target;$$('source[data-src]',v).forEach(s=>{s.src=s.dataset.src;s.removeAttribute('data-src')});v.load();if(!reduced)v.play().catch(()=>{});vo.unobserve(v)}),{rootMargin:'250px'});lazyVideos.forEach(v=>vo.observe(v));}
 
-// Home archive preview.
-if($('[data-archive-preview]')){const ids=['spm07','spm12','spm20','spm09','rtf09','rtf11'];const box=$('[data-archive-preview]');box.innerHTML=ids.map(id=>{const m=machineArchive.find(x=>x.id===id);return `<button class="archive-preview-row" type="button" data-machine-open="${id}" data-archive-hover="${id}"><span>${idxLabel(m)}</span><strong>${m.title}</strong><small>${m.customer||m.control||cat[m.category]}</small><i>→</i></button>`}).join('');const show=m=>{if(!m)return;const frame=$('[data-archive-home-frame]');if(frame)frame.innerHTML=m.media?.length?`<img src="${m.media[0]}" alt="${m.title}" />`:placeholder(idxLabel(m));$('[data-archive-home-id]')&&($('[data-archive-home-id]').textContent=idxLabel(m));$('[data-archive-home-title]')&&($('[data-archive-home-title]').textContent=m.title);$('[data-archive-home-note]')&&($('[data-archive-home-note]').textContent=m.note);$$('[data-archive-hover]').forEach(r=>r.classList.toggle('is-active',r.dataset.archiveHover===m.id));};$$('[data-archive-hover]').forEach(r=>{const m=machineArchive.find(x=>x.id===r.dataset.archiveHover);r.addEventListener('mouseenter',()=>show(m));r.addEventListener('focus',()=>show(m));});show(machineArchive.find(x=>x.id===ids[0]));}
+  // Media manifest for gallery / archive. The generated archive manifest is preferred;
+  // the compact media manifest and built-in portfolio keep the review package self-contained.
+  let mediaManifestPromise=null;
+  function compactManifestToGroups(data){
+    if(!data?.images?.length)return null;
+    const groups=new Map();
+    const label=(source='')=>{
+      const parts=source.replace(/^assets-source\//,'').split('/');
+      return parts.length>1?parts.slice(0,-1).join('/'):'Engineering details';
+    };
+    data.images.forEach(item=>{
+      const key=label(item.source),id=key.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      if(!groups.has(id))groups.set(id,{id,title:key.split('/').pop().replace(/\b\w/g,c=>c.toUpperCase()),category:'VSK Engineering',items:[]});
+      groups.get(id).items.push({type:'image',src:item.output,thumb:item.output,source:item.source,width:item.dimensions?.[0],height:item.dimensions?.[1],caption:'Project view'});
+    });
+    return {summary:{groups:groups.size,images:data.images.length,videos:0},groups:[...groups.values()]};
+  }
+  function getMediaManifest(){
+    if(!mediaManifestPromise)mediaManifestPromise=fetch('media/archive-manifest.json',{cache:'no-store'})
+      .then(r=>{if(!r.ok)throw new Error('full manifest unavailable');return r.json()})
+      .catch(()=>fetch('media/media-manifest.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(compactManifestToGroups))
+      .then(m=>m?.groups?.length?m:galleryFallback)
+      .catch(()=>galleryFallback);
+    return mediaManifestPromise;
+  }
 
-// Engineering Archive page.
-let state={type:'all',category:'all',control:'all',query:'',media:false,view:'visual'};let currentMatches=[...machineArchive];
-const visual=$('[data-archive-visual]'),indexWrap=$('[data-archive-index]'),indexList=$('[data-index-list]');
-const controlMatch=(m,k)=>{if(k==='all')return true;const t=searchText(m);if(k==='plc')return /plc|hmi/.test(t);if(k==='servo')return /servo/.test(t);if(k==='vfd')return /vfd/.test(t);return t.includes(k)};
-const matches=()=>machineArchive.filter(m=>(state.type==='all'||m.type===state.type)&&(state.category==='all'||m.category===state.category)&&controlMatch(m,state.control)&&(!state.media||m.media?.length)&&(!state.query||searchText(m).includes(state.query)));
-const archiveCard=m=>`<button class="archive-card" type="button" data-machine-open="${m.id}"><figure>${m.media?.length?`<img src="${m.media[0]}" alt="${m.title}" loading="lazy" />`:placeholder(idxLabel(m))}</figure><div class="archive-card-body"><div class="archive-card-id"><span>${idxLabel(m)}</span><small>${archiveTypeName[m.type]}</small></div><h3>${m.title}</h3><p>${m.note}</p><footer><span>${m.customer||m.control||cat[m.category]}</span><i>Open dossier ↗</i></footer></div></button>`;
-const indexRow=m=>`<button class="index-row" type="button" data-index-id="${m.id}" data-machine-open="${m.id}"><span>${idxLabel(m)}</span><strong>${m.title}</strong><small>${m.customer||m.control||cat[m.category]}</small><i>→</i></button>`;
-function renderArchive(){if(!visual)return;currentMatches=matches();visual.innerHTML=currentMatches.map(archiveCard).join('')||'<p>No matching reference. Try another filter.</p>';indexList.innerHTML=currentMatches.map(indexRow).join('')||'<p>No matching reference.</p>';$('[data-results-count]').textContent=`${currentMatches.length} reference${currentMatches.length===1?'':'s'}`;$('[data-results-summary]').textContent=`${currentMatches.filter(m=>m.type==='spm').length} custom / SPM · ${currentMatches.filter(m=>m.type==='retrofit').length} retrofit · ${currentMatches.filter(m=>m.media?.length).length} photo documented`;wireOpeners();wireIndexHover();}
-function updateButtons(){$$('[data-type-filter]').forEach(b=>{const on=b.dataset.typeFilter===state.type;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on))});$$('[data-category]').forEach(b=>b.classList.toggle('is-active',b.dataset.category===state.category));$$('[data-control]').forEach(b=>b.classList.toggle('is-active',b.dataset.control===state.control));const mb=$('[data-media-filter]');if(mb){mb.classList.toggle('is-active',state.media);mb.setAttribute('aria-pressed',String(state.media))}}
-$$('[data-type-filter]').forEach(b=>b.addEventListener('click',()=>{state.type=b.dataset.typeFilter;updateButtons();renderArchive()}));$$('[data-category]').forEach(b=>b.addEventListener('click',()=>{state.category=b.dataset.category;updateButtons();renderArchive()}));$$('[data-control]').forEach(b=>b.addEventListener('click',()=>{state.control=b.dataset.control;updateButtons();renderArchive()}));$('[data-media-filter]')?.addEventListener('click',()=>{state.media=!state.media;updateButtons();renderArchive()});$('[data-archive-search]')?.addEventListener('input',e=>{state.query=e.target.value.trim().toLowerCase();renderArchive()});
-$$('[data-view]').forEach(b=>b.addEventListener('click',()=>{state.view=b.dataset.view;$$('[data-view]').forEach(x=>x.classList.toggle('is-active',x===b));visual.hidden=state.view!=='visual';indexWrap.hidden=state.view!=='index';if(state.view==='index'&&currentMatches[0])showIndexPreview(currentMatches[0]);}));
-function showIndexPreview(m){if(!m)return;$$('[data-index-id]').forEach(r=>r.classList.toggle('is-active',r.dataset.indexId===m.id));const media=$('[data-index-preview-media]');media.innerHTML=m.media?.length?`<img src="${m.media[0]}" alt="${m.title}" />`:placeholder(idxLabel(m));$('[data-index-preview-id]').textContent=idxLabel(m);$('[data-index-preview-title]').textContent=m.title;$('[data-index-preview-note]').textContent=m.note;}
-function wireIndexHover(){$$('[data-index-id]').forEach(r=>{const m=machineArchive.find(x=>x.id===r.dataset.indexId);r.addEventListener('mouseenter',()=>showIndexPreview(m));r.addEventListener('focus',()=>showIndexPreview(m));})}
-if(page==='machines'){const params=new URLSearchParams(location.search);if(params.get('type'))state.type=params.get('type');if(params.get('q')){state.query=params.get('q').toLowerCase();$('[data-archive-search]').value=params.get('q')}updateButtons();renderArchive();}
+  // Visual Archive: every reference carries a real VSK image.
+  // Exact project folders are used when identified; otherwise photographs rotate through
+  // the closest VSK capability area without claiming an unverified project attribution.
+  let archiveGroupItems={},archiveCategoryPools={};
+  const archiveExactGroups={
+    spm07:'vertical-turning-cnc-machine',spm09:'rod-boring-machine',
+    spm11:'4-servo-seal-slotting-machine',spm12:'4-servo-seal-slotting-machine',spm13:'4-servo-seal-slotting-machine',spm14:'4-servo-seal-slotting-machine',
+    spm20:'air-leak-testing-machine',spm27:'epoxy-painting-machine-eor-washer',spm35:'paint-aggitating-machine',
+    rtf09:'retrofitted-machine-jig-grinding-machine',rtf11:'retrofitted-machine-kelingberg-od-grinding-machine'
+  };
+  const fallbackPools={
+    handling:['media/legacy/centerless-conveyor.webp','media/projects/u-drill.webp','media/cases/slotting-main.webp','media/legacy/enclosed-machine.webp'],
+    turning:['media/projects/vertical-turning.webp','media/projects/rod-boring.webp','media/legacy/metal-facing-machine.webp','media/legacy/table-top-lathe.webp','media/legacy/spindle-interface.webp'],
+    pressing:['media/legacy/enclosed-machine.webp','media/legacy/spindle-interface.webp','media/cases/air-leak-detail.webp','media/projects/paint-agitating.webp'],
+    cutting:['media/projects/z-cut.webp','media/projects/u-drill.webp','media/cases/slotting-main.webp','media/cases/slotting-detail.webp'],
+    testing:['media/cases/air-leak-main.webp','media/cases/air-leak-detail.webp','media/projects/air-leak.webp'],
+    finishing:['media/legacy/paint-agitating-machine.webp','media/motion/electric-oven.webp','media/legacy/metal-facing-machine.webp','media/projects/paint-agitating.webp'],
+    controls:['media/retrofit/jig-grinding.webp','media/motion/kellenberg-still.webp','media/cases/jig-main.webp','media/legacy/spindle-interface.webp'],
+    grinding:['media/retrofit/kellenberg.webp','media/retrofit/jig-grinding.webp','media/legacy/wheel-balancing-unit.webp','media/motion/kellenberg-still.webp']
+  };
+  const groupCategoryHints={
+    'vertical-turning-cnc-machine':['turning'],'rod-boring-machine':['turning'],
+    'u-drill-machine':['cutting','handling'],'single-spindle-u-drill-machine':['cutting','handling'],
+    '4-servo-seal-slotting-machine':['cutting','handling'],'air-leak-testing-machine':['testing'],
+    'z-cut-machine':['cutting'],'epoxy-painting-machine-eor-washer':['finishing'],
+    'laptop-panel-painting-mc':['finishing'],'paint-aggitating-machine':['finishing'],
+    'electric-oven':['finishing'],'retrofitted-machine-jig-grinding-machine':['grinding','controls'],
+    'retrofitted-machine-kelingberg-od-grinding-machine':['grinding','controls']
+  };
+  function itemSrc(item){return item?.thumb||item?.poster||item?.src||item?.src_mp4||''}
+  function archiveManifestCover(m){
+    const gid=archiveExactGroups[m.id],items=gid?archiveGroupItems[gid]:null;
+    if(!items?.length)return '';
+    const n=parseInt(m.id.slice(3),10)||0;
+    return itemSrc(items[n%items.length]);
+  }
+  function archiveImageFor(m){
+    if(m.media?.length)return m.media[0];
+    const exact=archiveManifestCover(m);if(exact)return exact;
+    const pool=archiveCategoryPools[m.category]?.length?archiveCategoryPools[m.category]:fallbackPools[m.category]||fallbackPools.controls;
+    const n=parseInt(m.id.slice(3),10)||0,typeOffset=m.type==='retrofit'?11:0;
+    const item=pool[(n+typeOffset)%pool.length];
+    return typeof item==='string'?item:itemSrc(item);
+  }
+  function archiveImageIsExact(m){return !!(m.media?.length||archiveManifestCover(m))}
 
-// Dossier system with previous / next, keyboard arrows and focus management.
-const dossier=$('[data-dossier]');let activeId='',activeMode='feature',activeList=[];let lastFocus=null;
-function mediaHtml(d,id){if(d.media?.length){const figs=d.media.map((src,i)=>`<figure><img src="${src}" alt="${d.title} — project view ${i+1}" /></figure>`).join('');const vid=d.video?`<figure><video controls muted playsinline preload="metadata"><source src="${d.video}" type="video/webm"></video></figure>`:'';return figs+vid;}return placeholder(id||'ARCHIVE');}
-function normalizeMachine(m){if(m.featureId&&featureData[m.featureId])return {...featureData[m.featureId],archiveId:m.id,id:m.featureId,displayId:idxLabel(m),archive:m};return {...m,id:m.id,displayId:idxLabel(m),summary:m.note,facts:[['Archive type',archiveTypeName[m.type]],['Application',cat[m.category]],m.customer?['Customer reference',m.customer]:m.control?['Control / system',m.control]:['Source','VSK machine archive']],sections:[['Archive reference','Source description',m.note],['Information policy','What is shown','Only information supported by the supplied VSK source material is shown. Additional project specifications can be added when VSK confirms them.']]};}
-function normalizeFeature(id){const d=featureData[id];return d?{...d,id,displayId:d.index||'DOCUMENTED PROJECT'}:null;}
-function fillDossier(d){$('[data-dossier-kicker]').textContent=d.type||'ENGINEERING REFERENCE';$('[data-dossier-id]').textContent=d.displayId||d.index||'';$('[data-dossier-title]').textContent=d.title;$('[data-dossier-summary]').textContent=d.summary||d.note||'';$('[data-dossier-media]').innerHTML=mediaHtml(d,d.displayId);const facts=d.facts||[];$('[data-dossier-facts]').innerHTML=facts.map(([k,v])=>`<div class="dossier-fact"><span>${k}</span><strong>${v}</strong></div>`).join('');const sections=d.sections||[];$('[data-dossier-sections]').innerHTML=sections.map(s=>{const [label,a,b]=s;return b!==undefined?`<section class="dossier-section"><span>${label}</span><div><h3>${a}</h3><p>${b}</p></div></section>`:`<section class="dossier-section"><span>${label}</span><div><p>${a}</p></div></section>`}).join('');const i=activeList.indexOf(activeId);$('[data-dossier-position]').textContent=i>=0?`${String(i+1).padStart(2,'0')} / ${String(activeList.length).padStart(2,'0')}`:'';$('[data-dossier-media]').scrollTop=0;$('.dossier-panel').scrollTop=0;}
-function openDossier(id,mode='feature'){lastFocus=document.activeElement;activeMode=mode;if(mode==='machine'){const m=machineArchive.find(x=>x.id===id);if(!m)return;activeId=id;activeList=(page==='machines'?currentMatches:machineArchive).map(x=>x.id);fillDossier(normalizeMachine(m));}else{if(!featureData[id])return;activeId=id;activeList=projectOrder.filter(x=>featureData[x]);fillDossier(normalizeFeature(id));}dossier.hidden=false;dossier.setAttribute('aria-hidden','false');document.body.classList.add('is-locked');setTimeout(()=>$('.dossier-panel')?.focus(),0);}
-function closeDossier(){dossier.hidden=true;dossier.setAttribute('aria-hidden','true');document.body.classList.remove('is-locked');lastFocus?.focus?.()}
-function stepDossier(dir){if(!activeList.length)return;let i=activeList.indexOf(activeId);i=(i+dir+activeList.length)%activeList.length;openDossier(activeList[i],activeMode);}
-function wireOpeners(){$$('[data-machine-open]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.addEventListener('click',()=>openDossier(b.dataset.machineOpen,'machine'))});$$('[data-feature-open]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.addEventListener('click',()=>openDossier(b.dataset.featureOpen,'feature'))});}
-wireOpeners();$$('[data-dossier-close]').forEach(b=>b.addEventListener('click',closeDossier));$$('[data-dossier-next]').forEach(b=>b.addEventListener('click',()=>stepDossier(1)));$('[data-dossier-prev]')?.addEventListener('click',()=>stepDossier(-1));
+  // Additional source folders on projects page
+  if($('[data-additional-projects]')){getMediaManifest().then(man=>{const represented=new Set(['slotting-machine','4-servo-seal-slotting-machine','air-leak-testing','air-leak-testing-machine','rod-boring','rod-boring-machine','vertical-turning','vertical-turning-cnc-machine','z-cut','z-cut-machine','u-drill','u-drill-machine','paint-agitating','paint-aggitating-machine','jig-grinding','hauser-jig-grinding','kellenberg','kellenberg-od-grinding-machine','electric-oven']);const groups=(man.groups||[]).filter(g=>!represented.has(g.id)&&g.items?.length);if(!groups.length)return;const section=$('[data-additional-projects-section]');section.hidden=false;const root=$('[data-additional-projects]');root.innerHTML=groups.slice(0,12).map(g=>{const first=g.items.find(i=>i.type==='image')||g.items[0];const thumb=first.thumb||first.poster||first.src;return `<a class="additional-project-card" href="gallery.html?group=${encodeURIComponent(g.id)}"><img src="${thumb}" alt="${g.title}" loading="lazy"><div><span>${g.category||'ENGINEERING PROJECT'} · ${g.items.length} MEDIA</span><strong>${g.title}</strong></div></a>`}).join('');});}
 
-// Quote flow + file drop.
-const quote=$('[data-quote-panel]'),form=$('[data-quote-form]');let quoteStep=1,quoteType='',quoteFile=null,quoteText='';
-function setQuoteStep(n){quoteStep=Math.max(1,Math.min(4,n));$$('[data-step]',quote).forEach(s=>s.classList.toggle('is-active',Number(s.dataset.step)===quoteStep));$$('.step-dots i',quote).forEach((d,i)=>d.classList.toggle('is-active',i<quoteStep));$('[data-quote-count]').textContent=`0${quoteStep} / 04`;}
-function openQuote(){quote.hidden=false;quote.setAttribute('aria-hidden','false');document.body.classList.add('is-locked');$('[data-quote-success]').hidden=true;form.hidden=false;setQuoteStep(1);setTimeout(()=>$('.quote-shell')?.focus(),0)}function closeQuote(){quote.hidden=true;quote.setAttribute('aria-hidden','true');document.body.classList.remove('is-locked')}
-$$('[data-quote-open]').forEach(b=>b.addEventListener('click',openQuote));$$('[data-quote-close]').forEach(b=>b.addEventListener('click',closeQuote));$$('[data-type]',quote).forEach(b=>b.addEventListener('click',()=>{quoteType=b.dataset.type;setQuoteStep(2)}));$$('[data-quote-next]',quote).forEach(b=>b.addEventListener('click',()=>{if(quoteStep===2&&String(form.elements.requirement.value||'').trim().length<12){form.elements.requirement.focus();return}setQuoteStep(quoteStep+1)}));$$('[data-quote-prev]',quote).forEach(b=>b.addEventListener('click',()=>setQuoteStep(quoteStep-1)));
-const fileInput=$('[data-quote-file]'),drop=$('[data-file-drop]');function setFile(f){quoteFile=f||null;$('[data-file-text]').textContent=f?f.name:'No file selected'}fileInput?.addEventListener('change',e=>setFile(e.target.files?.[0]));['dragenter','dragover'].forEach(ev=>drop?.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('is-dragging')}));['dragleave','drop'].forEach(ev=>drop?.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('is-dragging')}));drop?.addEventListener('drop',e=>{const f=e.dataTransfer.files?.[0];if(f)setFile(f)});drop?.addEventListener('click',()=>fileInput?.click());
-form?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(form),name=String(fd.get('name')||'').trim(),email=String(fd.get('email')||'').trim(),phone=String(fd.get('phone')||'').replace(/\D/g,''),msg=String(fd.get('requirement')||'').trim(),company=String(fd.get('company')||'').trim();let err='';if(!name)err='Please enter your name.';else if(!/^\S+@\S+\.\S+$/.test(email))err='Please enter a valid email address.';else if(phone.length!==10)err='Please enter a 10-digit phone number.';$('[data-form-error]').textContent=err;if(err)return;quoteText=`Requirement type: ${quoteType||'General'}\nName: ${name}\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\nDrawing/spec selected: ${quoteFile?.name||'None selected'}\n\nRequirement:\n${msg}`;const mail=`mailto:vsk.electromech@gmail.com?subject=${encodeURIComponent(`VSK Engineering Requirement — ${quoteType||'General'}`)}&body=${encodeURIComponent(quoteText+'\n\nPreview note: please attach the selected local file manually.')}`;$('[data-mail-link]').href=mail;form.querySelectorAll('.quote-step').forEach(s=>s.classList.remove('is-active'));$('[data-quote-success]').hidden=false;});$('[data-copy-enquiry]')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(quoteText);$('[data-copy-enquiry]').textContent='Copied ✓'}catch{}});
+  // Dossier
+  const dossier=$('[data-dossier]');let dossierSequence=[],dossierIndex=0;
+  function codeFromMachine(m){const n=m.id.slice(3).padStart(2,'0');return `${m.type==='retrofit'?'RTF':'SPM'} / ${n}`}
+  function genericFeature(m){
+    const exact=archiveImageIsExact(m);
+    return {
+      title:m.title,type:archiveTypeName[m.type],index:codeFromMachine(m),
+      summary:m.note||`${m.title} forms part of VSK’s machine-building and retrofit experience.`,
+      media:[archiveImageFor(m)],
+      facts:[['Reference',codeFromMachine(m)],['Application',categoryNames[m.category]||m.category],...(m.customer?[['Customer',m.customer]]:[]),...(m.control?[['Control',m.control]]:[])],
+      sections:[
+        ['Engineering scope',m.note||`Relevant experience across ${categoryNames[m.category]||m.category} applications.`],
+        ['Machine view',exact?'The visual shown belongs to this recorded project or machine family.':'The visual is from related VSK work in the same engineering capability area.']
+      ]
+    }
+  }
+  function mediaMode(src){
+    const low=(src||'').toLowerCase();
+    if(low.includes('slotting')||low.includes('air-leak'))return 'technical';
+    if(low.includes('z-cut')||low.includes('vertical-turning')||low.includes('jig-grinding')||low.includes('paint-agitating'))return 'portrait';
+    return 'photo';
+  }
+  function findFeature(id){if(featureData[id])return featureData[id];const m=machineArchive.find(x=>x.id===id);if(m?.featureId&&featureData[m.featureId])return {...featureData[m.featureId],index:codeFromMachine(m)};return m?genericFeature(m):null}
+  function renderDossier(id){
+    const d=findFeature(id);if(!d||!dossier)return;
+    const pos=dossierSequence.indexOf(id);dossierIndex=pos>=0?pos:0;
+    $('[data-dossier-kicker]',dossier).textContent=d.type||'ENGINEERING REFERENCE';
+    $('[data-dossier-id]',dossier).textContent=d.index||'VSK PROJECT';
+    $('[data-dossier-title]',dossier).textContent=d.title;
+    $('[data-dossier-summary]',dossier).textContent=d.summary||'';
+    $('[data-dossier-position]',dossier).textContent=dossierSequence.length?`${dossierIndex+1} / ${dossierSequence.length}`:'';
+    $('[data-dossier-facts]',dossier).innerHTML=(d.facts||[]).map(([a,b])=>`<div><span>${a}</span><strong>${b}</strong></div>`).join('');
+    $('[data-dossier-sections]',dossier).innerHTML=(d.sections||[]).map(([h,p])=>`<article><h3>${h}</h3><p>${p}</p></article>`).join('');
+    const media=$('[data-dossier-media]',dossier);let html='';
+    (d.media||[]).forEach((src,i)=>{const mode=mediaMode(src);html+=`<figure class="dossier-media-item media-mode-${mode}"><img src="${src}" alt="${d.title}${i?` — project view ${i+1}`:''}" loading="${i?'lazy':'eager'}"></figure>`});
+    if(d.video && !d.video.includes('electric-oven'))html+=`<figure class="dossier-media-item dossier-video"><video controls muted playsinline poster="${(d.media||[])[0]||''}"><source src="${d.video}" type="video/webm"></video></figure>`;
+    if(!html)html=`<figure class="dossier-media-item media-mode-photo"><img src="media/legacy/enclosed-machine.webp" alt="VSK engineering work" loading="eager"></figure>`;
+    media.innerHTML=html;
+  }
+  function openDossier(id,sequence){if(!dossier)return;dossierSequence=sequence?.length?sequence:[id];renderDossier(id);lastFocus=document.activeElement;dossier.hidden=false;dossier.setAttribute('aria-hidden','false');activeDialog='dossier';lockBody(true);$('.dossier-panel',dossier)?.focus()}
+  function closeDossier(){if(!dossier)return;dossier.setAttribute('aria-hidden','true');dossier.hidden=true;activeDialog=null;lockBody(false);lastFocus?.focus?.()}
+  function moveDossier(dir){if(!dossierSequence.length)return;dossierIndex=(dossierIndex+dir+dossierSequence.length)%dossierSequence.length;renderDossier(dossierSequence[dossierIndex])}
+  document.addEventListener('click',e=>{const t=e.target.closest('[data-feature-open]');if(t){const id=t.dataset.featureOpen;const seq=page==='projects'?siteProjects.map(p=>p.id):siteProjects.map(p=>p.id);openDossier(id,seq)}});$$('[data-dossier-close]').forEach(b=>b.addEventListener('click',closeDossier));$$('[data-dossier-prev]').forEach(b=>b.addEventListener('click',()=>moveDossier(-1)));$$('[data-dossier-next]').forEach(b=>b.addEventListener('click',()=>moveDossier(1)));
 
-// Basic focus trap for open dialogs.
-function trap(e,root){if(e.key!=='Tab')return;const f=$$('button,a,input,textarea,[tabindex]:not([tabindex="-1"])',root).filter(x=>!x.disabled&&!x.hidden);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
-document.addEventListener('keydown',e=>{if(!dossier?.hidden){if(e.key==='Escape')closeDossier();else if(e.key==='ArrowRight')stepDossier(1);else if(e.key==='ArrowLeft')stepDossier(-1);else trap(e,dossier);return}if(!quote?.hidden){if(e.key==='Escape')closeQuote();else trap(e,quote);return}if(e.key==='Escape'&&nav?.classList.contains('is-open')){nav.classList.remove('is-open');document.body.classList.remove('nav-open');menu?.setAttribute('aria-expanded','false')}});
+  // Archive browser
+  if(page==='machines')initArchive();
+  function initArchive(){let mode='index',type='all',query='',cat='',tech='';let current=[];const url=new URL(location.href);query=url.searchParams.get('q')||'';type=url.searchParams.get('type')||'all';const search=$('[data-archive-search]');if(search)search.value=query;$$('[data-type-filter]').forEach(b=>b.classList.toggle('is-active',b.dataset.typeFilter===type));
+    const catRoot=$('[data-category-filters]');catRoot.innerHTML=Object.entries(categoryNames).map(([k,v])=>`<button type="button" data-category-filter="${k}">${v}</button>`).join('');
+    function matches(m){const text=[m.title,m.customer,m.control,m.note,categoryNames[m.category]].filter(Boolean).join(' ').toLowerCase();const techText=[m.title,m.control,m.note].filter(Boolean).join(' ').toLowerCase();return(type==='all'||m.type===type)&&(!query||text.includes(query.toLowerCase()))&&(!cat||m.category===cat)&&(!tech||techText.includes(tech));}
+    function draw(){current=machineArchive.filter(matches);const result=$('[data-result-count]');result.textContent=`${current.length} reference${current.length===1?'':'s'}`;const empty=$('[data-archive-empty]');empty.hidden=current.length>0;const index=$('[data-archive-index]');const visual=$('[data-archive-visual-view]');
+      index.innerHTML=current.map((m,i)=>`<button class="archive-row${i===0?' is-active':''}" type="button" data-machine-id="${m.id}"><span>${codeFromMachine(m)}</span><strong>${m.title}</strong><small>${m.customer||m.control||categoryNames[m.category]||''}</small><i>→</i></button>`).join('');
+      const vm=current;visual.innerHTML=vm.map(m=>`<button class="archive-visual-card" type="button" data-machine-open="${m.id}"><div class="archive-visual-media media-mode-${mediaMode(archiveImageFor(m))}"><img src="${archiveImageFor(m)}" alt="${m.title}" loading="lazy"></div><div><span>${codeFromMachine(m)} · ${categoryNames[m.category]||''}</span><strong>${m.title}</strong><small>${m.customer||m.control||archiveTypeName[m.type]}</small></div></button>`).join('');$('[data-visual-count]').textContent=machineArchive.length;
+      const active=[];if(type!=='all')active.push(type==='spm'?'Custom / SPM':'Retrofit');if(cat)active.push(categoryNames[cat]);if(tech)active.push(tech.toUpperCase());if(query)active.push(`“${query}”`);const activeEl=$('[data-active-filters]');if(activeEl)activeEl.textContent=active.length?active.join(' · '):'All applications · All technologies';
+      if(current[0])updatePreview(current[0]);$$('[data-machine-id]').forEach(btn=>{const m=machineArchive.find(x=>x.id===btn.dataset.machineId);const act=()=>{$$('[data-machine-id]').forEach(x=>x.classList.toggle('is-active',x===btn));updatePreview(m)};btn.addEventListener('mouseenter',act);btn.addEventListener('focus',act);btn.addEventListener('click',()=>openDossier(m.featureId||m.id,current.map(x=>x.featureId||x.id)))});$$('[data-machine-open]').forEach(btn=>btn.addEventListener('click',()=>{const m=machineArchive.find(x=>x.id===btn.dataset.machineOpen);openDossier(m.featureId||m.id,current.map(x=>x.featureId||x.id))}));
+    }
+    function updatePreview(m){
+      const box=$('[data-archive-preview-media]');
+      box.className=`archive-preview-media media-mode-${mediaMode(archiveImageFor(m))}`;box.innerHTML=`<img src="${archiveImageFor(m)}" alt="${m.title}">`;
+      $('[data-archive-preview-code]').textContent=`${codeFromMachine(m)} · ${(categoryNames[m.category]||'').toUpperCase()}`;
+      $('[data-archive-preview-title]').textContent=m.title;
+      const context=archiveImageIsExact(m)?'Project-specific machine view.':'Related VSK engineering work from the same capability is shown for context.';
+      $('[data-archive-preview-copy]').textContent=`${m.note||`${m.title} within VSK’s engineering experience.`} ${context}`;
+      const open=$('[data-archive-preview-open]');open.onclick=()=>openDossier(m.featureId||m.id,current.map(x=>x.featureId||x.id));
+    }
+    function setMode(next){mode=next;$$('[data-archive-mode]').forEach(b=>b.classList.toggle('is-active',b.dataset.archiveMode===mode));$('[data-archive-index-view]').hidden=mode!=='index';$('[data-archive-visual-view]').hidden=mode!=='visual';}
+    $$('[data-archive-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.archiveMode)));$$('[data-type-filter]').forEach(b=>b.addEventListener('click',()=>{type=b.dataset.typeFilter;$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x===b));draw()}));search?.addEventListener('input',()=>{query=search.value.trim();draw()});catRoot.addEventListener('click',e=>{const b=e.target.closest('[data-category-filter]');if(!b)return;cat=cat===b.dataset.categoryFilter?'':b.dataset.categoryFilter;$$('[data-category-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.categoryFilter===cat));draw()});$$('[data-tech-filter]').forEach(b=>b.addEventListener('click',()=>{tech=tech===b.dataset.techFilter?'':b.dataset.techFilter;$$('[data-tech-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.techFilter===tech));draw()}));const panel=$('[data-filter-panel]');$('[data-filter-toggle]')?.addEventListener('click',()=>{panel.hidden=!panel.hidden});$$('[data-clear-filters]').forEach(b=>b.addEventListener('click',()=>{type='all';query=cat=tech='';search.value='';$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.typeFilter==='all'));$$('[data-category-filter],[data-tech-filter]').forEach(x=>x.classList.remove('is-active'));draw()}));draw();setMode('index');getMediaManifest().then(man=>{
+      archiveGroupItems={};archiveCategoryPools={};
+      (man.groups||[]).forEach(g=>{
+        const images=(g.items||[]).filter(i=>i.type==='image');
+        if(images.length)archiveGroupItems[g.id]=images;
+        (groupCategoryHints[g.id]||[]).forEach(cat=>{
+          archiveCategoryPools[cat]??=[];
+          archiveCategoryPools[cat].push(...images);
+        });
+      });
+      draw();
+    });
+  }
+
+  // Gallery — render immediately from packaged media, then enhance from the full manifest.
+  if(page==='gallery')initGallery();
+  function initGallery(){
+    let manifest=galleryFallback,filter='all',flat=[];
+    const root=$('[data-gallery-grid]'),list=$('[data-gallery-filter-list]'),lightbox=$('[data-lightbox]');
+    let li=0;
+    if(!root)return;
+
+    function mediaClass(it){
+      const w=Number(it.width||0),h=Number(it.height||0),low=`${it.source||''} ${it.caption||''} ${it.groupId||''}`.toLowerCase();
+      if(low.includes('dimension')||low.includes('slotting')||low.includes('air-leak')||low.includes('fixture section'))return 'is-technical';
+      if(h&&w&&h/w>1.28)return 'is-portrait';
+      return 'is-photo';
+    }
+    function mediaThumb(it,index){
+      const thumb=it.thumb||it.poster||it.src,cls=mediaClass(it),kind=it.type==='video'?'VIDEO':cls==='is-technical'?'TECHNICAL':'PHOTO';
+      const media=it.type==='video'
+        ? `<img src="${thumb}" alt="${it.groupTitle} — ${it.caption||'machine video'}" loading="lazy"><span class="gallery-video-badge">PLAY ▶</span>`
+        : `<img src="${thumb}" alt="${it.groupTitle} — ${it.caption||'project image'}" loading="lazy">`;
+      return `<button class="gallery-tile ${cls}" type="button" data-gallery-item="${index}">${media}<span class="gallery-kind">${kind}</span><span class="gallery-tile-caption"><b>${String((it.index??0)+1).padStart(2,'0')}</b>${it.caption||'Project view'}<i>↗</i></span></button>`;
+    }
+    function summary(){
+      const groups=manifest.groups||[],sum=manifest.summary||{};
+      const images=sum.images||groups.reduce((n,g)=>n+(g.items||[]).filter(i=>i.type==='image').length,0);
+      const videos=sum.videos||groups.reduce((n,g)=>n+(g.items||[]).filter(i=>i.type==='video').length,0);
+      const gc=sum.groups||groups.length;
+      const g=$('[data-gallery-group-count]'),im=$('[data-gallery-image-count]'),v=$('[data-gallery-video-count]');
+      if(g)g.textContent=`${gc} project groups`;if(im)im.textContent=`${images} images`;if(v)v.textContent=`${videos} video${videos===1?'':'s'}`;
+    }
+    function buildFilters(){
+      if(!list)return;
+      list.innerHTML=(manifest.groups||[]).map(g=>`<button type="button" data-gallery-filter="${g.id}">${g.title} <b>${g.items.length}</b></button>`).join('');
+      $$('[data-gallery-filter]',list).forEach(b=>b.classList.toggle('is-active',b.dataset.galleryFilter===filter));
+    }
+    function setFilter(f){
+      filter=f;
+      $$('[data-gallery-filter]').forEach(b=>b.classList.toggle('is-active',b.dataset.galleryFilter===filter));
+      render();
+      try{history.replaceState(null,'',filter==='all'?'gallery.html':`gallery.html?group=${encodeURIComponent(filter)}`)}catch(_){}
+    }
+    function render(){
+      const allGroups=manifest.groups||[];
+      const groups=filter==='all'?allGroups:allGroups.filter(g=>g.id===filter);
+      flat=[];
+      groups.forEach(g=>(g.items||[]).forEach((item,i)=>flat.push({...item,groupId:g.id,groupTitle:g.title,category:g.category||'Engineering project',index:i})));
+      const status=$('[data-gallery-status]');if(status)status.textContent=`${flat.length} media item${flat.length===1?'':'s'} · ${groups.length} project group${groups.length===1?'':'s'}`;
+      let flatIndex=0;
+      root.innerHTML=groups.map((g,groupIndex)=>{
+        const items=(g.items||[]).map((item,i)=>({...item,groupId:g.id,groupTitle:g.title,category:g.category||'Engineering project',index:i}));
+        const tiles=items.map(it=>mediaThumb(it,flatIndex++)).join('');
+        return `<section class="gallery-project-group ${groupIndex===0?'is-featured':''}"><header><div><span>${String(groupIndex+1).padStart(2,'0')} · ${g.category||'ENGINEERING PROJECT'}</span><h3>${g.title}</h3></div><strong>${items.length} MEDIA</strong></header><div class="gallery-project-media">${tiles}</div></section>`;
+      }).join('');
+      $$('[data-gallery-item]',root).forEach(b=>b.addEventListener('click',()=>openLightbox(Number(b.dataset.galleryItem))));
+    }
+    function openLightbox(i){if(!lightbox||!flat[i])return;li=i;renderLightbox();lastFocus=document.activeElement;lightbox.hidden=false;lightbox.setAttribute('aria-hidden','false');activeDialog='lightbox';lockBody(true);$('.lightbox-panel')?.focus()}
+    function renderLightbox(){
+      const it=flat[li];if(!it)return;
+      $('[data-lightbox-group]').textContent=it.groupTitle;$('[data-lightbox-count]').textContent=`${li+1} / ${flat.length}`;$('[data-lightbox-title]').textContent=it.caption||it.groupTitle;$('[data-lightbox-caption]').textContent=`${it.category} · ${it.groupTitle}`;
+      const box=$('[data-lightbox-media]');
+      if(it.type==='video')box.innerHTML=`<video controls autoplay muted playsinline poster="${it.poster||it.thumb||''}">${it.src_webm?`<source src="${it.src_webm}" type="video/webm">`:''}${it.src_mp4?`<source src="${it.src_mp4}" type="video/mp4">`:''}</video>`;
+      else box.innerHTML=`<img src="${it.src}" alt="${it.groupTitle} — ${it.caption||'project image'}">`;
+    }
+    function closeLightbox(){if(!lightbox)return;lightbox.setAttribute('aria-hidden','true');lightbox.hidden=true;activeDialog=null;lockBody(false);lastFocus?.focus?.()}
+    function move(n){if(!flat.length)return;li=(li+n+flat.length)%flat.length;renderLightbox()}
+
+    const requested=(()=>{try{return new URL(location.href).searchParams.get('group')}catch(_){return null}})();
+    if(requested&&(manifest.groups||[]).some(g=>g.id===requested))filter=requested;
+    summary();buildFilters();render();
+    list?.addEventListener('click',e=>{const b=e.target.closest('[data-gallery-filter]');if(b)setFilter(b.dataset.galleryFilter)});
+    $('.gallery-filter')?.addEventListener('click',()=>setFilter('all'));
+    $$('[data-lightbox-close]').forEach(b=>b.addEventListener('click',closeLightbox));
+    $('[data-lightbox-prev]')?.addEventListener('click',()=>move(-1));$('[data-lightbox-next]')?.addEventListener('click',()=>move(1));
+    if(lightbox){lightbox._move=move;lightbox._close=closeLightbox;}
+
+    // Upgrade with the full generated archive when available. The fallback above always remains usable.
+    getMediaManifest().then(m=>{
+      if(!m?.groups?.length)return;
+      manifest=m;
+      if(filter!=='all'&&!manifest.groups.some(g=>g.id===filter))filter='all';
+      summary();buildFilters();render();
+    }).catch(()=>{});
+  }
+
+  // Quote workflow
+  const quote=$('[data-quote-panel]');let qStep=1,qType='';
+  function showQStep(n){qStep=n;$$('[data-step]',quote).forEach(s=>s.classList.toggle('is-active',Number(s.dataset.step)===n));$$('.quote-progress i',quote).forEach((d,i)=>d.classList.toggle('is-active',i<n));$('[data-quote-count]',quote).textContent=`0${n} / 04`}
+  function openQuote(){if(!quote)return;lastFocus=document.activeElement;quote.hidden=false;quote.setAttribute('aria-hidden','false');activeDialog='quote';lockBody(true);showQStep(1);$('.quote-panel',quote)?.focus()}
+  function closeQuote(){if(!quote)return;quote.hidden=true;quote.setAttribute('aria-hidden','true');activeDialog=null;lockBody(false);lastFocus?.focus?.()}
+  $$('[data-quote-open]').forEach(b=>b.addEventListener('click',()=>{closeMenu();openQuote()}));$$('[data-quote-close]').forEach(b=>b.addEventListener('click',closeQuote));$$('[data-type]',quote).forEach(b=>b.addEventListener('click',()=>{qType=b.dataset.type;showQStep(2)}));$$('[data-quote-next]',quote).forEach(b=>b.addEventListener('click',()=>{if(qStep===2){const ta=$('textarea[name=requirement]',quote);if(!ta.value.trim()){ta.focus();return}}showQStep(Math.min(4,qStep+1))}));$$('[data-quote-prev]',quote).forEach(b=>b.addEventListener('click',()=>showQStep(Math.max(1,qStep-1))));const file=$('[data-quote-file]',quote);file?.addEventListener('change',()=>{$('[data-file-text]',quote).textContent=file.files?.[0]?.name||'No file selected'});
+  const qForm=$('[data-quote-form]',quote);qForm?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(qForm),name=(fd.get('name')||'').trim(),email=(fd.get('email')||'').trim(),phone=(fd.get('phone')||'').trim(),req=(fd.get('requirement')||'').trim();const err=$('[data-form-error]',quote);if(!name){err.textContent='Please enter your name.';return}if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent='Please enter a valid email address.';return}if(!/^\d{10}$/.test(phone)){err.textContent='Phone number must contain exactly 10 digits.';return}err.textContent='';const company=(fd.get('company')||'').trim();const drawing=file?.files?.[0]?.name||'No file selected';const text=`VSK Engineering Requirement\n\nType: ${qType||'General Requirement'}\nName: ${name}\nCompany: ${company||'-'}\nEmail: ${email}\nPhone: ${phone}\nDrawing selected: ${drawing}\n\nRequirement:\n${req}`;const subject=encodeURIComponent(`Engineering Requirement — ${company||name}`),body=encodeURIComponent(text);$('[data-mail-link]',quote).href=`mailto:vsk.electromech@gmail.com?subject=${subject}&body=${body}`;const wa=$('[data-whatsapp-link]',quote);if(wa)wa.href=`https://wa.me/919880336714?text=${encodeURIComponent(text)}`;$('[data-quote-success]',quote).hidden=false;$$('[data-step]',quote).forEach(s=>s.classList.remove('is-active'));$('.quote-head',quote).style.display='none';const copy=$('[data-copy-enquiry]',quote);copy.onclick=()=>navigator.clipboard?.writeText(text);});
+
+  // Keyboard handling
+  addEventListener('keydown',e=>{if(e.key==='Escape'){if(activeDialog==='dossier')closeDossier();else if(activeDialog==='quote')closeQuote();else if(activeDialog==='lightbox')$('[data-lightbox]')?._close?.();else closeMenu()}if(activeDialog==='dossier'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){e.preventDefault();moveDossier(e.key==='ArrowLeft'?-1:1)}if(activeDialog==='lightbox'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){e.preventDefault();$('[data-lightbox]')?._move?.(e.key==='ArrowLeft'?-1:1)}});
 })();
