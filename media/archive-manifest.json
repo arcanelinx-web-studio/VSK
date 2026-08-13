@@ -1,0 +1,310 @@
+{
+  "summary": {
+    "groups": 11,
+    "images": 27,
+    "videos": 1
+  },
+  "groups": [
+    {
+      "id": "slotting-machine",
+      "title": "Four-Servo Seal Slotting / Notching",
+      "category": "Special Purpose Machine",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/cases/slotting-main.webp",
+          "thumb": "media/cases/slotting-main.webp",
+          "caption": "Machine overview",
+          "width": 1128,
+          "height": 589
+        },
+        {
+          "type": "image",
+          "src": "media/cases/slotting-detail.webp",
+          "thumb": "media/cases/slotting-detail.webp",
+          "caption": "Machine detail view",
+          "width": 1000,
+          "height": 522
+        },
+        {
+          "type": "image",
+          "src": "media/projects/slotting.webp",
+          "thumb": "media/projects/slotting.webp",
+          "caption": "Alternate project view",
+          "width": 1128,
+          "height": 589
+        }
+      ]
+    },
+    {
+      "id": "air-leak-testing",
+      "title": "Air Leakage Testing Machine",
+      "category": "Testing & Inspection",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/cases/air-leak-main.webp",
+          "thumb": "media/cases/air-leak-main.webp",
+          "caption": "Machine front view",
+          "width": 1151,
+          "height": 547
+        },
+        {
+          "type": "image",
+          "src": "media/cases/air-leak-detail.webp",
+          "thumb": "media/cases/air-leak-detail.webp",
+          "caption": "Fixture / process section",
+          "width": 1000,
+          "height": 459
+        },
+        {
+          "type": "image",
+          "src": "media/projects/air-leak.webp",
+          "thumb": "media/projects/air-leak.webp",
+          "caption": "Project documentation view",
+          "width": 1151,
+          "height": 547
+        }
+      ]
+    },
+    {
+      "id": "rod-boring",
+      "title": "Rod Boring Machine",
+      "category": "CNC / Boring",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/projects/rod-boring.webp",
+          "thumb": "media/projects/rod-boring.webp",
+          "caption": "Machine overview",
+          "width": 640,
+          "height": 480
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/rod-boring-cnc.webp",
+          "thumb": "media/legacy/rod-boring-cnc.webp",
+          "caption": "CNC machine reference",
+          "width": 900,
+          "height": 675
+        }
+      ]
+    },
+    {
+      "id": "vertical-turning",
+      "title": "Vertical Turning CNC Machine",
+      "category": "CNC Turning",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/projects/vertical-turning.webp",
+          "thumb": "media/projects/vertical-turning.webp",
+          "caption": "Vertical turning machine view",
+          "width": 306,
+          "height": 408
+        },
+        {
+          "type": "image",
+          "src": "media/solutions/vertical-turning.webp",
+          "thumb": "media/solutions/vertical-turning.webp",
+          "caption": "Alternate project view",
+          "width": 306,
+          "height": 408
+        }
+      ]
+    },
+    {
+      "id": "z-cut",
+      "title": "Z-Cut Machine",
+      "category": "Cutting / Precision",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/projects/z-cut.webp",
+          "thumb": "media/projects/z-cut.webp",
+          "caption": "Z-Cut project view",
+          "width": 1400,
+          "height": 2489
+        }
+      ]
+    },
+    {
+      "id": "u-drill",
+      "title": "U Drill Machine",
+      "category": "Drilling",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/projects/u-drill.webp",
+          "thumb": "media/projects/u-drill.webp",
+          "caption": "U-drill machine view",
+          "width": 408,
+          "height": 306
+        }
+      ]
+    },
+    {
+      "id": "paint-agitating",
+      "title": "Paint Agitating Machine",
+      "category": "Process Equipment",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/projects/paint-agitating.webp",
+          "thumb": "media/projects/paint-agitating.webp",
+          "caption": "Paint agitating unit",
+          "width": 180,
+          "height": 320
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/paint-agitating-machine.webp",
+          "thumb": "media/legacy/paint-agitating-machine.webp",
+          "caption": "Alternate project view",
+          "width": 534,
+          "height": 949
+        }
+      ]
+    },
+    {
+      "id": "jig-grinding",
+      "title": "Hauser Jig Grinding Retrofit",
+      "category": "Retrofit / Grinding",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/retrofit/jig-grinding.webp",
+          "thumb": "media/retrofit/jig-grinding.webp",
+          "caption": "Machine overview",
+          "width": 1500,
+          "height": 2667
+        },
+        {
+          "type": "image",
+          "src": "media/cases/jig-main.webp",
+          "thumb": "media/cases/jig-main.webp",
+          "caption": "Retrofit machine view",
+          "width": 1400,
+          "height": 2489
+        },
+        {
+          "type": "image",
+          "src": "media/cases/jig-detail.webp",
+          "thumb": "media/cases/jig-detail.webp",
+          "caption": "Machine detail view",
+          "width": 1000,
+          "height": 1778
+        }
+      ]
+    },
+    {
+      "id": "kellenberg",
+      "title": "Kellenberg CNC Grinding Retrofit",
+      "category": "Retrofit / Grinding",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/retrofit/kellenberg.webp",
+          "thumb": "media/retrofit/kellenberg.webp",
+          "caption": "Machine overview",
+          "width": 1500,
+          "height": 1125
+        },
+        {
+          "type": "image",
+          "src": "media/motion/kellenberg-still.webp",
+          "thumb": "media/motion/kellenberg-still.webp",
+          "caption": "Machine / process view",
+          "width": 1400,
+          "height": 1050
+        },
+        {
+          "type": "video",
+          "src_mp4": "media/motion/kellenberg-loop.mp4",
+          "src_webm": "media/motion/kellenberg-loop.webm",
+          "poster": "media/motion/kellenberg-loop-poster.webp",
+          "caption": "Machine motion clip",
+          "duration": 3.58
+        }
+      ]
+    },
+    {
+      "id": "electric-oven",
+      "title": "Electric Oven",
+      "category": "Process Equipment",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/motion/electric-oven.webp",
+          "thumb": "media/motion/electric-oven.webp",
+          "caption": "Industrial electric oven",
+          "width": 1400,
+          "height": 1867
+        }
+      ]
+    },
+    {
+      "id": "engineering-details",
+      "title": "Engineering Detail Archive",
+      "category": "Machine-Tool Engineering",
+      "items": [
+        {
+          "type": "image",
+          "src": "media/legacy/spindle-closeup.webp",
+          "thumb": "media/legacy/spindle-closeup.webp",
+          "caption": "Spindle / workholding detail",
+          "width": 794,
+          "height": 595
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/spindle-interface.webp",
+          "thumb": "media/legacy/spindle-interface.webp",
+          "caption": "Machine-tool interface detail",
+          "width": 794,
+          "height": 595
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/wheel-balancing-unit.webp",
+          "thumb": "media/legacy/wheel-balancing-unit.webp",
+          "caption": "Grinding wheel alignment unit",
+          "width": 689,
+          "height": 919
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/centerless-conveyor.webp",
+          "thumb": "media/legacy/centerless-conveyor.webp",
+          "caption": "Centerless grinding conveyor",
+          "width": 916,
+          "height": 687
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/table-top-lathe.webp",
+          "thumb": "media/legacy/table-top-lathe.webp",
+          "caption": "Table top lathe",
+          "width": 944,
+          "height": 708
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/metal-facing-machine.webp",
+          "thumb": "media/legacy/metal-facing-machine.webp",
+          "caption": "Metal facing machine",
+          "width": 916,
+          "height": 687
+        },
+        {
+          "type": "image",
+          "src": "media/legacy/enclosed-machine.webp",
+          "thumb": "media/legacy/enclosed-machine.webp",
+          "caption": "Machine integration detail",
+          "width": 904,
+          "height": 678
+        }
+      ]
+    }
+  ]
+}

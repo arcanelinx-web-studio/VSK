@@ -1,0 +1,53 @@
+name: Assemble exact V14 review
+
+on:
+  push:
+    branches:
+      - client-review-v14-final
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v14-final
+          fetch-depth: 0
+
+      - name: Assemble exact V14 files
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .v14-staging/index.html.gz.b64 | gunzip > index.html
+          base64 -d .v14-staging/app.js.gz.b64 | gunzip > app.js
+          cat .v14-staging/data.0.gzpart .v14-staging/data.1.gzpart .v14-staging/data.2.gzpart .v14-staging/data.3.gzpart > /tmp/data.js.gz
+          gunzip -c /tmp/data.js.gz > data.js
+          base64 -d .v14-staging/style08a.b64 > /tmp/style08a.bin
+          base64 -d .v14-staging/style08b.b64 > /tmp/style08b.bin
+          base64 -d .v14-staging/style09.b64 > /tmp/style09.bin
+          cat .v14-staging/style00.bin .v14-staging/style01.bin .v14-staging/style02.bin .v14-staging/style03.bin .v14-staging/style04.bin .v14-staging/style05.bin .v14-staging/style06.bin .v14-staging/style07.bin /tmp/style08a.bin /tmp/style08b.bin /tmp/style09.bin > /tmp/styles.css.gz
+          gunzip -c /tmp/styles.css.gz > styles.css
+          base64 -d .v14-staging/media-manifest.json.gz.b64 | gunzip > media/media-manifest.json
+          test "$(git hash-object index.html)" = "48af3ac2544798bd7ec1370af8619502793d2f6d"
+          test "$(git hash-object app.js)" = "a5d9b062d2e8bb81f102eed259da220901ba3d90"
+          test "$(git hash-object data.js)" = "2e0a8fffe5b448da6e692f2a04ef96c63e5f32c5"
+          test "$(git hash-object styles.css)" = "4a2131371dcba11d62d960cff8661e8cc8616ced"
+          test "$(git hash-object projects.html)" = "7d9bf89e165c8104faab8a1fb3b730ce7c157dc0"
+          test "$(git hash-object machines.html)" = "3072c3364422ed7af673a4ac88ab4ddb52512f7f"
+          test "$(git hash-object gallery.html)" = "ba2d00067454f3653b97b7008a50908e56bc766d"
+          test "$(git hash-object media/archive-manifest.json)" = "3a6a50d492c25975ef0c92cb1b2254534b0fafa1"
+          test "$(git hash-object media/media-manifest.json)" = "9e6ae07a7a6110668312839edcd68294a18f166f"
+          rm -rf .v14-staging
+      - name: Commit exact V14
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Deploy exact V14 review build"
+          git push origin HEAD:client-review-v14-final
