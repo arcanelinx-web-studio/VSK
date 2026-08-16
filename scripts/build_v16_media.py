@@ -9,6 +9,12 @@ from pathlib import Path
 
 from PIL import Image, ImageOps
 
+try:
+    from pillow_heif import register_heif_opener
+    register_heif_opener()
+except Exception:
+    pass
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "PHOTOS"
 OUT = ROOT / "media" / "v16"
@@ -45,37 +51,50 @@ def run(cmd: list[str]) -> bool:
         return False
 
 
-def save_web_image(source: Path, web_path: Path, thumb_path: Path) -> tuple[int, int] | None:
-    converted: Path | None = None
+def open_rgb(source: Path) -> Image.Image | None:
     try:
-        image_source = source
-        if source.suffix.lower() in {".heic", ".heif"}:
-            tmp = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
-            tmp.close()
-            converted = Path(tmp.name)
-            if not run(["heif-convert", str(source), str(converted)]):
-                return None
-            image_source = converted
-
-        with Image.open(image_source) as im:
-            im = ImageOps.exif_transpose(im).convert("RGB")
-            width, height = im.size
-
-            web = im.copy()
-            web.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
-            web_path.parent.mkdir(parents=True, exist_ok=True)
-            web.save(web_path, "WEBP", quality=82, method=6)
-
-            thumb = im.copy()
-            thumb.thumbnail((720, 720), Image.Resampling.LANCZOS)
-            thumb_path.parent.mkdir(parents=True, exist_ok=True)
-            thumb.save(thumb_path, "WEBP", quality=74, method=6)
-            return width, height
+        with Image.open(source) as im:
+            return ImageOps.exif_transpose(im).convert("RGB")
     except Exception:
+        pass
+
+    if source.suffix.lower() in {".heic", ".heif"}:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            converted = Path(tmpdir) / "converted.jpg"
+            if run(["heif-convert", str(source), str(converted)]):
+                try:
+                    with Image.open(converted) as im:
+                        return ImageOps.exif_transpose(im).convert("RGB")
+                except Exception:
+                    pass
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        converted = Path(tmpdir) / "frame.png"
+        if run(["ffmpeg", "-y", "-i", str(source), "-frames:v", "1", str(converted)]):
+            try:
+                with Image.open(converted) as im:
+                    return ImageOps.exif_transpose(im).convert("RGB")
+            except Exception:
+                pass
+    return None
+
+
+def save_web_image(source: Path, web_path: Path, thumb_path: Path) -> tuple[int, int] | None:
+    im = open_rgb(source)
+    if im is None:
         return None
-    finally:
-        if converted and converted.exists():
-            converted.unlink(missing_ok=True)
+    width, height = im.size
+
+    web = im.copy()
+    web.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+    web_path.parent.mkdir(parents=True, exist_ok=True)
+    web.save(web_path, "WEBP", quality=82, method=5)
+
+    thumb = im.copy()
+    thumb.thumbnail((760, 760), Image.Resampling.LANCZOS)
+    thumb_path.parent.mkdir(parents=True, exist_ok=True)
+    thumb.save(thumb_path, "WEBP", quality=76, method=4)
+    return width, height
 
 
 def save_pdf_preview(source: Path, web_path: Path, thumb_path: Path) -> tuple[int, int] | None:
@@ -89,10 +108,31 @@ def save_pdf_preview(source: Path, web_path: Path, thumb_path: Path) -> tuple[in
         return save_web_image(rendered, web_path, thumb_path)
 
 
+def save_poster(video_path: Path, poster_path: Path) -> bool:
+    poster_path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        jpg = Path(tmpdir) / "poster.jpg"
+        ok = run([
+            "ffmpeg", "-y", "-ss", "0.15", "-i", str(video_path), "-frames:v", "1",
+            "-vf", "scale='min(1280,iw)':-2:force_original_aspect_ratio=decrease", str(jpg)
+        ])
+        if not ok:
+            ok = run([
+                "ffmpeg", "-y", "-i", str(video_path), "-frames:v", "1",
+                "-vf", "scale='min(1280,iw)':-2:force_original_aspect_ratio=decrease", str(jpg)
+            ])
+        if not ok or not jpg.exists():
+            return False
+        try:
+            with Image.open(jpg) as im:
+                ImageOps.exif_transpose(im).convert("RGB").save(poster_path, "WEBP", quality=80, method=4)
+            return True
+        except Exception:
+            return False
+
+
 def save_web_video(source: Path, video_path: Path, poster_path: Path) -> bool:
     video_path.parent.mkdir(parents=True, exist_ok=True)
-    poster_path.parent.mkdir(parents=True, exist_ok=True)
-
     if not run([
         "ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=codec_name",
         "-of", "default=nw=1:nk=1", str(source)
@@ -102,25 +142,11 @@ def save_web_video(source: Path, video_path: Path, poster_path: Path) -> bool:
     if not run([
         "ffmpeg", "-y", "-i", str(source),
         "-vf", "scale='min(1280,iw)':-2:force_original_aspect_ratio=decrease",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "27", "-pix_fmt", "yuv420p",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "28", "-pix_fmt", "yuv420p",
         "-movflags", "+faststart", "-an", str(video_path)
     ]):
         return False
-
-    poster_jpg = poster_path.with_suffix(".jpg")
-    poster_ok = run([
-        "ffmpeg", "-y", "-ss", "0.8", "-i", str(source), "-frames:v", "1",
-        "-vf", "scale='min(1280,iw)':-2:force_original_aspect_ratio=decrease", str(poster_jpg)
-    ])
-    if poster_ok:
-        try:
-            with Image.open(poster_jpg) as im:
-                im = ImageOps.exif_transpose(im).convert("RGB")
-                im.save(poster_path, "WEBP", quality=78, method=6)
-        except Exception:
-            poster_ok = False
-        finally:
-            poster_jpg.unlink(missing_ok=True)
+    save_poster(video_path, poster_path)
     return True
 
 
@@ -134,7 +160,10 @@ def main() -> None:
         directory.mkdir(parents=True, exist_ok=True)
 
     groups: dict[str, dict] = {}
-    totals = {"files": 0, "images": 0, "videos": 0, "documents": 0, "source_only": 0}
+    totals = {
+        "files": 0, "images": 0, "videos": 0, "documents": 0,
+        "source_only": 0, "failed_images": 0, "failed_videos": 0, "unsupported": 0
+    }
 
     for source in sorted(SOURCE.rglob("*"), key=lambda p: p.as_posix().lower()):
         if not source.is_file() or source.name == ".gitkeep":
@@ -172,11 +201,15 @@ def main() -> None:
             dims = save_web_image(source, web_path, thumb_path)
             item["kind"] = item["type"] = "image"
             if dims:
-                item.update({"web": rel_url(web_path), "src": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1]})
+                item.update({
+                    "web": rel_url(web_path), "src": rel_url(web_path), "thumb": rel_url(thumb_path),
+                    "width": dims[0], "height": dims[1], "displayable": True
+                })
                 totals["images"] += 1
             else:
-                item.update({"src": rel_url(source), "sourceOnly": True})
+                item.update({"src": rel_url(source), "sourceOnly": True, "displayable": False})
                 totals["source_only"] += 1
+                totals["failed_images"] += 1
 
         elif ext in VIDEO_EXTS:
             video_path = VIDEO_DIR / relative_group / f"{item_base}.mp4"
@@ -184,11 +217,15 @@ def main() -> None:
             item["kind"] = item["type"] = "video"
             if save_web_video(source, video_path, poster_path):
                 poster = rel_url(poster_path) if poster_path.exists() else None
-                item.update({"web": rel_url(video_path), "src": rel_url(video_path), "src_mp4": rel_url(video_path), "poster": poster, "thumb": poster})
+                item.update({
+                    "web": rel_url(video_path), "src": rel_url(video_path), "src_mp4": rel_url(video_path),
+                    "poster": poster, "thumb": poster, "displayable": True
+                })
                 totals["videos"] += 1
             else:
-                item.update({"src": rel_url(source), "sourceOnly": True})
+                item.update({"src": rel_url(source), "sourceOnly": True, "displayable": False})
                 totals["source_only"] += 1
+                totals["failed_videos"] += 1
 
         elif ext in DOCUMENT_EXTS:
             web_path = IMAGE_DIR / relative_group / f"{item_base}-document.webp"
@@ -197,26 +234,31 @@ def main() -> None:
             item["kind"] = "document"
             item["type"] = "image"
             item["document"] = rel_url(source)
+            totals["documents"] += 1
             if dims:
-                item.update({"src": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1], "caption": f"{titlecase(source.stem)} · technical document"})
-                totals["documents"] += 1
+                item.update({
+                    "src": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1],
+                    "caption": f"{titlecase(source.stem)} · technical document", "displayable": True
+                })
                 totals["images"] += 1
             else:
-                item.update({"type": "source", "src": rel_url(source), "sourceOnly": True})
-                totals["documents"] += 1
+                item.update({"type": "source", "src": rel_url(source), "sourceOnly": True, "displayable": False})
                 totals["source_only"] += 1
         else:
-            item.update({"kind": "source", "type": "source", "src": rel_url(source), "sourceOnly": True})
+            item.update({"kind": "source", "type": "source", "src": rel_url(source), "sourceOnly": True, "displayable": False})
             totals["source_only"] += 1
+            totals["unsupported"] += 1
 
         group["items"].append(item)
 
+    display_groups = [g for g in groups.values() if any(i.get("displayable") for i in g["items"])]
     manifest = {
         "version": 16,
         "source": "PHOTOS",
         "summary": {
             **totals,
-            "groups": len(groups),
+            "groups": len(display_groups),
+            "source_groups": len(groups),
             "categories": len({g["category"] for g in groups.values()}),
         },
         "groups": list(groups.values()),
