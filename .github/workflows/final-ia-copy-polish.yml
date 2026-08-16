@@ -1,0 +1,71 @@
+name: Final IA copy and visual polish
+
+on:
+  push:
+    branches:
+      - client-review-v17-ia-working
+    paths:
+      - '.github/workflows/final-ia-copy-polish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v17-ia-working
+          fetch-depth: 0
+      - name: Remove internal wording and finish visual details
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('architecture.js')
+          s=p.read_text()
+          reps={
+          "The client’s organized project library is kept intact. Each family leads to every project group in that engineering area rather than reducing the portfolio to a few homepage cards.":"VSK’s project portfolio is organized into clear engineering families. Each family leads to relevant machine and project references without overwhelming the first view.",
+          "Complete visual project record from PHOTOS":"Complete project record · organized by engineering family",
+          "Designed, manufactured and supplied across India in the company profile.":"Designed, manufactured and supplied across India.",
+          "Designed, manufactured and supplied across India in the source company profile.":"Designed, manufactured and supplied across India.",
+          "${manifest.summary?.images||0} images · ${manifest.summary?.videos||0} videos in the current client media library.":"${groups.length} organized project groups · ${manifest.summary?.images||0} images · ${manifest.summary?.videos||0} videos.",
+          "The family counts come from the client’s organized PHOTOS directory, so the visual portfolio can expand as new project folders are added.":"The visual portfolio is organized by machine and engineering family so related experience can be found quickly.",
+          "These documents are retained as trust assets. Photography throughout the website itself comes from the client’s organized PHOTOS project library.":"Use the company profile for VSK background and capabilities; use the engineering catalog for selected machine and technical references.",
+          "The visual project groups below come directly from the client’s organized retrofit and service folders.":"Selected retrofit and service projects show the machine platforms behind VSK’s lifecycle work.",
+          "['Source','VSK organized project library']":"['Project media',`${mediaCount(group)} recorded media items`]",
+          "The project is presented requirement-first: what needed to change, how the machine responded, then the verified technical evidence available.":"Understand the production need, the machine response and the verified engineering evidence in one place.",
+          "Every browser-ready item in this organized project folder is available here. Preview frames remain a consistent 4:3 so the page stays disciplined even when source photos have different orientations.":"Project views, technical details and available motion references are presented together so the machine can be understood beyond a single hero photograph. Preview frames remain a consistent 4:3 for a disciplined visual rhythm.",
+          "Machines, controls, mechanisms, assemblies and motion — kept in the project groups supplied by the client rather than flattened into an unrelated image wall.":"Machines, controls, mechanisms, assemblies and motion — organized project by project so each visual keeps its engineering context.",
+          "The family counts come from the client’s organized PHOTOS directory, so the visual portfolio can expand as new project folders are added.":"The visual portfolio is organized by machine and engineering family so related experience can be found quickly."
+          }
+          missing=[]
+          for old,new in reps.items():
+              if old not in s: missing.append(old[:70])
+              s=s.replace(old,new)
+          p.write_text(s)
+          if missing:
+              print('Patterns already changed/not present:', missing)
+
+          css=Path('architecture-fixes.css')
+          c=css.read_text()
+          c += "\n.vsk-ia .gallery-controls>[data-gallery-filter=\"all\"]{display:none!important}.vsk-ia .archive-hero-number span{color:var(--ia-green)!important;font-size:clamp(4.8rem,7vw,7.4rem)!important;font-weight:500;letter-spacing:-.075em}.vsk-ia .archive-hero-number small{color:#9bc3ba}.vsk-ia .archive-hero-facts strong{color:#8eb8ae!important}\n"
+          css.write_text(c)
+          PY
+          node --check architecture.js
+          node --check app.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('architecture.js').read_text().lower()
+          forbidden=['client’s organized','client media library','source company profile','from photos','supplied by the client']
+          bad=[x for x in forbidden if x in s]
+          if bad: raise SystemExit('Internal copy remains: '+repr(bad))
+          print('Customer-facing copy: PASS')
+          PY
+      - name: Commit final polish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add architecture.js architecture-fixes.css
+          git commit -m "Polish VSK buyer-facing copy and visual consistency"
+          git push origin HEAD:client-review-v17-ia-working
