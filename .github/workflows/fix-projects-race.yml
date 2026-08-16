@@ -1,0 +1,43 @@
+name: Patch Projects runtime race
+
+on:
+  push:
+    branches:
+      - client-review-v17-ia-working
+    paths:
+      - '.github/workflows/fix-projects-race.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v17-ia-working
+          fetch-depth: 0
+      - name: Suppress obsolete V14 Projects initializer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('app.js')
+          s=p.read_text()
+          old="""  const loadRuntime = () => {\n    const legacy = document.createElement('script');\n    legacy.src = 'app-v14.js?v=18.1';\n    legacy.defer = true;\n    legacy.onload = () => {\n      const architecture = document.createElement('script');"""
+          new="""  const loadRuntime = () => {\n    const originalPage = document.body.dataset.page || page;\n    if (page === 'projects') document.body.dataset.page = 'projects-ia';\n    const legacy = document.createElement('script');\n    legacy.src = 'app-v14.js?v=18.2';\n    legacy.defer = true;\n    legacy.onload = () => {\n      if (page === 'projects') document.body.dataset.page = originalPage;\n      const architecture = document.createElement('script');"""
+          if old not in s:
+              raise SystemExit('runtime target not found')
+          s=s.replace(old,new,1)
+          s=s.replace("architecture.src = 'architecture.js?v=18.1';","architecture.src = 'architecture.js?v=18.2';",1)
+          s=s.replace("fixes.src = 'architecture-fixes.js?v=18.1';","fixes.src = 'architecture-fixes.js?v=18.2';",1)
+          p.write_text(s)
+          PY
+          node --check app.js
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git commit -m "Isolate new Projects page from legacy initializer"
+          git push origin HEAD:client-review-v17-ia-working
