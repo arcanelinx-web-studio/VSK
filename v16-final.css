@@ -135,12 +135,47 @@
 /* Keep static credibility values readable even before JS runs. */
 .proof-grid strong{font-variant-numeric:tabular-nums}
 
+/* V8/V12 carry higher-specificity historical selectors. Final overrides must
+   explicitly outrank them rather than relying on source order alone. */
+body.v8 .site-header,
+body.v8 .site-header.is-scrolled,
+body.v8 .site-header.is-solid{
+  height:var(--vsk-header);
+  grid-template-columns:minmax(220px,1fr) auto auto;
+  gap:28px;
+  padding-left:max(34px,calc((100vw - 1500px)/2));
+  padding-right:max(34px,calc((100vw - 1500px)/2));
+  background:rgba(244,243,238,.985);
+  color:var(--vsk-charcoal);
+  border-bottom:1px solid var(--vsk-line);
+  box-shadow:none;
+}
+body.v8 .site-header.is-scrolled,body.v8 .site-header.is-solid{height:72px;box-shadow:0 10px 30px rgba(24,31,28,.055)}
+body.v8 .site-header .brand img,
+body.v8 .site-header.is-scrolled .brand img,
+body.v8 .site-header.is-solid .brand img{width:48px;height:48px}
+body.v8 .site-header.is-scrolled .brand img,
+body.v8 .site-header.is-solid .brand img{width:42px;height:42px}
+body.v8 .brand-copy strong{font-size:14px;color:var(--vsk-charcoal)}
+body.v8 .brand-copy small{font-size:7px;color:var(--vsk-muted)}
+body.v8 .desktop-nav{gap:24px}
+body.v8 .desktop-nav a{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.055em;text-transform:uppercase;color:#39423e}
+body.v8 .desktop-nav a::after{bottom:-12px;height:2px;background:var(--vsk-green)}
+body.v8 .desktop-nav a:hover,body.v8 .desktop-nav a.is-current{color:var(--vsk-charcoal)}
+body.v8 .header-cta{height:44px;min-width:0;padding:0 16px;border:1px solid var(--vsk-green);background:transparent;color:var(--vsk-green);font-size:9px}
+body.v8 .header-cta:hover{background:var(--vsk-green);color:#fff;transform:translateY(-2px)}
+body.v8 .menu-toggle span{background:var(--vsk-charcoal)}
+
 @media (max-width:1250px){
   .site-header{grid-template-columns:minmax(165px,1fr) auto auto;gap:18px;padding-inline:28px}
   .desktop-nav{gap:17px}
   .desktop-nav a{font-size:9px}
   .brand-copy small{display:none}
   .hero-title{font-size:clamp(4.4rem,7.6vw,7.1rem)}
+  body.v8 .site-header,body.v8 .site-header.is-scrolled,body.v8 .site-header.is-solid{grid-template-columns:minmax(165px,1fr) auto auto;gap:18px;padding-left:28px;padding-right:28px}
+  body.v8 .desktop-nav{gap:17px}
+  body.v8 .desktop-nav a{font-size:9px}
+  body.v8 .header-cta{min-width:0;font-size:9px}
 }
 @media (max-width:1060px){
   .desktop-nav,.header-cta{display:none}
@@ -149,6 +184,9 @@
   .hero{margin-top:72px;height:auto;min-height:760px}
   .hero-lower{grid-template-columns:1fr;gap:24px}
   .hero-actions{justify-self:start}
+  body.v8 .site-header,body.v8 .site-header.is-scrolled,body.v8 .site-header.is-solid{grid-template-columns:1fr auto;height:72px}
+  body.v8 .desktop-nav,body.v8 .header-cta{display:none}
+  body.v8 .menu-toggle{display:block}
 }
 @media (max-width:700px){
   :root{--vsk-header:68px}
@@ -167,4 +205,7 @@
   .hero-actions .btn{width:100%}
   .hero-reference{left:18px;right:18px;bottom:36px;width:auto}
   .scroll-cue{display:none}
+  body.v8 .site-header,body.v8 .site-header.is-scrolled,body.v8 .site-header.is-solid{height:68px;padding-left:16px;padding-right:16px}
+  body.v8 .site-header .brand img,body.v8 .site-header.is-scrolled .brand img,body.v8 .site-header.is-solid .brand img{width:40px;height:40px}
+  body.v8 .brand-copy strong{font-size:12px}
 }
