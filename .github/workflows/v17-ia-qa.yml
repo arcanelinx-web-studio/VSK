@@ -1,5 +1,6 @@
 name: V17 IA review QA
 
+# Validates the corrected buyer-first IA branch before visual review.
 on:
   push:
     branches:
