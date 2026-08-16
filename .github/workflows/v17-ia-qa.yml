@@ -1,0 +1,108 @@
+name: V17 IA review QA
+
+on:
+  push:
+    branches:
+      - client-review-v17-ia-working
+  workflow_dispatch:
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check app.js
+          node --check app-v14.js
+          node --check data.js
+          node --check architecture.js
+          node --check architecture-fixes.js
+      - name: HTML, navigation and local references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse, unquote
+          pages=['index.html','company.html','solutions.html','reconditioning.html','retrofit-cnc.html','projects.html','project.html','experience.html','gallery.html','machines.html']
+          missing=[]
+          class P(HTMLParser):
+              def __init__(self): super().__init__(); self.refs=[]
+              def handle_starttag(self,tag,attrs):
+                  d=dict(attrs)
+                  for key in ('href','src'):
+                      if key in d: self.refs.append(d[key])
+          for page in pages:
+              path=Path(page)
+              assert path.exists(), f'missing page {page}'
+              p=P(); p.feed(path.read_text(errors='ignore'))
+              for ref in p.refs:
+                  if not ref or ref.startswith(('#','http:','https:','mailto:','tel:','data:','javascript:')): continue
+                  target=unquote(urlparse(ref).path)
+                  if not target: continue
+                  if not Path(target).exists(): missing.append((page,ref))
+          if missing:
+              raise SystemExit('Missing local refs: '+repr(missing[:30]))
+          print('HTML/local references: PASS')
+          PY
+      - name: CSS integrity and palette layer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for f in ['styles.css','architecture.css','architecture-fixes.css']:
+              s=Path(f).read_text()
+              assert s.count('{')==s.count('}'), f'unbalanced CSS in {f}'
+          layer=(Path('architecture.css').read_text()+Path('architecture-fixes.css').read_text()).lower()
+          for token in ['#164a9c','#167bc4']:
+              assert token not in layer, f'old blue leaked into final architecture layer: {token}'
+          for token in ['#f4f3ed','#17201f','#2e655c']:
+              assert token in layer, f'missing final palette token {token}'
+          print('CSS/palette: PASS')
+          PY
+      - name: Organized PHOTOS media integrity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('media/v16/manifest.json').read_text())
+          assert m.get('source')=='PHOTOS'
+          assert m['summary']['groups']>=34
+          assert m['summary']['images']>=110
+          missing=[]; checked=0
+          for g in m['groups']:
+              for i in g.get('items',[]):
+                  if i.get('sourceOnly') or i.get('displayable') is False: continue
+                  if i.get('type')=='image':
+                      for key in ('web','thumb'):
+                          p=i.get(key)
+                          if p:
+                              checked+=1
+                              if not Path(p).exists(): missing.append(p)
+                  elif i.get('type')=='video':
+                      p=i.get('web') or i.get('src_mp4')
+                      if p:
+                          checked+=1
+                          if not Path(p).exists(): missing.append(p)
+                      poster=i.get('poster')
+                      if poster:
+                          checked+=1
+                          if not Path(poster).exists(): missing.append(poster)
+          if missing: raise SystemExit('Missing generated media: '+repr(missing[:30]))
+          print('Generated media:',checked,'paths PASS')
+          print('Manifest summary:',m['summary'])
+          PY
+      - name: Final architecture contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('app.js').read_text()
+          arch=Path('architecture.js').read_text()
+          for label in ['Home','Company','Solutions','Reconditioning','Retrofit & CNC','Projects','Experience','Discuss a Machine']:
+              assert label in app, f'missing header item {label}'
+          for phrase in ['What do you need to solve?','Machines built around','Engineering families','Have a production']:
+              assert phrase.lower() in arch.lower(), f'missing buyer-first content: {phrase}'
+          assert 'media/v16/manifest.json' in app
+          assert Path('assets-source/VSK_ElectroMech_Corporate_Profile.pdf').exists()
+          assert Path('assets-source/VSK_Electro-Mech_Solutions_Professional_Catalog.pdf').exists()
+          print('Architecture contract: PASS')
+          PY
