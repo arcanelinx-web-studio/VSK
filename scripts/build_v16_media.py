@@ -23,10 +23,14 @@ DOCUMENT_EXTS = {".pdf"}
 
 
 def slug(value: str) -> str:
-    value = value.lower().strip()
-    value = value.replace("&", " and ")
+    value = value.lower().strip().replace("&", " and ")
     value = re.sub(r"[^a-z0-9]+", "-", value)
     return value.strip("-") or "media"
+
+
+def titlecase(value: str) -> str:
+    cleaned = re.sub(r"[_-]+", " ", value).strip()
+    return re.sub(r"\s+", " ", cleaned).title()
 
 
 def rel_url(path: Path) -> str:
@@ -78,20 +82,18 @@ def save_web_video(source: Path, video_path: Path, poster_path: Path) -> bool:
     video_path.parent.mkdir(parents=True, exist_ok=True)
     poster_path.parent.mkdir(parents=True, exist_ok=True)
 
-    probe = run([
+    if not run([
         "ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=codec_name",
         "-of", "default=nw=1:nk=1", str(source)
-    ])
-    if not probe:
+    ]):
         return False
 
-    ok = run([
+    if not run([
         "ffmpeg", "-y", "-i", str(source),
         "-vf", "scale='min(1280,iw)':-2:force_original_aspect_ratio=decrease",
         "-c:v", "libx264", "-preset", "medium", "-crf", "27", "-pix_fmt", "yuv420p",
         "-movflags", "+faststart", "-an", str(video_path)
-    ])
-    if not ok:
+    ]):
         return False
 
     poster_jpg = poster_path.with_suffix(".jpg")
@@ -135,7 +137,8 @@ def main() -> None:
         group_key = slug("--".join(project_parts or (category,)))
         group = groups.setdefault(group_key, {
             "id": group_key,
-            "category": category,
+            "title": titlecase(project),
+            "category": titlecase(category),
             "project": project,
             "path": "/".join(project_parts),
             "items": [],
@@ -148,6 +151,7 @@ def main() -> None:
             "name": source.name,
             "source": rel_url(source),
             "extension": ext.lstrip("."),
+            "caption": titlecase(source.stem),
         }
         totals["files"] += 1
 
@@ -155,32 +159,37 @@ def main() -> None:
             web_path = IMAGE_DIR / relative_group / f"{item_base}.webp"
             thumb_path = THUMB_DIR / relative_group / f"{item_base}.webp"
             dims = save_web_image(source, web_path, thumb_path)
-            item["kind"] = "image"
+            item["kind"] = item["type"] = "image"
             if dims:
-                item.update({"web": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1]})
+                item.update({
+                    "web": rel_url(web_path), "src": rel_url(web_path), "thumb": rel_url(thumb_path),
+                    "width": dims[0], "height": dims[1]
+                })
                 totals["images"] += 1
             else:
-                item["sourceOnly"] = True
+                item.update({"src": rel_url(source), "sourceOnly": True})
                 totals["source_only"] += 1
 
         elif ext in VIDEO_EXTS:
             video_path = VIDEO_DIR / relative_group / f"{item_base}.mp4"
             poster_path = POSTER_DIR / relative_group / f"{item_base}.webp"
-            item["kind"] = "video"
+            item["kind"] = item["type"] = "video"
             if save_web_video(source, video_path, poster_path):
-                item.update({"web": rel_url(video_path), "poster": rel_url(poster_path) if poster_path.exists() else None})
+                poster = rel_url(poster_path) if poster_path.exists() else None
+                item.update({
+                    "web": rel_url(video_path), "src": rel_url(video_path), "src_mp4": rel_url(video_path),
+                    "poster": poster, "thumb": poster
+                })
                 totals["videos"] += 1
             else:
-                item["sourceOnly"] = True
+                item.update({"src": rel_url(source), "sourceOnly": True})
                 totals["source_only"] += 1
 
         elif ext in DOCUMENT_EXTS:
-            item["kind"] = "document"
-            item["sourceOnly"] = True
+            item.update({"kind": "document", "type": "document", "src": rel_url(source), "sourceOnly": True})
             totals["documents"] += 1
         else:
-            item["kind"] = "source"
-            item["sourceOnly"] = True
+            item.update({"kind": "source", "type": "source", "src": rel_url(source), "sourceOnly": True})
             totals["source_only"] += 1
 
         group["items"].append(item)
@@ -195,7 +204,9 @@ def main() -> None:
         },
         "groups": list(groups.values()),
     }
-    (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    payload = json.dumps(manifest, indent=2, ensure_ascii=False)
+    (OUT / "manifest.json").write_text(payload, encoding="utf-8")
+    (ROOT / "media" / "archive-manifest.json").write_text(payload, encoding="utf-8")
     print(json.dumps(manifest["summary"], indent=2))
 
 
