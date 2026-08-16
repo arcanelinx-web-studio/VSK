@@ -55,13 +55,15 @@
   // Project cards become compact engineering dossiers.
   // ------------------------------------------------------------------------
   const sanitizeFact = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const getFeature = id => (typeof featureData !== 'undefined' && featureData[id]) ? featureData[id] : null;
+
   function enhanceProjectCards(root = document) {
     $$('[data-feature-open]', root).forEach(card => {
       if (card.dataset.v17Card) return;
       if (!card.matches('.project-card,.project-page-card')) return;
       card.dataset.v17Card = '1';
       const id = card.dataset.featureOpen;
-      const data = (window.featureData && featureData[id]) || null;
+      const data = getFeature(id);
       const copy = $('.project-copy,.project-page-copy', card);
       if (!copy) return;
 
@@ -80,9 +82,7 @@
 
   // Project/gallery content is generated dynamically by the V14 runtime.
   const dynamicObserver = new MutationObserver(mutations => {
-    let shouldEnhance = false;
-    mutations.forEach(m => { if (m.addedNodes.length) shouldEnhance = true; });
-    if (!shouldEnhance) return;
+    if (!mutations.some(m => m.addedNodes.length)) return;
     enhanceProjectCards();
     registerReveals();
   });
@@ -114,14 +114,19 @@
     };
     requestAnimationFrame(tick);
   }
-  const metricObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      animateMetric(entry.target);
-      metricObserver.unobserve(entry.target);
-    });
-  }, { threshold: .55 });
-  $$('.metric-card').forEach(card => metricObserver.observe(card));
+
+  if ('IntersectionObserver' in window) {
+    const metricObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animateMetric(entry.target);
+        metricObserver.unobserve(entry.target);
+      });
+    }, { threshold: .55 });
+    $$('.metric-card').forEach(card => metricObserver.observe(card));
+  } else {
+    $$('.metric-card').forEach(animateMetric);
+  }
 
   // ------------------------------------------------------------------------
   // Process line: the existing bar draws, V17 activates stages in sequence.
@@ -133,14 +138,16 @@
       if (reduced) stage.classList.add('is-v17-stage');
       else setTimeout(() => stage.classList.add('is-v17-stage'), 180 + i * 150);
     });
-    const processObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        activate();
-        processObserver.disconnect();
-      });
-    }, { threshold: .35 });
-    processObserver.observe(process);
+    if ('IntersectionObserver' in window) {
+      const processObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          activate();
+          processObserver.disconnect();
+        });
+      }, { threshold: .35 });
+      processObserver.observe(process);
+    } else activate();
   }
 
   // ------------------------------------------------------------------------
@@ -154,16 +161,18 @@
 
   const quotePanel = $('[data-quote-panel]');
   if (quotePanel) {
-    const quoteObserver = new MutationObserver(() => {
+    const syncQuoteProgress = () => {
       const steps = $$('.quote-step', quotePanel);
       const activeIndex = Math.max(0, steps.findIndex(step => step.classList.contains('is-active')));
       $$('.quote-progress i', quotePanel).forEach((bar, i) => bar.classList.toggle('is-active', i <= activeIndex));
-    });
+    };
+    syncQuoteProgress();
+    const quoteObserver = new MutationObserver(syncQuoteProgress);
     quoteObserver.observe(quotePanel, { attributes: true, subtree: true, attributeFilter: ['class'] });
   }
 
   // ------------------------------------------------------------------------
-  // Gallery technical context: group cards remain a consistent 4:3 system.
+  // Gallery technical context: project cards remain a consistent 4:3 system.
   // ------------------------------------------------------------------------
   function enhanceGallery() {
     $$('.gallery-project-group').forEach((group, index) => {
