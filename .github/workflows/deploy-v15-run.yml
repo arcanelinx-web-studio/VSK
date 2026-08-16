@@ -1,0 +1,29 @@
+name: Run V15 deploy
+
+on:
+  push:
+    branches:
+      - client-review-v15-rebuild
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+        with:
+          ref: client-review-v15-rebuild
+      - name: Extract and commit V15 site
+        shell: bash
+        run: |
+          awk '/^PAYLOAD$/{flag=!flag; next} flag' .github/workflows/deploy-v15-rebuild.yml | tr -d '\n' | base64 -d > /tmp/site.zip
+          unzip -oq /tmp/site.zip -d .
+          rm -f .github/workflows/deploy-v15-rebuild.yml .github/workflows/deploy-v15-run.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rebuild VSK website from organized PHOTOS library"
+          git push origin HEAD:client-review-v15-rebuild
