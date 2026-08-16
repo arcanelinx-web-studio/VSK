@@ -78,6 +78,17 @@ def save_web_image(source: Path, web_path: Path, thumb_path: Path) -> tuple[int,
             converted.unlink(missing_ok=True)
 
 
+def save_pdf_preview(source: Path, web_path: Path, thumb_path: Path) -> tuple[int, int] | None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        prefix = Path(tmpdir) / "page"
+        if not run(["pdftoppm", "-f", "1", "-singlefile", "-png", "-r", "150", str(source), str(prefix)]):
+            return None
+        rendered = prefix.with_suffix(".png")
+        if not rendered.exists():
+            return None
+        return save_web_image(rendered, web_path, thumb_path)
+
+
 def save_web_video(source: Path, video_path: Path, poster_path: Path) -> bool:
     video_path.parent.mkdir(parents=True, exist_ok=True)
     poster_path.parent.mkdir(parents=True, exist_ok=True)
@@ -161,10 +172,7 @@ def main() -> None:
             dims = save_web_image(source, web_path, thumb_path)
             item["kind"] = item["type"] = "image"
             if dims:
-                item.update({
-                    "web": rel_url(web_path), "src": rel_url(web_path), "thumb": rel_url(thumb_path),
-                    "width": dims[0], "height": dims[1]
-                })
+                item.update({"web": rel_url(web_path), "src": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1]})
                 totals["images"] += 1
             else:
                 item.update({"src": rel_url(source), "sourceOnly": True})
@@ -176,18 +184,27 @@ def main() -> None:
             item["kind"] = item["type"] = "video"
             if save_web_video(source, video_path, poster_path):
                 poster = rel_url(poster_path) if poster_path.exists() else None
-                item.update({
-                    "web": rel_url(video_path), "src": rel_url(video_path), "src_mp4": rel_url(video_path),
-                    "poster": poster, "thumb": poster
-                })
+                item.update({"web": rel_url(video_path), "src": rel_url(video_path), "src_mp4": rel_url(video_path), "poster": poster, "thumb": poster})
                 totals["videos"] += 1
             else:
                 item.update({"src": rel_url(source), "sourceOnly": True})
                 totals["source_only"] += 1
 
         elif ext in DOCUMENT_EXTS:
-            item.update({"kind": "document", "type": "document", "src": rel_url(source), "sourceOnly": True})
-            totals["documents"] += 1
+            web_path = IMAGE_DIR / relative_group / f"{item_base}-document.webp"
+            thumb_path = THUMB_DIR / relative_group / f"{item_base}-document.webp"
+            dims = save_pdf_preview(source, web_path, thumb_path)
+            item["kind"] = "document"
+            item["type"] = "image"
+            item["document"] = rel_url(source)
+            if dims:
+                item.update({"src": rel_url(web_path), "thumb": rel_url(thumb_path), "width": dims[0], "height": dims[1], "caption": f"{titlecase(source.stem)} · technical document"})
+                totals["documents"] += 1
+                totals["images"] += 1
+            else:
+                item.update({"type": "source", "src": rel_url(source), "sourceOnly": True})
+                totals["documents"] += 1
+                totals["source_only"] += 1
         else:
             item.update({"kind": "source", "type": "source", "src": rel_url(source), "sourceOnly": True})
             totals["source_only"] += 1
