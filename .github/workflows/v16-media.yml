@@ -8,7 +8,10 @@ on:
     paths:
       - 'PHOTOS/**'
       - 'scripts/build_v16_media.py'
-      - '.github/workflows/v16-media.yml'
+
+concurrency:
+  group: v16-media-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -16,12 +19,13 @@ permissions:
 jobs:
   build-media:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Checkout V16
         uses: actions/checkout@v4
         with:
           ref: client-review-v16-premium
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Install media tools
         run: |
@@ -43,5 +47,6 @@ jobs:
             exit 0
           fi
           git commit -m "Generate V16 web media from organized PHOTOS library"
-          git pull --rebase origin client-review-v16-premium
+          git fetch origin client-review-v16-premium
+          git rebase origin/client-review-v16-premium
           git push origin HEAD:client-review-v16-premium
