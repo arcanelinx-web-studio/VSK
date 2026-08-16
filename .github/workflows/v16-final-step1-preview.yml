@@ -1,0 +1,83 @@
+name: V16 Final Step 1 Visual QA
+
+on:
+  push:
+    branches: [client-review-v16-final-step1-working]
+    paths:
+      - '.github/workflows/v16-final-step1-preview.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step1-working
+          fetch-depth: 1
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start site
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-server.log 2>&1 &
+          echo $! > /tmp/vsk-server.pid
+          sleep 2
+      - name: Render and validate
+        run: |
+          cat > visual-step1.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const checks=[];
+            for (const [name,width,height] of [['1440',1440,1000],['1366',1366,768],['mobile',390,844]]) {
+              const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+              const errors=[];
+              page.on('pageerror',e=>errors.push(String(e)));
+              page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+              await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+              await page.screenshot({path:`step1-${name}.png`,fullPage:name==='1440'});
+              const result=await page.evaluate(()=>{
+                const header=document.querySelector('.site-header');
+                const hero=document.querySelector('.hero');
+                const title=document.querySelector('.hero-title');
+                const cta=document.querySelector('.header-cta');
+                const broken=[...document.images].filter(i=>i.offsetParent!==null && (!i.complete || i.naturalWidth===0)).map(i=>i.src);
+                const h=header?.getBoundingClientRect();
+                const heroBox=hero?.getBoundingClientRect();
+                return {
+                  viewport:innerWidth,
+                  scrollWidth:document.documentElement.scrollWidth,
+                  title:title?.innerText.trim(),
+                  headerBg:getComputedStyle(header).backgroundColor,
+                  headerColor:getComputedStyle(header).color,
+                  headerHeight:h?.height,
+                  heroTop:heroBox?.top,
+                  cta:cta?.innerText.trim(),
+                  broken
+                };
+              });
+              checks.push({name,...result,errors});
+              if(result.scrollWidth>width+2) throw new Error(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
+              if(!result.title?.includes('ENGINEERED') || !result.title?.includes('PRECISION')) throw new Error(`${name}: hero title missing`);
+              if(name!=='mobile' && result.cta!=='Discuss a Machine ↗') throw new Error(`${name}: header CTA mismatch: ${result.cta}`);
+              if(result.broken.length) throw new Error(`${name}: broken visible images: ${result.broken.join(', ')}`);
+              if(errors.length) throw new Error(`${name}: runtime errors: ${errors.join(' | ')}`);
+              await page.close();
+            }
+            fs.writeFileSync('step1-report.json',JSON.stringify(checks,null,2));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node visual-step1.cjs
+          cat step1-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-final-step1-preview
+          path: |
+            step1-*.png
+            step1-report.json
+          retention-days: 14
