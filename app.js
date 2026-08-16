@@ -7,7 +7,7 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = `${href}?v=18.0`;
+    css.href = `${href}?v=18.1`;
     document.head.appendChild(css);
   };
   const ensureFont = () => {
@@ -21,6 +21,7 @@
   ensureFont();
   ensureStylesheet('v16.css');
   ensureStylesheet('architecture.css');
+  ensureStylesheet('architecture-fixes.css');
 
   const isRenderableMedia = (item) => {
     if (!item || item.sourceOnly || item.displayable === false) return false;
@@ -166,12 +167,18 @@
 
   const loadRuntime = () => {
     const legacy = document.createElement('script');
-    legacy.src = 'app-v14.js?v=18.0';
+    legacy.src = 'app-v14.js?v=18.1';
     legacy.defer = true;
     legacy.onload = () => {
       const architecture = document.createElement('script');
-      architecture.src = 'architecture.js?v=18.0';
+      architecture.src = 'architecture.js?v=18.1';
       architecture.defer = true;
+      architecture.onload = () => {
+        const fixes = document.createElement('script');
+        fixes.src = 'architecture-fixes.js?v=18.1';
+        fixes.defer = true;
+        document.body.appendChild(fixes);
+      };
       document.body.appendChild(architecture);
     };
     document.body.appendChild(legacy);
