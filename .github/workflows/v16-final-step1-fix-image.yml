@@ -17,22 +17,30 @@ jobs:
         with:
           ref: client-review-v16-final-step1-working
           fetch-depth: 1
-      - name: Replace missing legacy image
+      - name: Replace broken About image with confirmed PHOTOS-derived media
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old='media/legacy/enclosed-machine.webp'
-          new='media/projects/slotting.webp'
-          if old not in s:
-              raise SystemExit('Expected legacy image reference not found')
-          p.write_text(s.replace(old,new,1))
+          candidates=['media/projects/slotting.webp','media/legacy/enclosed-machine.webp']
+          new='media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114504.webp'
+          changed=False
+          for old in candidates:
+              if old in s:
+                  s=s.replace(old,new,1)
+                  changed=True
+                  break
+          if not changed:
+              raise SystemExit('Expected broken About image reference not found')
+          p.write_text(s)
           PY
+      - name: Verify replacement exists
+        run: test -f 'media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114504.webp'
       - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Fix broken V16 About image' || exit 0
+          git commit -m 'Use confirmed V16 About media' || exit 0
           git push origin HEAD:client-review-v16-final-step1-working
