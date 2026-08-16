@@ -1,0 +1,104 @@
+/* V16 — V14 visual identity retained; header and spacing refined for the client's direction. */
+.v16-premium{--header:84px}
+
+.v16-premium .site-header{
+  height:84px;
+  grid-template-columns:minmax(220px,.8fr) auto auto;
+  gap:26px;
+  padding:0 max(30px,calc((100vw - 1540px)/2));
+  background:rgba(250,250,247,.985);
+  color:var(--ink);
+  border-bottom:1px solid #d8d8d2;
+  box-shadow:none;
+  backdrop-filter:blur(18px);
+}
+.v16-premium .site-header.is-scrolled,
+.v16-premium .site-header.is-solid{
+  height:76px;
+  background:rgba(250,250,247,.985);
+  border-color:#d8d8d2;
+  box-shadow:0 12px 34px rgba(13,24,36,.07);
+}
+.v16-premium .brand{gap:11px}
+.v16-premium .brand img{width:52px;height:52px}
+.v16-premium .is-scrolled .brand img,
+.v16-premium .is-solid .brand img{width:48px;height:48px}
+.v16-premium .brand-copy strong{font-size:15px;color:var(--ink);letter-spacing:-.018em}
+.v16-premium .brand-copy small{font-size:7.5px;color:#68727b;letter-spacing:.065em}
+
+.v16-premium .desktop-nav{gap:18px}
+.v16-premium .desktop-nav a{
+  padding:30px 0 27px;
+  color:#2d3439;
+  font-size:11px;
+  line-height:1;
+  font-weight:650;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.v16-premium .desktop-nav a::after{
+  left:0;right:100%;bottom:15px;height:2px;background:var(--cobalt)
+}
+.v16-premium .desktop-nav a:hover,
+.v16-premium .desktop-nav a.is-current{color:var(--cobalt)}
+.v16-premium .desktop-nav a:hover::after,
+.v16-premium .desktop-nav a.is-current::after{right:0}
+
+.v16-premium .header-cta{
+  height:48px;
+  padding:0 17px;
+  background:transparent;
+  color:var(--cobalt);
+  border:1px solid var(--cobalt);
+  font-family:var(--body);
+  font-size:10.5px;
+  font-weight:650;
+  letter-spacing:.045em;
+  transition:background .22s ease,color .22s ease,transform .22s ease;
+}
+.v16-premium .header-cta:hover{background:var(--cobalt);color:#fff;transform:translateY(-1px)}
+.v16-premium .menu-toggle span{background:var(--ink)}
+
+/* Keep the V14 hero cinematic, but make it feel intentional beneath the light header. */
+.v16-premium .hero{min-height:720px}
+.v16-premium .hero-inner{padding-top:84px}
+.v16-premium .hero-title{font-size:clamp(4.8rem,8.35vw,9.7rem)}
+.v16-premium .hero-overlay{background:linear-gradient(90deg,rgba(7,14,22,.91) 0%,rgba(7,14,22,.69) 40%,rgba(7,14,22,.27) 74%,rgba(7,14,22,.46) 100%),linear-gradient(0deg,rgba(7,14,22,.45),transparent 42%)}
+
+/* More information per 100% desktop viewport without flattening the premium pacing. */
+.v16-premium .section-intro{padding-top:104px}
+.v16-premium .capabilities,
+.v16-premium .projects-showcase{padding-bottom:104px}
+.v16-premium .project-card{min-height:350px}
+.v16-premium .proof-grid article{padding-top:26px;padding-bottom:24px}
+
+/* Complete-media gallery remains editorial rather than becoming a file browser. */
+.v16-premium .gallery-groups{display:grid;gap:72px}
+.v16-premium .gallery-group{border-top:1px solid var(--line);padding-top:26px}
+.v16-premium .gallery-group h3{font-family:var(--display);letter-spacing:-.035em}
+.v16-premium .gallery-filter{border-radius:0}
+
+@media(max-width:1380px){
+  .v16-premium .site-header{grid-template-columns:minmax(190px,.65fr) auto auto;gap:20px;padding-inline:26px}
+  .v16-premium .desktop-nav{gap:14px}
+  .v16-premium .desktop-nav a{font-size:10.3px;letter-spacing:.025em}
+  .v16-premium .brand-copy strong{font-size:14px}
+  .v16-premium .brand-copy small{display:none}
+  .v16-premium .header-cta{padding-inline:13px;font-size:10px}
+}
+
+@media(max-width:1220px){
+  .v16-premium .site-header{grid-template-columns:1fr auto auto}
+  .v16-premium .desktop-nav{display:none}
+  .v16-premium .menu-toggle{display:block}
+}
+
+@media(max-width:760px){
+  .v16-premium{--header:72px}
+  .v16-premium .site-header,.v16-premium .site-header.is-scrolled,.v16-premium .site-header.is-solid{height:72px;padding-inline:16px}
+  .v16-premium .brand img,.v16-premium .is-scrolled .brand img,.v16-premium .is-solid .brand img{width:44px;height:44px}
+  .v16-premium .brand-copy strong{font-size:13px}
+  .v16-premium .header-cta{display:none}
+  .v16-premium .hero-inner{padding-top:72px}
+}
