@@ -1,4 +1,4 @@
-# Production-only visual QA with exact failed-request reporting
+# Production-only visual QA with full V16 runtime dependencies
 name: V16 Final Step 1 Visual QA
 
 on:
@@ -19,8 +19,10 @@ jobs:
           sparse-checkout: |
             /index.html
             /styles.css
+            /v16.css
             /v16-final.css
             /app.js
+            /app-v14.js
             /data.js
             /media/**
       - name: Install Playwright
