@@ -167,18 +167,21 @@
 
   const loadRuntime = () => {
     const originalPage = document.body.dataset.page || page;
-    if (page === 'projects') document.body.dataset.page = 'projects-ia';
+    if (page === 'projects') {
+      document.body.dataset.page = 'projects-ia';
+      document.querySelector('[data-additional-projects]')?.removeAttribute('data-additional-projects');
+    }
     const legacy = document.createElement('script');
-    legacy.src = 'app-v14.js?v=18.2';
+    legacy.src = 'app-v14.js?v=18.3';
     legacy.defer = true;
     legacy.onload = () => {
       if (page === 'projects') document.body.dataset.page = originalPage;
       const architecture = document.createElement('script');
-      architecture.src = 'architecture.js?v=18.2';
+      architecture.src = 'architecture.js?v=18.3';
       architecture.defer = true;
       architecture.onload = () => {
         const fixes = document.createElement('script');
-        fixes.src = 'architecture-fixes.js?v=18.2';
+        fixes.src = 'architecture-fixes.js?v=18.3';
         fixes.defer = true;
         document.body.appendChild(fixes);
       };
