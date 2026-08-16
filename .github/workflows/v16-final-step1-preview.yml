@@ -1,4 +1,4 @@
-# Sparse production-only visual QA after confirmed PHOTOS-derived About image fix
+# Production-only visual QA with complete media subtree
 name: V16 Final Step 1 Visual QA
 
 on:
@@ -17,12 +17,12 @@ jobs:
           fetch-depth: 1
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            index.html
-            styles.css
-            v16-final.css
-            app.js
-            data.js
-            media
+            /index.html
+            /styles.css
+            /v16-final.css
+            /app.js
+            /data.js
+            /media/**
       - name: Install Playwright
         run: |
           npm init -y >/dev/null 2>&1
