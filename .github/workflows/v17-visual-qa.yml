@@ -1,6 +1,6 @@
 name: V17 visual QA
 
-# Final 1440px / 100% browser validation after buyer-copy and Projects fixes.
+# Final 1440px / 100% browser validation after the obsolete Projects async hook was removed.
 on:
   push:
     branches:
@@ -44,33 +44,22 @@ jobs:
             ['reconditioning','reconditioning.html'],
             ['retrofit','retrofit-cnc.html']
           ];
-          const report=[];
-          let failed=false;
+          const report=[]; let failed=false;
           for (const [name,path] of pages) {
-            const page=await context.newPage();
-            const errors=[]; const failedRequests=[];
+            const page=await context.newPage(); const errors=[]; const failedRequests=[];
             page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
             page.on('pageerror',err=>errors.push(String(err)));
             page.on('requestfailed',req=>{const url=req.url();if(url.startsWith('http://127.0.0.1:8000/'))failedRequests.push(`${url} :: ${req.failure()?.errorText||'failed'}`)});
             await page.goto(`http://127.0.0.1:8000/${path}`,{waitUntil:'networkidle',timeout:45000});
             await page.waitForTimeout(1200);
             const metrics=await page.evaluate(()=>{
-              const header=document.querySelector('.site-header');
-              const nav=document.querySelector('.desktop-nav');
-              const cta=document.querySelector('.header-cta');
+              const header=document.querySelector('.site-header'),nav=document.querySelector('.desktop-nav'),cta=document.querySelector('.header-cta');
               const rect=e=>e?e.getBoundingClientRect():null;
-              const images=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.top<innerHeight*2.2 && r.bottom>-100});
-              return {
-                width:innerWidth,
-                scrollWidth:document.documentElement.scrollWidth,
-                header:rect(header),nav:rect(nav),cta:rect(cta),
-                brokenVisibleImages:images.filter(img=>img.complete&&img.naturalWidth===0).map(img=>img.getAttribute('src')),
-                h1:document.querySelector('h1')?.innerText||'',
-                bodyClass:document.body.className
-              };
+              const images=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.top<innerHeight*2.2&&r.bottom>-100});
+              return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,header:rect(header),nav:rect(nav),cta:rect(cta),brokenVisibleImages:images.filter(img=>img.complete&&img.naturalWidth===0).map(img=>img.getAttribute('src')),h1:document.querySelector('h1')?.innerText||'',bodyClass:document.body.className};
             });
             const overflow=metrics.scrollWidth>metrics.width+2;
-            const headerOverlap=metrics.nav&&metrics.cta ? metrics.nav.right>metrics.cta.left-6 : false;
+            const headerOverlap=metrics.nav&&metrics.cta?metrics.nav.right>metrics.cta.left-6:false;
             const bad=overflow||headerOverlap||metrics.brokenVisibleImages.length||errors.length||failedRequests.length;
             if(bad)failed=true;
             report.push({name,path,overflow,headerOverlap,errors,failedRequests,...metrics});
@@ -78,10 +67,7 @@ jobs:
             if(['home','projects','gallery','archive'].includes(name)) await page.screenshot({path:`visual-qa/${name}-full.png`,fullPage:true});
             await page.close();
           }
-          fs.writeFileSync('visual-qa/report.json',JSON.stringify(report,null,2));
-          console.log(JSON.stringify(report,null,2));
-          await browser.close();
-          if(failed) process.exit(1);
+          fs.writeFileSync('visual-qa/report.json',JSON.stringify(report,null,2)); console.log(JSON.stringify(report,null,2)); await browser.close(); if(failed)process.exit(1);
           JS
           node visual-qa-runner.mjs
           rm visual-qa-runner.mjs
@@ -89,6 +75,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v17-visual-qa-final
+          name: v17-visual-qa-final-race-fixed
           path: visual-qa
           if-no-files-found: error
