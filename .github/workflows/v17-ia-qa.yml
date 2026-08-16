@@ -1,6 +1,6 @@
 name: V17 IA review QA
 
-# Validates the corrected buyer-first IA branch before visual review.
+# Final static validation of the buyer-first IA branch before promotion.
 on:
   push:
     branches:
@@ -34,16 +34,13 @@ jobs:
                   for key in ('href','src'):
                       if key in d: self.refs.append(d[key])
           for page in pages:
-              path=Path(page)
-              assert path.exists(), f'missing page {page}'
+              path=Path(page); assert path.exists(), f'missing page {page}'
               p=P(); p.feed(path.read_text(errors='ignore'))
               for ref in p.refs:
                   if not ref or ref.startswith(('#','http:','https:','mailto:','tel:','data:','javascript:')): continue
                   target=unquote(urlparse(ref).path)
-                  if not target: continue
-                  if not Path(target).exists(): missing.append((page,ref))
-          if missing:
-              raise SystemExit('Missing local refs: '+repr(missing[:30]))
+                  if target and not Path(target).exists(): missing.append((page,ref))
+          if missing: raise SystemExit('Missing local refs: '+repr(missing[:30]))
           print('HTML/local references: PASS')
           PY
       - name: CSS integrity and palette layer
@@ -51,8 +48,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           for f in ['styles.css','architecture.css','architecture-fixes.css']:
-              s=Path(f).read_text()
-              assert s.count('{')==s.count('}'), f'unbalanced CSS in {f}'
+              s=Path(f).read_text(); assert s.count('{')==s.count('}'), f'unbalanced CSS in {f}'
           layer=(Path('architecture.css').read_text()+Path('architecture-fixes.css').read_text()).lower()
           for token in ['#164a9c','#167bc4']:
               assert token not in layer, f'old blue leaked into final architecture layer: {token}'
@@ -66,9 +62,7 @@ jobs:
           import json
           from pathlib import Path
           m=json.loads(Path('media/v16/manifest.json').read_text())
-          assert m.get('source')=='PHOTOS'
-          assert m['summary']['groups']>=34
-          assert m['summary']['images']>=110
+          assert m.get('source')=='PHOTOS'; assert m['summary']['groups']>=34; assert m['summary']['images']>=110
           missing=[]; checked=0
           for g in m['groups']:
               for i in g.get('items',[]):
@@ -89,20 +83,22 @@ jobs:
                           checked+=1
                           if not Path(poster).exists(): missing.append(poster)
           if missing: raise SystemExit('Missing generated media: '+repr(missing[:30]))
-          print('Generated media:',checked,'paths PASS')
-          print('Manifest summary:',m['summary'])
+          print('Generated media:',checked,'paths PASS'); print('Manifest summary:',m['summary'])
           PY
       - name: Final architecture contract
         run: |
           python - <<'PY'
           from pathlib import Path
-          app=Path('app.js').read_text()
-          arch=Path('architecture.js').read_text()
+          app=Path('app.js').read_text(); arch=Path('architecture.js').read_text(); fixes=Path('architecture-fixes.css').read_text()
           for label in ['Home','Company','Solutions','Reconditioning','Retrofit & CNC','Projects','Experience','Discuss a Machine']:
               assert label in app, f'missing header item {label}'
           for phrase in ['What do you need to solve?','Machines built around','Engineering families','Have a production']:
               assert phrase.lower() in arch.lower(), f'missing buyer-first content: {phrase}'
+          for forbidden in ['client’s organized','client media library','source company profile','supplied by the client']:
+              assert forbidden not in arch.lower(), f'internal copy leaked: {forbidden}'
           assert 'media/v16/manifest.json' in app
+          assert '[data-gallery-filter="all"]' in fixes
+          assert 'archive-hero-number span' in fixes
           assert Path('assets-source/VSK_ElectroMech_Corporate_Profile.pdf').exists()
           assert Path('assets-source/VSK_Electro-Mech_Solutions_Professional_Catalog.pdf').exists()
           print('Architecture contract: PASS')
