@@ -3,12 +3,56 @@
 
   document.body.classList.add('v16-premium');
 
-  if (!document.querySelector('link[href="v16.css"]')) {
+  if (!document.querySelector('link[href^="v16.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'v16.css';
+    css.href = 'v16.css?v=16.2';
     document.head.appendChild(css);
   }
+
+  const isRenderableMedia = (item) => {
+    if (!item || item.sourceOnly || item.displayable === false) return false;
+    const src = item.thumb || item.poster || item.src || item.src_mp4 || item.web || '';
+    if (!src) return false;
+    if (item.type === 'image') return !/\.(heic|heif)(?:$|[?#])/i.test(src);
+    if (item.type === 'video') return Boolean((item.poster || item.thumb) && (item.src_mp4 || item.web || item.src));
+    return false;
+  };
+
+  const cleanManifest = (input) => {
+    if (!input || !Array.isArray(input.groups)) return input;
+    const groups = input.groups
+      .map(group => ({ ...group, items: (group.items || []).filter(isRenderableMedia) }))
+      .filter(group => group.items.length);
+    const images = groups.reduce((n, group) => n + group.items.filter(item => item.type === 'image').length, 0);
+    const videos = groups.reduce((n, group) => n + group.items.filter(item => item.type === 'video').length, 0);
+    return {
+      ...input,
+      groups,
+      summary: { ...(input.summary || {}), groups: groups.length, images, videos }
+    };
+  };
+
+  // V14's gallery/archive runtime fetches archive-manifest.json itself. Intercept that
+  // one response so source-only HEIC/unsupported files never become broken browser tiles.
+  const nativeFetch = window.fetch.bind(window);
+  window.fetch = (input, init) => {
+    const url = typeof input === 'string' ? input : (input && input.url) || '';
+    return nativeFetch(input, init).then(async response => {
+      if (!response.ok || !url.includes('media/archive-manifest.json')) return response;
+      try {
+        const data = await response.clone().json();
+        const clean = cleanManifest(data);
+        return new Response(JSON.stringify(clean), {
+          status: response.status,
+          statusText: response.statusText,
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+        });
+      } catch (_) {
+        return response;
+      }
+    });
+  };
 
   const page = document.body.dataset.page || 'home';
   const homeHref = (hash) => page === 'home' ? hash : `index.html${hash}`;
@@ -55,7 +99,7 @@
     kellenberg: 'media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0017.webp',
     jig: 'media/v16/images/retrofitting-and-service/jig-grinding-machine/img-0137.webp',
     rod: 'media/v16/images/spm-cnc-machines/rod-boring-machine/1520917541365.webp',
-    zcut: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/bexx0731.webp',
+    zcut: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/img-0601.webp',
     slotting: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp',
     airleak: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp',
     paint: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/paint-aggitating-machine/paint-aggitating-unit.webp',
@@ -65,14 +109,15 @@
 
   const loadOriginal = () => {
     const script = document.createElement('script');
-    script.src = 'app-v14.js';
+    script.src = 'app-v14.js?v=16.2';
     script.defer = true;
     document.body.appendChild(script);
   };
 
-  fetch('media/v16/manifest.json', { cache: 'no-store' })
+  nativeFetch('media/v16/manifest.json', { cache: 'no-store' })
     .then(r => r.ok ? r.json() : Promise.reject(new Error('V16 media not built yet')))
-    .then(manifest => {
+    .then(rawManifest => {
+      const manifest = cleanManifest(rawManifest);
       if (typeof siteProjects !== 'undefined') {
         siteProjects.forEach(project => { if (mediaMap[project.id]) project.cover = mediaMap[project.id]; });
       }
