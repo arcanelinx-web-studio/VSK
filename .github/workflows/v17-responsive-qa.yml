@@ -1,0 +1,49 @@
+name: V17 responsive smoke QA
+
+on:
+  push:
+    branches:
+      - client-review-v17-ia-working
+    paths:
+      - '.github/workflows/v17-responsive-qa.yml'
+
+jobs:
+  responsive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/vsk-http.log 2>&1 &
+          sleep 2
+      - name: Check 1366 desktop and 390 mobile
+        run: |
+          cat > responsive-qa.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const cases=[
+            {name:'desktop-1366',viewport:{width:1366,height:768},pages:['index.html','projects.html','gallery.html','machines.html']},
+            {name:'mobile-390',viewport:{width:390,height:844},pages:['index.html','projects.html','gallery.html','experience.html']}
+          ];
+          let bad=false;
+          for(const c of cases){
+            const context=await browser.newContext({viewport:c.viewport,deviceScaleFactor:1});
+            for(const path of c.pages){
+              const page=await context.newPage();const errors=[];
+              page.on('pageerror',e=>errors.push(String(e)));
+              await page.goto(`http://127.0.0.1:8000/${path}`,{waitUntil:'networkidle',timeout:45000});await page.waitForTimeout(700);
+              const m=await page.evaluate(()=>{const q=e=>e?e.getBoundingClientRect():null;const nav=document.querySelector('.desktop-nav'),cta=document.querySelector('.header-cta'),toggle=document.querySelector('.menu-toggle');return{w:innerWidth,sw:document.documentElement.scrollWidth,nav:q(nav),cta:q(cta),toggle:q(toggle),broken:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src)}});
+              const overflow=m.sw>m.w+2;const collision=m.nav&&m.cta&&getComputedStyle(await page.$('.desktop-nav')).display!=='none'?m.nav.right>m.cta.left-4:false;
+              console.log(c.name,path,{overflow,collision,errors,broken:m.broken.length});
+              if(overflow||collision||errors.length||m.broken.length)bad=true;
+              await page.close();
+            }
+            await context.close();
+          }
+          await browser.close();if(bad)process.exit(1);
+          JS
+          node responsive-qa.mjs
+          rm responsive-qa.mjs
