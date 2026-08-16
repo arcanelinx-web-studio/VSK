@@ -1,0 +1,71 @@
+name: Render original V15 glance
+
+on:
+  push:
+    branches:
+      - v15-original-glance
+    paths:
+      - '.github/workflows/render-v15-glance.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install browser
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start site
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/v15-http.log 2>&1 &
+          sleep 2
+      - name: Render V15
+        run: |
+          mkdir -p v15-glance
+          cat > v15-glance-runner.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+          const browser = await chromium.launch({headless:true});
+          const context = await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});
+          const page = await context.newPage();
+          const errors=[];
+          page.on('pageerror',e=>errors.push(String(e)));
+          page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+          await page.goto('http://127.0.0.1:8000/index.html',{waitUntil:'networkidle',timeout:45000});
+          await page.waitForTimeout(1800);
+          const report=await page.evaluate(()=>({
+            width:innerWidth,
+            scrollWidth:document.documentElement.scrollWidth,
+            title:document.title,
+            h1:document.querySelector('h1')?.innerText||'',
+            hero:document.querySelector('.hero')?.getBoundingClientRect()?.height||0,
+            broken:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.getAttribute('src'))
+          }));
+          await page.screenshot({path:'v15-glance/v15-hero-1440.png',fullPage:false});
+          await page.screenshot({path:'v15-glance/v15-full-page.png',fullPage:true});
+          const sections=['solutions','work','retrofit','company','contact'];
+          for(const id of sections){
+            const el=page.locator(`#${id}`);
+            if(await el.count()){
+              await el.scrollIntoViewIfNeeded();
+              await page.waitForTimeout(500);
+              await page.screenshot({path:`v15-glance/v15-${id}.png`,fullPage:false});
+            }
+          }
+          fs.writeFileSync('v15-glance/report.json',JSON.stringify({report,errors},null,2));
+          console.log(JSON.stringify({report,errors},null,2));
+          await browser.close();
+          if(report.scrollWidth>report.width+2 || report.broken.length || errors.length) process.exit(1);
+          JS
+          node v15-glance-runner.mjs
+          rm v15-glance-runner.mjs
+      - name: Upload V15 screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-v15-glance
+          path: v15-glance
+          if-no-files-found: error
