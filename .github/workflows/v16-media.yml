@@ -26,7 +26,7 @@ jobs:
       - name: Install media tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libheif-examples
+          sudo apt-get install -y ffmpeg libheif-examples poppler-utils
           python -m pip install --upgrade pip
           python -m pip install Pillow
 
@@ -37,10 +37,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add media/v16
+          git add media/v16 media/archive-manifest.json
           if git diff --cached --quiet; then
             echo "No media changes to commit"
             exit 0
           fi
           git commit -m "Generate V16 web media from organized PHOTOS library"
+          git pull --rebase origin client-review-v16-premium
           git push origin HEAD:client-review-v16-premium
