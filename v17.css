@@ -1,0 +1,257 @@
+/* V17 — final polish: V14/V16 engineering identity + restrained cinematic interaction */
+
+.v17-final{
+  --v17-navy:#0d1824;
+  --v17-navy-2:#101f2d;
+  --v17-cobalt:#164a9c;
+  --v17-blue:#167bc4;
+  --v17-sky:#69b7ec;
+  --v17-ivory:#fafaf7;
+  --v17-stone:#f1f0ec;
+  --v17-line:#d5d5d0;
+  --v17-shadow:0 18px 54px rgba(13,24,36,.12);
+  --v17-ease:cubic-bezier(.2,.68,.2,1);
+}
+
+/* --------------------------------------------------------------------------
+   Header — keep the V14 cobalt/navy identity, with the cleaner V16 structure.
+   -------------------------------------------------------------------------- */
+.v17-final .site-header,
+.v17-final .site-header.is-solid,
+.v17-final .site-header.is-scrolled{
+  height:78px;
+  grid-template-columns:minmax(250px,.9fr) auto auto;
+  gap:28px;
+  padding-left:max(28px,calc((100vw - 1420px)/2));
+  padding-right:max(28px,calc((100vw - 1420px)/2));
+  background:rgba(13,24,36,.975);
+  color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 10px 34px rgba(4,10,16,.12);
+  backdrop-filter:blur(18px);
+}
+.v17-final .brand{gap:12px}
+.v17-final .brand img,
+.v17-final .is-scrolled .brand img,
+.v17-final .is-solid .brand img{width:50px;height:50px}
+.v17-final .brand-copy strong{font-size:15.5px;color:#fff;letter-spacing:-.018em}
+.v17-final .brand-copy small{font-size:8px;color:rgba(255,255,255,.57);letter-spacing:.07em}
+.v17-final .desktop-nav{gap:24px}
+.v17-final .desktop-nav a{
+  padding:30px 0 27px;
+  color:rgba(255,255,255,.7);
+  font-family:var(--mono);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.065em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.v17-final .desktop-nav a::after{height:2px;bottom:18px;background:var(--v17-sky)}
+.v17-final .desktop-nav a:hover,
+.v17-final .desktop-nav a.is-current{color:#fff}
+.v17-final .header-cta{
+  min-width:190px;
+  height:46px;
+  padding:0 15px 0 17px;
+  border:1px solid rgba(105,183,236,.72);
+  background:transparent;
+  color:#fff;
+  font-family:var(--mono);
+  font-size:9.5px;
+  font-weight:500;
+  letter-spacing:.06em;
+  transition:background .25s var(--v17-ease),border-color .25s var(--v17-ease),transform .25s var(--v17-ease);
+}
+.v17-final .header-cta span{transition:transform .25s var(--v17-ease)}
+.v17-final .header-cta:hover{background:var(--v17-cobalt);border-color:var(--v17-cobalt);transform:translateY(-2px)}
+.v17-final .header-cta:hover span{transform:translate(3px,-3px)}
+.v17-final .menu-toggle span{background:#fff}
+
+/* --------------------------------------------------------------------------
+   Hero — staged entrance, controlled rather than flashy.
+   -------------------------------------------------------------------------- */
+.v17-final .hero{min-height:700px}
+.v17-final .hero-media{clip-path:inset(0 0 0 12%);opacity:.72;transition:clip-path 1.05s var(--v17-ease),opacity .8s ease}
+.v17-final.v17-ready .hero-media{clip-path:inset(0);opacity:1}
+.v17-final .hero-kicker,
+.v17-final .hero-title span,
+.v17-final .hero-lower,
+.v17-final .hero-reference,
+.v17-final .scroll-cue{opacity:0;transform:translateY(18px)}
+.v17-final.v17-ready .hero-kicker{animation:v17-rise .65s .08s both var(--v17-ease)}
+.v17-final.v17-ready .hero-title span:first-child{animation:v17-rise .82s .17s both var(--v17-ease)}
+.v17-final.v17-ready .hero-title span:last-child{animation:v17-rise .9s .26s both var(--v17-ease)}
+.v17-final.v17-ready .hero-lower{animation:v17-rise .72s .42s both var(--v17-ease)}
+.v17-final.v17-ready .hero-reference{animation:v17-rise .65s .58s both var(--v17-ease)}
+.v17-final.v17-ready .scroll-cue{animation:v17-rise .55s .65s both var(--v17-ease)}
+@keyframes v17-rise{to{opacity:1;transform:none}}
+.v17-final .hero-title{font-size:clamp(4.7rem,8.15vw,9.25rem);line-height:.8;max-width:1220px}
+.v17-final .hero-lower{margin-top:34px}
+.v17-final .hero-actions .btn span,
+.v17-final .text-arrow span,
+.v17-final .big-link i,
+.v17-final .contact-main span{transition:transform .25s var(--v17-ease)}
+.v17-final .hero-actions .btn:hover span,
+.v17-final .text-arrow:hover span{transform:translateX(4px)}
+.v17-final .hero-actions .btn-outline:hover span,
+.v17-final .header-cta:hover span{transform:translate(3px,-3px)}
+
+/* --------------------------------------------------------------------------
+   Rhythm — less repetitive vertical whitespace at 100% desktop zoom.
+   -------------------------------------------------------------------------- */
+.v17-final .section-intro{padding-top:clamp(72px,5.6vw,92px);margin-bottom:clamp(30px,3vw,44px)}
+.v17-final .projects-showcase,
+.v17-final .capabilities{padding-bottom:clamp(72px,5.5vw,92px)}
+.v17-final .archive-preview,
+.v17-final .system-detail,
+.v17-final .about{padding-top:clamp(72px,5.5vw,92px);padding-bottom:clamp(72px,5.5vw,92px)}
+.v17-final .process{padding-bottom:clamp(62px,5vw,80px)}
+.v17-final .contact{padding-top:clamp(70px,5.5vw,92px);padding-bottom:clamp(70px,5.5vw,92px)}
+
+/* --------------------------------------------------------------------------
+   Reveal vocabulary — one visual system, several precise behaviours.
+   -------------------------------------------------------------------------- */
+.v17-reveal-up,.v17-reveal-left,.v17-reveal-clip{opacity:0;transition:opacity .65s ease,transform .75s var(--v17-ease),clip-path .9s var(--v17-ease)}
+.v17-reveal-up{transform:translateY(22px)}
+.v17-reveal-left{transform:translateX(-24px)}
+.v17-reveal-clip{clip-path:inset(0 12% 0 0)}
+.v17-reveal-up.is-v17-visible,.v17-reveal-left.is-v17-visible,.v17-reveal-clip.is-v17-visible{opacity:1;transform:none;clip-path:inset(0)}
+
+/* --------------------------------------------------------------------------
+   Buttons / links — consistent interaction grammar.
+   -------------------------------------------------------------------------- */
+.v17-final :is(.btn,.text-arrow,.big-link,.contact-main,.archive-row,.gallery-tile,.project-card,.project-page-card){transition:transform .26s var(--v17-ease),border-color .26s ease,box-shadow .26s ease,background .26s ease,color .26s ease}
+.v17-final .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(22,74,156,.2)}
+.v17-final .text-arrow:hover{color:var(--v17-cobalt)}
+.v17-final .big-link:hover i{transform:translate(4px,-3px)}
+
+/* --------------------------------------------------------------------------
+   Capabilities — clearer active state and image transition.
+   -------------------------------------------------------------------------- */
+.v17-final .capability-row{position:relative}
+.v17-final .capability-row::before{content:"";position:absolute;left:0;bottom:-1px;width:0;height:2px;background:var(--v17-cobalt);transition:width .28s var(--v17-ease)}
+.v17-final .capability-row:hover::before,.v17-final .capability-row.is-active::before{width:100%}
+.v17-final .capability-row:hover strong,.v17-final .capability-row.is-active strong{transform:translateX(3px)}
+.v17-final .capability-row strong{transition:transform .25s var(--v17-ease),color .25s ease}
+.v17-final .capability-media .media-frame{box-shadow:0 16px 38px rgba(13,24,36,.08)}
+
+/* --------------------------------------------------------------------------
+   Project cards — mini engineering dossiers, not image/title tiles.
+   -------------------------------------------------------------------------- */
+.v17-final .project-card,
+.v17-final .project-page-card{border-color:rgba(208,212,210,.85)}
+.v17-final .project-card:hover,
+.v17-final .project-page-card:hover{transform:translateY(-4px);box-shadow:var(--v17-shadow);border-color:#b7c5d0}
+.v17-final .project-card .project-image img,
+.v17-final .project-page-card .project-page-media img{transition:transform .6s var(--v17-ease),filter .35s ease}
+.v17-final .project-card:hover .project-image img,
+.v17-final .project-page-card:hover .project-page-media img{transform:scale(1.035);filter:saturate(1.04) contrast(1.02)}
+.v17-card-tech{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.v17-card-tech span{border:1px solid rgba(255,255,255,.3);padding:4px 6px;font:500 8px/1.2 var(--mono);letter-spacing:.055em;color:rgba(255,255,255,.76);text-transform:uppercase}
+.project-page-card .v17-card-tech span{border-color:#cfd4d1;color:#63707a;background:#fafaf7}
+.v17-case-action{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.22);font:500 9px/1.2 var(--mono);letter-spacing:.07em;text-transform:uppercase}
+.project-page-card .v17-case-action{border-color:#dfe2df;color:var(--v17-cobalt)}
+.v17-case-action i{font-style:normal;transition:transform .22s var(--v17-ease)}
+.project-card:hover .v17-case-action i,.project-page-card:hover .v17-case-action i{transform:translateX(4px)}
+
+/* --------------------------------------------------------------------------
+   Precision evidence — data first, motion second.
+   -------------------------------------------------------------------------- */
+.v17-final .metric-card{overflow:hidden}
+.v17-final .metric-card::after{content:"";position:absolute;inset:auto 0 0;height:2px;background:var(--v17-cobalt);transform:scaleX(0);transform-origin:left;transition:transform .55s var(--v17-ease)}
+.v17-final .metric-card.is-v17-active::after{transform:scaleX(1)}
+.v17-final .metric-number{font-variant-numeric:tabular-nums}
+.v17-final .metric-card:hover{transform:translateY(-3px);background:#fff;box-shadow:0 14px 34px rgba(13,24,36,.08)}
+
+/* --------------------------------------------------------------------------
+   Process timeline — line draws, stages activate sequentially.
+   -------------------------------------------------------------------------- */
+.v17-final .process-line{position:relative}
+.v17-final .process-line>i{height:2px;background:var(--v17-cobalt);transform-origin:left;transition:width 1.3s var(--v17-ease)}
+.v17-final .process-line article{transition:background .35s ease,color .35s ease,transform .4s var(--v17-ease)}
+.v17-final .process-line article.is-v17-stage{background:rgba(255,255,255,.72);transform:translateY(-3px)}
+.v17-final .process-line article.is-v17-stage span{color:var(--v17-cobalt)}
+
+/* --------------------------------------------------------------------------
+   Archive — intentionally dense, technical, database-like.
+   -------------------------------------------------------------------------- */
+.v17-final .archive-browser{padding-top:42px}
+.v17-final .archive-toolbar{position:sticky;top:78px;z-index:40;background:rgba(250,250,247,.94);backdrop-filter:blur(12px);padding:12px 0;border-bottom:1px solid var(--v17-line)}
+.v17-final .archive-row{min-height:70px;grid-template-columns:90px 1fr 180px 28px}
+.v17-final .archive-row:hover{transform:translateX(4px);background:#fff}
+.v17-final .archive-row i{transition:transform .22s var(--v17-ease)}
+.v17-final .archive-row:hover i{transform:translateX(4px)}
+.v17-final .archive-visual-grid{gap:14px}
+.v17-final .archive-visual-card{overflow:hidden}
+.v17-final .archive-visual-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(13,24,36,.1)}
+.v17-final .archive-visual-media{width:100%;aspect-ratio:4/3;overflow:hidden;background:#e7e8e4}
+.v17-final .archive-visual-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--v17-ease)}
+.v17-final .archive-visual-card:hover .archive-visual-media img{transform:scale(1.025)}
+
+/* --------------------------------------------------------------------------
+   Gallery — project storytelling, but every preview remains the same size.
+   -------------------------------------------------------------------------- */
+.v17-final .gallery-browser{padding-top:80px}
+.v17-final .gallery-project-group{position:relative;padding-top:28px}
+.v17-final .gallery-project-group::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,var(--v17-cobalt),#cfd2cf 26%,#cfd2cf)}
+.v17-final .gallery-project-group>header{padding-bottom:2px}
+.v17-final .gallery-project-group>header h3{max-width:850px}
+.v17-final .gallery-project-media{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.v17-final .gallery-tile,
+.v17-final .gallery-tile:nth-child(n),
+.v17-final .gallery-tile.is-portrait,
+.v17-final .gallery-tile.is-technical{aspect-ratio:4/3;overflow:hidden;background:#e5e6e2}
+.v17-final .gallery-tile:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(13,24,36,.12)}
+.v17-final .gallery-tile img{transition:transform .48s var(--v17-ease),filter .3s ease}
+.v17-final .gallery-tile.is-photo:hover img{transform:scale(1.025)}
+.v17-final .gallery-tile-caption{backdrop-filter:blur(5px)}
+.v17-final .gallery-kind{border:1px solid rgba(255,255,255,.14)}
+
+/* --------------------------------------------------------------------------
+   Requirement wizard — engineering intake interface.
+   -------------------------------------------------------------------------- */
+.v17-final .quote-panel{background:#f8f8f4}
+.v17-final .quote-head{border-bottom:1px solid #d5d7d3;padding-bottom:20px}
+.v17-final .quote-progress{gap:5px}
+.v17-final .quote-progress i{height:3px;background:#d3d6d3;transition:background .28s ease,transform .28s var(--v17-ease)}
+.v17-final .quote-progress i.is-active{background:var(--v17-cobalt);transform:scaleY(1.25)}
+.v17-final .quote-options button{position:relative;background:transparent;transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s var(--v17-ease)}
+.v17-final .quote-options button:hover{transform:translateX(4px);border-color:var(--v17-cobalt)}
+.v17-final .quote-options button.is-v17-selected{background:var(--v17-navy);border-color:var(--v17-navy);color:#fff}
+.v17-final .quote-step.is-active{animation:v17-step .42s both var(--v17-ease)}
+@keyframes v17-step{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.v17-final input:focus,.v17-final textarea:focus{border-color:var(--v17-cobalt);box-shadow:0 0 0 3px rgba(22,74,156,.08)}
+
+/* --------------------------------------------------------------------------
+   Mobile — deliberately composed, not a collapsed desktop.
+   -------------------------------------------------------------------------- */
+@media(max-width:1220px){
+  .v17-final .site-header,.v17-final .site-header.is-solid,.v17-final .site-header.is-scrolled{grid-template-columns:1fr auto;height:76px}
+  .v17-final .desktop-nav,.v17-final .header-cta{display:none}
+  .v17-final .menu-toggle{display:block}
+}
+@media(max-width:1024px){
+  .v17-final .archive-toolbar{position:static}
+  .v17-final .gallery-project-media{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .v17-final .site-header,.v17-final .site-header.is-solid,.v17-final .site-header.is-scrolled{height:72px;padding-inline:15px}
+  .v17-final .brand-copy strong{font-size:13.5px;white-space:normal;max-width:215px}
+  .v17-final .brand-copy small{display:none}
+  .v17-final .hero{min-height:640px}
+  .v17-final .hero-inner{justify-content:flex-end;padding:96px 0 104px}
+  .v17-final .hero-title{font-size:clamp(3.45rem,17vw,5.2rem);line-height:.84}
+  .v17-final .hero-lower{grid-template-columns:1fr;margin-top:24px}
+  .v17-final .hero-actions{justify-self:stretch;display:grid}
+  .v17-final .gallery-project-media{grid-template-columns:1fr}
+  .v17-final .mobile-menu-panel{padding:24px 20px}
+  .v17-final .mobile-menu nav a{font-family:var(--display);font-size:25px;padding:17px 0}
+  .v17-final .mobile-menu nav span{color:var(--v17-sky)}
+  .v17-final .process-line article{min-height:150px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .v17-final .hero-media,.v17-final .hero-kicker,.v17-final .hero-title span,.v17-final .hero-lower,.v17-final .hero-reference,.v17-final .scroll-cue,
+  .v17-reveal-up,.v17-reveal-left,.v17-reveal-clip{opacity:1!important;transform:none!important;clip-path:none!important;animation:none!important;transition:none!important}
+}
