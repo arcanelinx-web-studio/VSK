@@ -35,9 +35,9 @@ jobs:
               const page=await context.newPage();const errors=[];
               page.on('pageerror',e=>errors.push(String(e)));
               await page.goto(`http://127.0.0.1:8000/${path}`,{waitUntil:'networkidle',timeout:45000});await page.waitForTimeout(700);
-              const m=await page.evaluate(()=>{const q=e=>e?e.getBoundingClientRect():null;const nav=document.querySelector('.desktop-nav'),cta=document.querySelector('.header-cta'),toggle=document.querySelector('.menu-toggle');return{w:innerWidth,sw:document.documentElement.scrollWidth,nav:q(nav),cta:q(cta),toggle:q(toggle),broken:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src)}});
-              const overflow=m.sw>m.w+2;const collision=m.nav&&m.cta&&getComputedStyle(await page.$('.desktop-nav')).display!=='none'?m.nav.right>m.cta.left-4:false;
-              console.log(c.name,path,{overflow,collision,errors,broken:m.broken.length});
+              const m=await page.evaluate(()=>{const q=e=>e?e.getBoundingClientRect():null;const nav=document.querySelector('.desktop-nav'),cta=document.querySelector('.header-cta'),toggle=document.querySelector('.menu-toggle');return{w:innerWidth,sw:document.documentElement.scrollWidth,nav:q(nav),navDisplay:nav?getComputedStyle(nav).display:'none',cta:q(cta),toggle:q(toggle),broken:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src)}});
+              const overflow=m.sw>m.w+2;const collision=m.navDisplay!=='none'&&m.nav&&m.cta?m.nav.right>m.cta.left-4:false;
+              console.log(c.name,path,{overflow,collision,errors,broken:m.broken.length,navDisplay:m.navDisplay});
               if(overflow||collision||errors.length||m.broken.length)bad=true;
               await page.close();
             }
