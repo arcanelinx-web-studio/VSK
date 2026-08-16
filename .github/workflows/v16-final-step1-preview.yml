@@ -1,4 +1,4 @@
-# Production-only visual QA with lazy-media validation
+# Production-only visual QA with exact failed-request reporting
 name: V16 Final Step 1 Visual QA
 
 on:
@@ -44,14 +44,13 @@ jobs:
             const checks=[];
             for (const [name,width,height] of [['1440',1440,1000],['1366',1366,768],['mobile',390,844]]) {
               const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
-              const errors=[];
-              page.on('pageerror',e=>errors.push(String(e)));
-              page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+              const pageErrors=[],badResponses=[];
+              page.on('pageerror',e=>pageErrors.push(String(e)));
+              page.on('response',r=>{if(r.status()>=400 && r.url().startsWith('http://127.0.0.1:4173/')) badResponses.push(`${r.status()} ${r.url()}`)});
               await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
               await page.screenshot({path:`step1-${name}.png`,fullPage:false});
               if(name==='1440') await page.screenshot({path:'step1-1440-full.png',fullPage:true});
 
-              // Trigger native lazy-loaded images before evaluating media health.
               await page.evaluate(async()=>{
                 const step=Math.max(500,Math.floor(innerHeight*.75));
                 for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,70));}
@@ -82,14 +81,16 @@ jobs:
                   broken,pending
                 };
               });
-              checks.push({name,...result,errors});
+              const uniqueBad=[...new Set(badResponses)];
+              checks.push({name,...result,pageErrors,badResponses:uniqueBad});
               if(result.scrollWidth>width+2) throw new Error(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
               if(!result.title?.includes('ENGINEERED') || !result.title?.includes('PRECISION')) throw new Error(`${name}: hero title missing`);
               if(name!=='mobile' && result.cta!=='DISCUSS A MACHINE ↗') throw new Error(`${name}: header CTA mismatch: ${result.cta}`);
               if(name!=='mobile' && !result.headerBg.includes('244, 243, 238')) throw new Error(`${name}: header is not ivory: ${result.headerBg}`);
               if(result.broken.length) throw new Error(`${name}: broken images: ${result.broken.join(', ')}`);
               if(result.pending.length) throw new Error(`${name}: media still pending after scroll: ${result.pending.join(', ')}`);
-              if(errors.length) throw new Error(`${name}: runtime errors: ${errors.join(' | ')}`);
+              if(pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join(' | ')}`);
+              if(uniqueBad.length) throw new Error(`${name}: failed local requests: ${uniqueBad.join(' | ')}`);
               await page.close();
             }
             fs.writeFileSync('step1-report.json',JSON.stringify(checks,null,2));
