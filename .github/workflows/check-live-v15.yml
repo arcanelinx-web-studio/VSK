@@ -1,0 +1,62 @@
+name: Check public V15 Pages
+
+on:
+  push:
+    branches:
+      - v15-original-glance
+    paths:
+      - '.github/workflows/check-live-v15.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Inspect public Pages URL
+        run: |
+          mkdir -p live-v15-check
+          cat > check-live.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+          const browser = await chromium.launch({headless:true});
+          const context = await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});
+          const page = await context.newPage();
+          const errors=[];
+          page.on('pageerror',e=>errors.push(String(e)));
+          page.on('console',m=>{if(m.type()==='error') errors.push(m.text())});
+          const url='https://arcanelinx-web-studio.github.io/VSK/?v=v15-exact-aa65ba-20260816';
+          const response=await page.goto(url,{waitUntil:'networkidle',timeout:60000});
+          await page.waitForTimeout(2500);
+          const report=await page.evaluate(()=>({
+            title:document.title,
+            h1:document.querySelector('h1')?.innerText||'',
+            bodyBg:getComputedStyle(document.body).backgroundColor,
+            heroBg:document.querySelector('.hero')?getComputedStyle(document.querySelector('.hero')).backgroundColor:null,
+            css:[...document.querySelectorAll('link[rel="stylesheet"]')].map(x=>x.href),
+            scripts:[...document.scripts].map(x=>x.src).filter(Boolean),
+            scrollWidth:document.documentElement.scrollWidth,
+            innerWidth,
+            broken:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.getAttribute('src'))
+          }));
+          const out={status:response?.status(),url:page.url(),report,errors};
+          console.log(JSON.stringify(out,null,2));
+          fs.writeFileSync('live-v15-check/report.json',JSON.stringify(out,null,2));
+          await page.screenshot({path:'live-v15-check/live-pages-1440.png',fullPage:false});
+          await page.screenshot({path:'live-v15-check/live-pages-full.png',fullPage:true});
+          await browser.close();
+          if(!report.h1.includes('ENGINEER.') || !report.h1.includes('BUILD.') || !report.h1.includes('REVIVE.')) process.exit(2);
+          JS
+          node check-live.mjs
+      - name: Upload live Pages evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-v15-pages-check
+          path: live-v15-check
+          if-no-files-found: error
