@@ -60,7 +60,7 @@
   const navItems = [
     ['Home', 'index.html', page === 'home'],
     ['Company', homeHref('#about'), false],
-    ['Services', homeHref('#systems'), false],
+    ['Services', homeHref('#expertise'), false],
     ['Reconditioning', 'machines.html?type=retrofit', false],
     ['Retrofit & CNC', homeHref('#retrofit'), false],
     ['Projects', 'projects.html', page === 'projects'],
