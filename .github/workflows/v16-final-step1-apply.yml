@@ -1,0 +1,57 @@
+name: Apply V16 Final Step 1
+
+on:
+  push:
+    branches: [client-review-v16-final-step1-working]
+    paths:
+      - '.github/workflows/v16-final-step1-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step1-working
+          fetch-depth: 0
+      - name: Patch header and hero
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          replacements={
+            '<meta content="#0D1824" name="theme-color"/>':'<meta content="#F4F3EE" name="theme-color"/>',
+            '<link href="styles.css" rel="stylesheet"/>':'<link href="styles.css" rel="stylesheet"/>\n<link href="v16-final.css" rel="stylesheet"/>',
+            '<nav aria-label="Primary navigation" class="desktop-nav"><a href="projects.html">Projects</a><a href="#expertise">Capabilities</a><a href="machines.html">Archive</a><a href="gallery.html">Gallery</a><a href="#about">About</a></nav>':'<nav aria-label="Primary navigation" class="desktop-nav"><a class="is-current" href="index.html">Home</a><a href="#about">Company</a><a href="#expertise">Services</a><a href="#retrofit">Reconditioning</a><a href="machines.html?type=retrofit">Retrofit &amp; CNC</a><a href="projects.html">Projects</a><a href="machines.html">Experience</a></nav>',
+            '<button class="header-cta" data-quote-open="" type="button">Start a Requirement <span>↗</span></button>':'<button class="header-cta" data-quote-open="" type="button">Discuss a Machine <span>↗</span></button>',
+            '<a href="index.html">Home <span>01</span></a>\n<a href="projects.html">Projects <span>02</span></a>\n<a href="machines.html">Engineering Archive <span>03</span></a>\n<a href="gallery.html">Project Gallery <span>04</span></a>\n<a data-menu-close="" href="#about">About <span>05</span></a>\n<a data-menu-close="" href="#contact">Contact <span>06</span></a>':'<a href="index.html">Home <span>01</span></a>\n<a data-menu-close="" href="#about">Company <span>02</span></a>\n<a data-menu-close="" href="#expertise">Services <span>03</span></a>\n<a data-menu-close="" href="#retrofit">Reconditioning <span>04</span></a>\n<a href="machines.html?type=retrofit">Retrofit &amp; CNC <span>05</span></a>\n<a href="projects.html">Projects <span>06</span></a>\n<a href="machines.html">Experience <span>07</span></a>',
+            '<button class="mobile-menu-cta" data-quote-open="" type="button">Start an Engineering Requirement ↗</button>':'<button class="mobile-menu-cta" data-quote-open="" type="button">Discuss a Machine ↗</button>',
+            '<div class="hero-kicker reveal-first"><i></i><span>VSK Electro-Mech Solutions</span><b>Peenya · Bengaluru · Since 2011</b></div>\n<h1 aria-label="Engineered for precision." class="hero-title">':'<div class="hero-kicker reveal-first"><i></i><span>VSK Electro-Mech Solutions</span><b>Peenya · Bengaluru · Since 2011</b></div>\n<div class="hero-signature reveal-first">Engineer. Build. Revive.</div>\n<h1 aria-label="Engineered for precision." class="hero-title">',
+            '<p>Special purpose machines, CNC retrofit, automation and precision manufacturing engineered around your production requirement.</p>':'<p>Special purpose machines, CNC retrofit, automation and precision manufacturing — developed around the process, component and production target.</p>',
+            '<button class="btn btn-outline" data-quote-open="" type="button">Start a Requirement <span>↗</span></button>':'<button class="btn btn-outline" data-quote-open="" type="button">Discuss a Machine <span>↗</span></button>',
+            '<button class="hero-reference" data-feature-open="kellenberg" type="button"><span>FEATURED ENGINEERING / RTF 11</span><strong>Kellenberg CNC Grinding</strong><small>Fanuc 0i-TF Plus retrofit</small><i>View case →</i></button>':'<button class="hero-reference" data-feature-open="kellenberg" type="button"><span>FEATURED ENGINEERING / RTF 11</span><strong>Kellenberg CNC Grinding</strong><small>Fanuc 0i-TF Plus retrofit</small><i>View project →</i></button>'
+          }
+          for old,new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Missing expected source fragment: {old[:90]}')
+              s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Verify Step 1 markers
+        run: |
+          grep -q 'v16-final.css' index.html
+          grep -q 'Discuss a Machine' index.html
+          grep -q 'Engineer. Build. Revive.' index.html
+          grep -q 'Reconditioning' index.html
+          grep -q 'Experience' index.html
+      - name: Commit Step 1
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Lock V16 Final header and hero' || exit 0
+          git push origin HEAD:client-review-v16-final-step1-working
