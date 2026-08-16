@@ -3,11 +3,15 @@
   "source": "PHOTOS",
   "summary": {
     "files": 129,
-    "images": 69,
+    "images": 114,
     "videos": 12,
     "documents": 1,
-    "source_only": 48,
+    "source_only": 3,
+    "failed_images": 1,
+    "failed_videos": 2,
+    "unsupported": 0,
     "groups": 34,
+    "source_groups": 34,
     "categories": 5
   },
   "groups": [
@@ -29,7 +33,8 @@
           "src": "media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp",
           "thumb": "media/v16/thumbs/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20230216_094310.jpg",
@@ -42,7 +47,8 @@
           "src": "media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp",
           "thumb": "media/v16/thumbs/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -60,8 +66,12 @@
           "caption": "20241017 202129",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/new project/CNC thread cutting machine/20241017_202129.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202129.webp",
+          "src": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202129.webp",
+          "thumb": "media/v16/thumbs/new-project/cnc-thread-cutting-machine/20241017-202129.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20241017_202139.heic",
@@ -70,8 +80,12 @@
           "caption": "20241017 202139",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/new project/CNC thread cutting machine/20241017_202139.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202139.webp",
+          "src": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202139.webp",
+          "thumb": "media/v16/thumbs/new-project/cnc-thread-cutting-machine/20241017-202139.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20241017_202152.heic",
@@ -80,8 +94,12 @@
           "caption": "20241017 202152",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/new project/CNC thread cutting machine/20241017_202152.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202152.webp",
+          "src": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202152.webp",
+          "thumb": "media/v16/thumbs/new-project/cnc-thread-cutting-machine/20241017-202152.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20241017_202202.heic",
@@ -90,8 +108,12 @@
           "caption": "20241017 202202",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/new project/CNC thread cutting machine/20241017_202202.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202202.webp",
+          "src": "media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202202.webp",
+          "thumb": "media/v16/thumbs/new-project/cnc-thread-cutting-machine/20241017-202202.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         }
       ]
     },
@@ -113,7 +135,8 @@
           "src": "media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-01.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-01.webp",
           "width": 3024,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20241201_112157_02.mp4",
@@ -126,7 +149,8 @@
           "src": "media/v16/videos/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-02.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-02.mp4",
           "poster": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-02.webp",
-          "thumb": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-02.webp"
+          "thumb": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-02.webp",
+          "displayable": true
         },
         {
           "name": "20241201_112157_03.mp4",
@@ -139,7 +163,8 @@
           "src": "media/v16/videos/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-03.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-03.mp4",
           "poster": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-03.webp",
-          "thumb": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-03.webp"
+          "thumb": "media/v16/posters/retrofitting-and-service/hardinge-t40-cnc-machine/20241201-112157-03.webp",
+          "displayable": true
         },
         {
           "name": "20250401_114504.heic",
@@ -148,8 +173,12 @@
           "caption": "20250401 114504",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/Hardinge t40 CNC machine/20250401_114504.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114504.webp",
+          "src": "media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114504.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114504.webp",
+          "width": 4032,
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20250401_114509.heic",
@@ -158,8 +187,12 @@
           "caption": "20250401 114509",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/Hardinge t40 CNC machine/20250401_114509.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114509.webp",
+          "src": "media/v16/images/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114509.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hardinge-t40-cnc-machine/20250401-114509.webp",
+          "width": 4032,
+          "height": 1816,
+          "displayable": true
         }
       ]
     },
@@ -177,8 +210,12 @@
           "caption": "20241120 122344",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/hundai -sa160 cnc turning machine/20241120_122344.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122344.webp",
+          "src": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122344.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122344.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20241120_122350.heic",
@@ -187,8 +224,12 @@
           "caption": "20241120 122350",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/hundai -sa160 cnc turning machine/20241120_122350.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122350.webp",
+          "src": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122350.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122350.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20241120_122510.heic",
@@ -197,8 +238,12 @@
           "caption": "20241120 122510",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/hundai -sa160 cnc turning machine/20241120_122510.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122510.webp",
+          "src": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122510.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122510.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20241120_122520.heic",
@@ -207,8 +252,12 @@
           "caption": "20241120 122520",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/hundai -sa160 cnc turning machine/20241120_122520.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122520.webp",
+          "src": "media/v16/images/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122520.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/hundai-sa160-cnc-turning-machine/20241120-122520.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         }
       ]
     },
@@ -230,7 +279,8 @@
           "src": "media/v16/images/retrofitting-and-service/jig-grinding-machine/ekng2128.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/jig-grinding-machine/ekng2128.webp",
           "width": 2160,
-          "height": 3840
+          "height": 3840,
+          "displayable": true
         },
         {
           "name": "FHPF9264.JPG",
@@ -243,7 +293,8 @@
           "src": "media/v16/images/retrofitting-and-service/jig-grinding-machine/fhpf9264.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/jig-grinding-machine/fhpf9264.webp",
           "width": 2160,
-          "height": 3840
+          "height": 3840,
+          "displayable": true
         },
         {
           "name": "IMG_0136.MOV",
@@ -255,8 +306,9 @@
           "web": "media/v16/videos/retrofitting-and-service/jig-grinding-machine/img-0136.mp4",
           "src": "media/v16/videos/retrofitting-and-service/jig-grinding-machine/img-0136.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/jig-grinding-machine/img-0136.mp4",
-          "poster": null,
-          "thumb": null
+          "poster": "media/v16/posters/retrofitting-and-service/jig-grinding-machine/img-0136.webp",
+          "thumb": "media/v16/posters/retrofitting-and-service/jig-grinding-machine/img-0136.webp",
+          "displayable": true
         },
         {
           "name": "IMG_0137.JPG",
@@ -269,7 +321,8 @@
           "src": "media/v16/images/retrofitting-and-service/jig-grinding-machine/img-0137.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/jig-grinding-machine/img-0137.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0138.JPG",
@@ -282,7 +335,8 @@
           "src": "media/v16/images/retrofitting-and-service/jig-grinding-machine/img-0138.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/jig-grinding-machine/img-0138.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         }
       ]
     },
@@ -300,8 +354,12 @@
           "caption": "20260117 154308",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/20260117_154308.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154308.webp",
+          "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154308.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154308.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20260117_154330.heic",
@@ -310,8 +368,12 @@
           "caption": "20260117 154330",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/20260117_154330.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154330.webp",
+          "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154330.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154330.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20260117_154351.heic",
@@ -320,8 +382,12 @@
           "caption": "20260117 154351",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/20260117_154351.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154351.webp",
+          "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154351.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154351.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20260117_154408.heic",
@@ -330,8 +396,12 @@
           "caption": "20260117 154408",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/20260117_154408.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154408.webp",
+          "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154408.webp",
+          "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/20260117-154408.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "IMG_0008.JPG",
@@ -344,7 +414,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0008.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0008.webp",
           "width": 5712,
-          "height": 4284
+          "height": 4284,
+          "displayable": true
         },
         {
           "name": "IMG_0010.JPG",
@@ -357,7 +428,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0010.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0010.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0012.JPG",
@@ -367,7 +439,8 @@
           "kind": "image",
           "type": "image",
           "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/IMG_0012.JPG",
-          "sourceOnly": true
+          "sourceOnly": true,
+          "displayable": false
         },
         {
           "name": "IMG_0013.MOV",
@@ -380,7 +453,8 @@
           "src": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0013.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0013.mp4",
           "poster": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0013.webp",
-          "thumb": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0013.webp"
+          "thumb": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0013.webp",
+          "displayable": true
         },
         {
           "name": "IMG_0014.MOV",
@@ -393,7 +467,8 @@
           "src": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0014.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0014.mp4",
           "poster": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0014.webp",
-          "thumb": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0014.webp"
+          "thumb": "media/v16/posters/retrofitting-and-service/kelingberg-od-grinding-machine/img-0014.webp",
+          "displayable": true
         },
         {
           "name": "IMG_0015.MOV",
@@ -403,7 +478,8 @@
           "kind": "video",
           "type": "video",
           "src": "PHOTOS/RETROFITTING AND SERVICE/kelingberg od grinding machine/IMG_0015.MOV",
-          "sourceOnly": true
+          "sourceOnly": true,
+          "displayable": false
         },
         {
           "name": "IMG_0016.MOV",
@@ -416,7 +492,8 @@
           "src": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0016.mp4",
           "src_mp4": "media/v16/videos/retrofitting-and-service/kelingberg-od-grinding-machine/img-0016.mp4",
           "poster": null,
-          "thumb": null
+          "thumb": null,
+          "displayable": true
         },
         {
           "name": "IMG_0017.JPG",
@@ -429,7 +506,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0017.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0017.webp",
           "width": 5712,
-          "height": 4284
+          "height": 4284,
+          "displayable": true
         },
         {
           "name": "IMG_0018.JPG",
@@ -442,7 +520,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0018.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0018.webp",
           "width": 5712,
-          "height": 4284
+          "height": 4284,
+          "displayable": true
         },
         {
           "name": "IMG_0019.JPG",
@@ -455,7 +534,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0019.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0019.webp",
           "width": 5712,
-          "height": 4284
+          "height": 4284,
+          "displayable": true
         },
         {
           "name": "IMG_0020.JPG",
@@ -468,7 +548,8 @@
           "src": "media/v16/images/retrofitting-and-service/kelingberg-od-grinding-machine/img-0020.webp",
           "thumb": "media/v16/thumbs/retrofitting-and-service/kelingberg-od-grinding-machine/img-0020.webp",
           "width": 5712,
-          "height": 4284
+          "height": 4284,
+          "displayable": true
         }
       ]
     },
@@ -490,7 +571,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917541365.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917541365.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1520917541546.jpg",
@@ -503,7 +585,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917541546.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917541546.webp",
           "width": 293,
-          "height": 520
+          "height": 520,
+          "displayable": true
         },
         {
           "name": "1520917548934.jpg",
@@ -516,7 +599,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917548934.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917548934.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1520917549266.jpg",
@@ -529,7 +613,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917549266.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917549266.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1520917549578.jpg",
@@ -542,7 +627,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917549578.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917549578.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1520917549896.jpg",
@@ -555,7 +641,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1520917549896.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1520917549896.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1521604222093.jpg",
@@ -568,7 +655,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604222093.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604222093.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1521604222645.jpg",
@@ -581,7 +669,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604222645.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604222645.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1521604223156.jpg",
@@ -594,7 +683,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604223156.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604223156.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1521604223743.jpg",
@@ -607,7 +697,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604223743.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604223743.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         },
         {
           "name": "1521604224291.jpg",
@@ -620,7 +711,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604224291.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604224291.webp",
           "width": 408,
-          "height": 306
+          "height": 306,
+          "displayable": true
         },
         {
           "name": "1521604225008.jpg",
@@ -633,7 +725,8 @@
           "src": "media/v16/images/spm-cnc-machines/rod-boring-machine/1521604225008.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/rod-boring-machine/1521604225008.webp",
           "width": 306,
-          "height": 408
+          "height": 408,
+          "displayable": true
         }
       ]
     },
@@ -655,7 +748,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120408.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120408.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230327_120451.jpg",
@@ -668,7 +762,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120451.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120451.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230327_120458.jpg",
@@ -681,7 +776,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230327_120502.jpg",
@@ -694,7 +790,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120502.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120502.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         }
       ]
     },
@@ -716,7 +813,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230327-120553.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-spigot-turning-cnc/20230327-120553.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230327_120558.jpg",
@@ -729,7 +827,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230327-120558.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-spigot-turning-cnc/20230327-120558.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20230331_151553.jpg",
@@ -742,7 +841,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151553.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151553.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230331_151559.jpg",
@@ -755,7 +855,8 @@
           "src": "media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151559.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151559.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         }
       ]
     },
@@ -773,8 +874,12 @@
           "caption": "20240319 105051",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM CNC MACHINES/TWIN SPINDLE U DRILL MC/20240319_105051.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105051.webp",
+          "src": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105051.webp",
+          "thumb": "media/v16/thumbs/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105051.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240319_105056.heic",
@@ -783,8 +888,12 @@
           "caption": "20240319 105056",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM CNC MACHINES/TWIN SPINDLE U DRILL MC/20240319_105056.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105056.webp",
+          "src": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105056.webp",
+          "thumb": "media/v16/thumbs/spm-cnc-machines/twin-spindle-u-drill-mc/20240319-105056.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240921_125313(0).heic",
@@ -793,8 +902,12 @@
           "caption": "20240921 125313(0)",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM CNC MACHINES/TWIN SPINDLE U DRILL MC/20240921_125313(0).heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313-0.webp",
+          "src": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313-0.webp",
+          "thumb": "media/v16/thumbs/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313-0.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20240921_125313.heic",
@@ -803,8 +916,12 @@
           "caption": "20240921 125313",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM CNC MACHINES/TWIN SPINDLE U DRILL MC/20240921_125313.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313.webp",
+          "src": "media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313.webp",
+          "thumb": "media/v16/thumbs/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         }
       ]
     },
@@ -826,7 +943,8 @@
           "src": "media/v16/images/spm-cnc-machines/vertical-turning-cnc-machine/concept-drawing-of-vertcal-lathel-document.webp",
           "thumb": "media/v16/thumbs/spm-cnc-machines/vertical-turning-cnc-machine/concept-drawing-of-vertcal-lathel-document.webp",
           "width": 2482,
-          "height": 1755
+          "height": 1755,
+          "displayable": true
         }
       ]
     },
@@ -848,7 +966,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-1.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-1.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 2.JPG",
@@ -861,7 +980,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-2.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-2.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 3.JPG",
@@ -874,7 +994,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-3.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-3.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC CLOSE.JPG",
@@ -887,7 +1008,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-close.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/2-axis-notching-machine/slotting-mc-close.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         }
       ]
     },
@@ -909,7 +1031,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/3-indexing-external-seal-scrubbing-abd-spraying-machine-with-plc-and-hmi/screenshot-20240911-145043-gallery.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/3-indexing-external-seal-scrubbing-abd-spraying-machine-with-plc-and-hmi/screenshot-20240911-145043-gallery.webp",
           "width": 1080,
-          "height": 2400
+          "height": 2400,
+          "displayable": true
         }
       ]
     },
@@ -927,8 +1050,12 @@
           "caption": "20230716 121301",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/4 HOLE DRILLING AND CHAMFERING MC WITH AUTO COMP PICK AND PLACE TYPE/20230716_121301.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121301.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121301.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121301.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20230716_121311.heic",
@@ -937,8 +1064,12 @@
           "caption": "20230716 121311",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/4 HOLE DRILLING AND CHAMFERING MC WITH AUTO COMP PICK AND PLACE TYPE/20230716_121311.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121311.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121311.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121311.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "VideoCapture_20240603-213321.jpg",
@@ -951,7 +1082,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/videocapture-20240603-213321.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/videocapture-20240603-213321.webp",
           "width": 1080,
-          "height": 1920
+          "height": 1920,
+          "displayable": true
         }
       ]
     },
@@ -973,7 +1105,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 2.JPG",
@@ -986,7 +1119,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-2.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-2.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 3.JPG",
@@ -999,7 +1133,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-3.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-3.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC CLOSE.JPG",
@@ -1012,7 +1147,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-close.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-close.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         }
       ]
     },
@@ -1034,7 +1170,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20230902_104222.heic",
@@ -1043,8 +1180,12 @@
           "caption": "20230902 104222",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Air leak testing machine/20230902_104222.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20230902_105514.heic",
@@ -1053,8 +1194,12 @@
           "caption": "20230902 105514",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Air leak testing machine/20230902_105514.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-105514.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-105514.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-105514.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20231226_152134.heic",
@@ -1063,8 +1208,12 @@
           "caption": "20231226 152134",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Air leak testing machine/20231226_152134.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20231226-152134.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20231226-152134.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20231226-152134.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20240108_124654.heic",
@@ -1073,8 +1222,12 @@
           "caption": "20240108 124654",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Air leak testing machine/20240108_124654.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124654.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124654.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124654.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20240108_124700.heic",
@@ -1083,8 +1236,12 @@
           "caption": "20240108 124700",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Air leak testing machine/20240108_124700.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124700.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124700.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20240108-124700.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "Machine Front view-Dimensions.JPG",
@@ -1097,7 +1254,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/machine-front-view-dimensions.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/machine-front-view-dimensions.webp",
           "width": 1151,
-          "height": 547
+          "height": 547,
+          "displayable": true
         }
       ]
     },
@@ -1115,8 +1273,12 @@
           "caption": "20250228 143819",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Baqck up Seals  Cross cutting machine/20250228_143819.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143819.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143819.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143819.webp",
+          "width": 4032,
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20250228_143846.heic",
@@ -1125,8 +1287,12 @@
           "caption": "20250228 143846",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Baqck up Seals  Cross cutting machine/20250228_143846.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143846.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143846.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/baqck-up-seals-cross-cutting-machine/20250228-143846.webp",
+          "width": 4032,
+          "height": 1816,
+          "displayable": true
         }
       ]
     },
@@ -1144,8 +1310,12 @@
           "caption": "20250825 092736",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/bristal packing machine/20250825_092736.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/bristal-packing-machine/20250825-092736.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/bristal-packing-machine/20250825-092736.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/bristal-packing-machine/20250825-092736.webp",
+          "width": 4032,
+          "height": 1816,
+          "displayable": true
         }
       ]
     },
@@ -1163,8 +1333,12 @@
           "caption": "20250416 215953",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Control Panel- honning machine/20250416_215953.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp",
+          "width": 1816,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20250501_181840.heic",
@@ -1173,8 +1347,12 @@
           "caption": "20250501 181840",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Control Panel- honning machine/20250501_181840.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250501-181840.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250501-181840.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250501-181840.webp",
+          "width": 1816,
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1196,7 +1374,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-202709.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-202709.mp4",
           "poster": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-202709.webp",
-          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-202709.webp"
+          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-202709.webp",
+          "displayable": true
         },
         {
           "name": "20240921_203359.mp4",
@@ -1209,7 +1388,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-203359.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-203359.mp4",
           "poster": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-203359.webp",
-          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-203359.webp"
+          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-203359.webp",
+          "displayable": true
         },
         {
           "name": "20240921_204020.mp4",
@@ -1222,7 +1402,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-204020.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-204020.mp4",
           "poster": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-204020.webp",
-          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-204020.webp"
+          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20240921-204020.webp",
+          "displayable": true
         },
         {
           "name": "20241202_193742.mp4",
@@ -1235,7 +1416,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20241202-193742.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20241202-193742.mp4",
           "poster": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20241202-193742.webp",
-          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20241202-193742.webp"
+          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/deburing-machine/deburing-machine-alluminium-comp/20241202-193742.webp",
+          "displayable": true
         }
       ]
     },
@@ -1257,7 +1439,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0021.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0021.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0028.MOV",
@@ -1270,7 +1453,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0028.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0028.mp4",
           "poster": null,
-          "thumb": null
+          "thumb": null,
+          "displayable": true
         },
         {
           "name": "IMG_0029.JPG",
@@ -1283,7 +1467,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0029.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0029.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0030.JPG",
@@ -1296,7 +1481,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0030.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0030.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         }
       ]
     },
@@ -1318,7 +1504,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1399.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1399.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_1400.JPG",
@@ -1331,7 +1518,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1400.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1400.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_1402.JPG",
@@ -1344,7 +1532,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1402.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/epoxy-painting-machine-eor-washer/img-1402.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         }
       ]
     },
@@ -1362,8 +1551,12 @@
           "caption": "20240408 172157",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/external scrubbing and spraying machine/20240408_172157.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172157.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172157.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172157.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240408_172205.heic",
@@ -1372,8 +1565,12 @@
           "caption": "20240408 172205",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/external scrubbing and spraying machine/20240408_172205.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172205.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172205.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240408-172205.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240805_143028.mp4",
@@ -1386,7 +1583,8 @@
           "src": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240805-143028.mp4",
           "src_mp4": "media/v16/videos/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240805-143028.mp4",
           "poster": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240805-143028.webp",
-          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240805-143028.webp"
+          "thumb": "media/v16/posters/spm-machines-plc-hmi-and-servo-controlled/external-scrubbing-and-spraying-machine/20240805-143028.webp",
+          "displayable": true
         }
       ]
     },
@@ -1404,8 +1602,12 @@
           "caption": "20240822 164501",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164501.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164501.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164501.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164501.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240822_164521.heic",
@@ -1414,8 +1616,12 @@
           "caption": "20240822 164521",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164521.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164521.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164521.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164521.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20240822_164528.heic",
@@ -1424,8 +1630,12 @@
           "caption": "20240822 164528",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164528.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164528.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164528.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164528.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         },
         {
           "name": "20240822_164549.heic",
@@ -1434,8 +1644,12 @@
           "caption": "20240822 164549",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164549.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164549.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164549.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164549.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240822_164719.heic",
@@ -1444,8 +1658,12 @@
           "caption": "20240822 164719",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164719.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164719.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164719.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164719.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240822_164729.heic",
@@ -1454,8 +1672,12 @@
           "caption": "20240822 164729",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164729.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164729.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164729.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164729.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240822_164738.heic",
@@ -1464,8 +1686,12 @@
           "caption": "20240822 164738",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Green tube slitting hydralic machine/20240822_164738.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164738.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164738.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/green-tube-slitting-hydralic-machine/20240822-164738.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1483,8 +1709,12 @@
           "caption": "20241120 122317",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/internal scrubbing and spraying mc/20241120_122317.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/internal-scrubbing-and-spraying-mc/20241120-122317.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/internal-scrubbing-and-spraying-mc/20241120-122317.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/internal-scrubbing-and-spraying-mc/20241120-122317.webp",
+          "width": 4032,
+          "height": 3024,
+          "displayable": true
         }
       ]
     },
@@ -1506,7 +1736,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-0575.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-0575.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0601.JPG",
@@ -1519,7 +1750,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-0601.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-0601.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_1185.JPG",
@@ -1532,7 +1764,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-1185.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/laptop-panel-painting-mc/img-1185.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_1190.MOV",
@@ -1542,7 +1775,8 @@
           "kind": "video",
           "type": "video",
           "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/laptop panel painting mc/IMG_1190.MOV",
-          "sourceOnly": true
+          "sourceOnly": true,
+          "displayable": false
         }
       ]
     },
@@ -1564,7 +1798,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-1.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-1.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 2.JPG",
@@ -1577,7 +1812,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-2.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-2.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC 3.JPG",
@@ -1590,7 +1826,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-3.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-3.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         },
         {
           "name": "SLOTTING MC CLOSE.JPG",
@@ -1603,7 +1840,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-close.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/2-axis-notching-machine/slotting-mc-close.webp",
           "width": 1128,
-          "height": 589
+          "height": 589,
+          "displayable": true
         }
       ]
     },
@@ -1621,8 +1859,12 @@
           "caption": "20240812 214106",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/NOTCHING MACHINE/300 dia seal od cross cutting unit with zimmer block adjusting unit/20240812_214106.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214106.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214106.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214106.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240812_214111.heic",
@@ -1631,8 +1873,12 @@
           "caption": "20240812 214111",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/NOTCHING MACHINE/300 dia seal od cross cutting unit with zimmer block adjusting unit/20240812_214111.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214111.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214111.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214111.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20240812_214134.heic",
@@ -1641,8 +1887,12 @@
           "caption": "20240812 214134",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/NOTCHING MACHINE/300 dia seal od cross cutting unit with zimmer block adjusting unit/20240812_214134.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214134.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214134.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/300-dia-seal-od-cross-cutting-unit-with-zimmer-block-adjusting-unit/20240812-214134.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1664,7 +1914,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/notching-machine-with-auto-loading/20230308-114124.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/notching-machine-with-auto-loading/20230308-114124.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         },
         {
           "name": "20230415_173321.jpg",
@@ -1677,7 +1928,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/notching-machine-with-auto-loading/20230415-173321.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/notching-machine-with-auto-loading/20230415-173321.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1695,8 +1947,12 @@
           "caption": "20240822 153201",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/NOTCHING MACHINE/Top Rotary Clamping unit/20240822_153201.heic",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/top-rotary-clamping-unit/20240822-153201.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/notching-machine/top-rotary-clamping-unit/20240822-153201.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/notching-machine/top-rotary-clamping-unit/20240822-153201.webp",
+          "width": 3024,
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1718,7 +1974,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/o-ring-assembly-mc-with-notching-and-vission-insp-and-auto-pick-and-place-from-vibro/20230120-103530.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/o-ring-assembly-mc-with-notching-and-vission-insp-and-auto-pick-and-place-from-vibro/20230120-103530.webp",
           "width": 4032,
-          "height": 1816
+          "height": 1816,
+          "displayable": true
         },
         {
           "name": "20230403_162049.jpg",
@@ -1731,7 +1988,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/o-ring-assembly-mc-with-notching-and-vission-insp-and-auto-pick-and-place-from-vibro/20230403-162049.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/o-ring-assembly-mc-with-notching-and-vission-insp-and-auto-pick-and-place-from-vibro/20230403-162049.webp",
           "width": 1816,
-          "height": 4032
+          "height": 4032,
+          "displayable": true
         }
       ]
     },
@@ -1753,7 +2011,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/paint-aggitating-machine/paint-aggitating-unit.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/paint-aggitating-machine/paint-aggitating-unit.webp",
           "width": 180,
-          "height": 320
+          "height": 320,
+          "displayable": true
         }
       ]
     },
@@ -1775,7 +2034,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210359.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210359.webp",
           "width": 4208,
-          "height": 2368
+          "height": 2368,
+          "displayable": true
         },
         {
           "name": "IMG_20170518_210426.jpg",
@@ -1788,7 +2048,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210426.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210426.webp",
           "width": 4208,
-          "height": 2368
+          "height": 2368,
+          "displayable": true
         },
         {
           "name": "IMG_20170518_210441.jpg",
@@ -1801,7 +2062,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210441.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210441.webp",
           "width": 4208,
-          "height": 2368
+          "height": 2368,
+          "displayable": true
         }
       ]
     },
@@ -1819,8 +2081,12 @@
           "caption": "Bexx0731",
           "kind": "image",
           "type": "image",
-          "src": "PHOTOS/SPM MACHINES-PLC, HMI, AND SERVO CONTROLLED/Z CUT MACHINE/BEXX0731.JPG",
-          "sourceOnly": true
+          "web": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/bexx0731.webp",
+          "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/bexx0731.webp",
+          "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/bexx0731.webp",
+          "width": 2160,
+          "height": 3840,
+          "displayable": true
         },
         {
           "name": "IMG_0601.JPG",
@@ -1833,7 +2099,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/img-0601.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/img-0601.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         },
         {
           "name": "IMG_0613.JPG",
@@ -1846,7 +2113,8 @@
           "src": "media/v16/images/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/img-0613.webp",
           "thumb": "media/v16/thumbs/spm-machines-plc-hmi-and-servo-controlled/z-cut-machine/img-0613.webp",
           "width": 4284,
-          "height": 5712
+          "height": 5712,
+          "displayable": true
         }
       ]
     }
