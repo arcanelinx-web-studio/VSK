@@ -1,0 +1,77 @@
+name: V17 review QA
+
+on:
+  push:
+    branches:
+      - client-review-v17-final-polish-working
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JavaScript syntax
+        run: |
+          node --check app.js
+          node --check app-v14.js
+          node --check data.js
+          node --check v17.js
+
+      - name: HTML and local reference QA
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import re, sys
+
+          root = Path('.')
+          pages = [root/'index.html', root/'projects.html', root/'machines.html', root/'gallery.html']
+          missing = []
+
+          class Parser(HTMLParser):
+              pass
+
+          for page in pages:
+              Parser().feed(page.read_text(encoding='utf-8'))
+              text = page.read_text(encoding='utf-8')
+              for attr in ('src','href','poster'):
+                  for value in re.findall(rf'{attr}=["\']([^"\']+)["\']', text):
+                      if value.startswith(('http://','https://','mailto:','tel:','#','javascript:','data:')):
+                          continue
+                      value = value.split('?')[0].split('#')[0]
+                      if not value or value.endswith('/'):
+                          continue
+                      target = root / value
+                      if not target.exists():
+                          missing.append(f'{page.name}: {value}')
+
+          for required in ['styles.css','v16.css','v17.css','app.js','app-v14.js','v17.js','data.js','favicon.svg','media/v16/manifest.json']:
+              if not (root/required).exists():
+                  missing.append(f'required: {required}')
+
+          css = (root/'v17.css').read_text(encoding='utf-8')
+          if css.count('{') != css.count('}'):
+              missing.append(f'v17.css braces: {css.count("{")} / {css.count("}")}')
+
+          if missing:
+              print('\n'.join(missing))
+              sys.exit(1)
+          print('V17 static QA passed')
+          PY
+
+      - name: Verify organized media summary
+        run: |
+          python - <<'PY'
+          import json
+          m=json.load(open('media/v16/manifest.json',encoding='utf-8'))
+          s=m['summary']
+          print(s)
+          assert s['groups'] >= 30
+          assert s['images'] >= 100
+          assert s['videos'] >= 10
+          PY
