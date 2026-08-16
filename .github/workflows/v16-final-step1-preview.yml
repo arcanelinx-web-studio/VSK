@@ -38,7 +38,8 @@ jobs:
               page.on('pageerror',e=>errors.push(String(e)));
               page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
               await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
-              await page.screenshot({path:`step1-${name}.png`,fullPage:name==='1440'});
+              await page.screenshot({path:`step1-${name}.png`,fullPage:false});
+              if(name==='1440') await page.screenshot({path:'step1-1440-full.png',fullPage:true});
               const result=await page.evaluate(()=>{
                 const header=document.querySelector('.site-header');
                 const hero=document.querySelector('.hero');
@@ -55,14 +56,15 @@ jobs:
                   headerColor:getComputedStyle(header).color,
                   headerHeight:h?.height,
                   heroTop:heroBox?.top,
-                  cta:cta?.innerText.trim(),
+                  cta:cta?.innerText.trim().replace(/\s+/g,' '),
                   broken
                 };
               });
               checks.push({name,...result,errors});
               if(result.scrollWidth>width+2) throw new Error(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
               if(!result.title?.includes('ENGINEERED') || !result.title?.includes('PRECISION')) throw new Error(`${name}: hero title missing`);
-              if(name!=='mobile' && result.cta!=='Discuss a Machine ↗') throw new Error(`${name}: header CTA mismatch: ${result.cta}`);
+              if(name!=='mobile' && result.cta!=='DISCUSS A MACHINE ↗') throw new Error(`${name}: header CTA mismatch: ${result.cta}`);
+              if(name!=='mobile' && !result.headerBg.includes('244, 243, 238')) throw new Error(`${name}: header is not ivory: ${result.headerBg}`);
               if(result.broken.length) throw new Error(`${name}: broken visible images: ${result.broken.join(', ')}`);
               if(errors.length) throw new Error(`${name}: runtime errors: ${errors.join(' | ')}`);
               await page.close();
