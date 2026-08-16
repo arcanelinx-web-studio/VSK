@@ -1,5 +1,6 @@
 name: V17 visual QA
 
+# Final 1440px / 100% browser validation after buyer-copy and Projects fixes.
 on:
   push:
     branches:
@@ -88,6 +89,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v17-visual-qa
+          name: v17-visual-qa-final
           path: visual-qa
           if-no-files-found: error
