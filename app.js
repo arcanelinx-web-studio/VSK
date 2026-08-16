@@ -3,12 +3,15 @@
 
   document.body.classList.add('v16-premium');
 
-  if (!document.querySelector('link[href^="v16.css"]')) {
+  const ensureStylesheet = (href) => {
+    if (document.querySelector(`link[href^="${href}"]`)) return;
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'v16.css?v=16.2';
+    css.href = `${href}?v=17.0`;
     document.head.appendChild(css);
-  }
+  };
+  ensureStylesheet('v16.css');
+  ensureStylesheet('v17.css');
 
   const isRenderableMedia = (item) => {
     if (!item || item.sourceOnly || item.displayable === false) return false;
@@ -56,15 +59,21 @@
 
   const page = document.body.dataset.page || 'home';
   const homeHref = (hash) => page === 'home' ? hash : `index.html${hash}`;
-  const currentExperience = ['gallery', 'archive', 'machines'].includes(page);
-  const navItems = [
-    ['Home', 'index.html', page === 'home'],
-    ['Company', homeHref('#about'), false],
-    ['Services', homeHref('#expertise'), false],
-    ['Reconditioning', 'machines.html?type=retrofit', false],
-    ['Retrofit & CNC', homeHref('#retrofit'), false],
+  const desktopNav = [
     ['Projects', 'projects.html', page === 'projects'],
-    ['Experience', 'gallery.html', currentExperience]
+    ['Engineering', homeHref('#expertise'), false],
+    ['Archive', 'machines.html', page === 'archive' || page === 'machines'],
+    ['Gallery', 'gallery.html', page === 'gallery'],
+    ['About', homeHref('#about'), false]
+  ];
+  const mobileNav = [
+    ['Home', 'index.html'],
+    ['Projects', 'projects.html'],
+    ['Engineering', homeHref('#expertise')],
+    ['Engineering Archive', 'machines.html'],
+    ['Project Gallery', 'gallery.html'],
+    ['About VSK', homeHref('#about')],
+    ['Contact', homeHref('#contact')]
   ];
 
   const header = document.querySelector('[data-header]');
@@ -75,9 +84,9 @@
         <span class="brand-copy"><strong>VSK Electro-Mech Solutions</strong><small>Special Purpose Machines · Retrofit · Automation</small></span>
       </a>
       <nav class="desktop-nav" aria-label="Primary navigation">
-        ${navItems.map(([label, href, current]) => `<a${current ? ' class="is-current"' : ''} href="${href}">${label}</a>`).join('')}
+        ${desktopNav.map(([label, href, current]) => `<a${current ? ' class="is-current" aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
       </nav>
-      <button class="header-cta" type="button" data-quote-open>Discuss a Machine <span>↗</span></button>
+      <button class="header-cta" type="button" data-quote-open>Start a Requirement <span>↗</span></button>
       <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle><span></span><span></span></button>`;
   }
 
@@ -88,10 +97,9 @@
       <div class="mobile-menu-panel">
         <div class="mobile-menu-head"><span>Navigate</span><button data-menu-close type="button">Close ×</button></div>
         <nav aria-label="Mobile navigation">
-          ${navItems.map(([label, href], index) => `<a href="${href}">${label} <span>${String(index + 1).padStart(2, '0')}</span></a>`).join('')}
-          <a href="machines.html">Engineering Archive <span>08</span></a>
+          ${mobileNav.map(([label, href], index) => `<a href="${href}">${label} <span>${String(index + 1).padStart(2, '0')}</span></a>`).join('')}
         </nav>
-        <button class="mobile-menu-cta" type="button" data-quote-open>Discuss a Machine ↗</button>
+        <button class="mobile-menu-cta" type="button" data-quote-open>Start an Engineering Requirement ↗</button>
       </div>`;
   }
 
@@ -107,17 +115,25 @@
     electric: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0021.webp'
   };
 
-  const loadOriginal = () => {
-    const script = document.createElement('script');
-    script.src = 'app-v14.js?v=16.2';
-    script.defer = true;
-    document.body.appendChild(script);
+  const loadRuntime = () => {
+    const original = document.createElement('script');
+    original.src = 'app-v14.js?v=17.0';
+    original.defer = true;
+    original.onload = () => {
+      const polish = document.createElement('script');
+      polish.src = 'v17.js?v=17.0';
+      polish.defer = true;
+      document.body.appendChild(polish);
+    };
+    document.body.appendChild(original);
   };
 
   nativeFetch('media/v16/manifest.json', { cache: 'no-store' })
     .then(r => r.ok ? r.json() : Promise.reject(new Error('V16 media not built yet')))
     .then(rawManifest => {
       const manifest = cleanManifest(rawManifest);
+      window.__VSK_MANIFEST__ = manifest;
+
       if (typeof siteProjects !== 'undefined') {
         siteProjects.forEach(project => { if (mediaMap[project.id]) project.cover = mediaMap[project.id]; });
       }
@@ -130,7 +146,9 @@
       const hero = document.querySelector('[data-hero-image]');
       if (hero && mediaMap.kellenberg) {
         const fallback = hero.getAttribute('src');
-        hero.addEventListener('error', () => { if (hero.getAttribute('src') !== fallback) hero.setAttribute('src', fallback); }, { once: true });
+        hero.addEventListener('error', () => {
+          if (hero.getAttribute('src') !== fallback) hero.setAttribute('src', fallback);
+        }, { once: true });
         hero.setAttribute('src', mediaMap.kellenberg);
       }
 
@@ -147,5 +165,5 @@
       if (videos && Number.isFinite(summary.videos)) videos.textContent = `${summary.videos} videos`;
     })
     .catch(() => {})
-    .finally(loadOriginal);
+    .finally(loadRuntime);
 })();
