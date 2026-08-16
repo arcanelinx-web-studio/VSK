@@ -7,7 +7,7 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = `${href}?v=17.0`;
+    css.href = `${href}?v=17.1`;
     document.head.appendChild(css);
   };
   ensureStylesheet('v16.css');
@@ -35,6 +35,28 @@
       summary: { ...(input.summary || {}), groups: groups.length, images, videos }
     };
   };
+
+  const mediaSrc = item => item?.thumb || item?.poster || item?.src || item?.web || item?.src_mp4 || '';
+  const groupText = group => `${group?.category || ''} ${group?.title || ''} ${group?.project || ''} ${group?.path || ''}`.toLowerCase();
+
+  function buildMediaPools(manifest) {
+    const pools = { turning: [], cutting: [], handling: [], testing: [], finishing: [], pressing: [], controls: [], grinding: [] };
+    const push = (key, items) => items.forEach(item => { const src = mediaSrc(item); if (src && !pools[key].includes(src)) pools[key].push(src); });
+    (manifest?.groups || []).forEach(group => {
+      const text = groupText(group);
+      const images = (group.items || []).filter(item => item.type === 'image');
+      if (!images.length) return;
+      if (/retrofit|grinding|jig|kellenberg|studer|voumard|jung|koyo/.test(text)) { push('grinding', images); push('controls', images); }
+      if (/cnc|turning|lathe|boring|spigot|flange/.test(text)) push('turning', images);
+      if (/cut|slot|notch|drill|u drill|thread/.test(text)) push('cutting', images);
+      if (/conveyor|loading|handling|stacker|pick/.test(text)) push('handling', images);
+      if (/leak|test|inspection|vision/.test(text)) push('testing', images);
+      if (/paint|oven|deburr|polish|spray|finishing/.test(text)) push('finishing', images);
+      if (/hydraulic|press|pneumatic|bearing/.test(text)) push('pressing', images);
+      if (/plc|hmi|servo|control|panel|retrofit/.test(text)) push('controls', images);
+    });
+    return pools;
+  }
 
   // V14's gallery/archive runtime fetches archive-manifest.json itself. Intercept that
   // one response so source-only HEIC/unsupported files never become broken browser tiles.
@@ -117,11 +139,11 @@
 
   const loadRuntime = () => {
     const original = document.createElement('script');
-    original.src = 'app-v14.js?v=17.0';
+    original.src = 'app-v14.js?v=17.1';
     original.defer = true;
     original.onload = () => {
       const polish = document.createElement('script');
-      polish.src = 'v17.js?v=17.0';
+      polish.src = 'v17.js?v=17.1';
       polish.defer = true;
       document.body.appendChild(polish);
     };
@@ -133,13 +155,41 @@
     .then(rawManifest => {
       const manifest = cleanManifest(rawManifest);
       window.__VSK_MANIFEST__ = manifest;
+      const pools = buildMediaPools(manifest);
 
       if (typeof siteProjects !== 'undefined') {
         siteProjects.forEach(project => { if (mediaMap[project.id]) project.cover = mediaMap[project.id]; });
       }
+
       if (typeof featureData !== 'undefined') {
         Object.entries(mediaMap).forEach(([id, src]) => {
-          if (featureData[id]) featureData[id].media = [src, ...featureData[id].media.filter(x => x !== src)];
+          if (featureData[id]) featureData[id].media = [src, ...featureData[id].media.filter(x => x !== src && x.includes('/v16/'))];
+        });
+      }
+
+      // Make organized PHOTOS-derived media the visible source of truth for capability panels.
+      if (typeof capabilityData !== 'undefined') {
+        const pick = (...keys) => keys.flatMap(key => pools[key] || []).find(Boolean);
+        const capSources = {
+          mechanical: pick('turning', 'pressing'),
+          controls: pick('controls', 'grinding'),
+          fluid: pick('pressing', 'testing'),
+          electrical: pick('controls', 'grinding'),
+          automation: pick('handling', 'cutting'),
+          manufacturing: pick('turning', 'finishing')
+        };
+        Object.entries(capSources).forEach(([key, src]) => { if (src && capabilityData[key]) capabilityData[key].image = src; });
+      }
+
+      // Every archive reference receives a browser-safe image from the organized PHOTOS pool.
+      // Known feature IDs use exact mapped project media; the rest use a related engineering category.
+      if (typeof machineArchive !== 'undefined') {
+        const offsets = { handling: 2, turning: 3, pressing: 5, cutting: 7, testing: 11, finishing: 13, controls: 17, grinding: 19 };
+        machineArchive.forEach((machine, index) => {
+          const exact = machine.featureId && mediaMap[machine.featureId];
+          const pool = pools[machine.category] || [];
+          const related = pool.length ? pool[(index + (offsets[machine.category] || 0)) % pool.length] : '';
+          if (exact || related) machine.media = [exact || related];
         });
       }
 
