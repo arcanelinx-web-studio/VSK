@@ -1,0 +1,40 @@
+name: Patch IA syntax
+
+on:
+  push:
+    branches:
+      - client-review-v17-ia-working
+    paths:
+      - '.github/workflows/fix-ia-syntax.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v17-ia-working
+          fetch-depth: 0
+      - name: Fix missing project-detail close parenthesis
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('architecture.js')
+          s=p.read_text()
+          old="experience.')}`;\n    document.title="
+          new="experience.')}`);\n    document.title="
+          if old not in s:
+              raise SystemExit('target syntax pattern not found')
+          p.write_text(s.replace(old,new,1))
+          PY
+          node --check architecture.js
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add architecture.js
+          git commit -m "Fix VSK project detail syntax"
+          git push origin HEAD:client-review-v17-ia-working
