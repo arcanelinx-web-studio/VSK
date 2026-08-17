@@ -1,3 +1,4 @@
+# Final rerun after mobile sticky enquiry CTA was added.
 name: V16 Final Homepage QA
 
 on:
@@ -99,16 +100,20 @@ jobs:
 
               let mobileUi=null;
               if(name==='mobile'){
-                mobileUi=await page.evaluate(()=>({
-                  stickyDisplay:getComputedStyle(document.querySelector('.mobile-sticky-cta')).display,
-                  stickyBg:getComputedStyle(document.querySelector('.mobile-sticky-cta')).backgroundColor
-                }));
+                mobileUi=await page.evaluate(()=>{
+                  const sticky=document.querySelector('.mobile-sticky-cta');
+                  return {
+                    stickyExists:!!sticky,
+                    stickyDisplay:sticky?getComputedStyle(sticky).display:'missing',
+                    stickyBg:sticky?getComputedStyle(sticky).backgroundColor:'missing'
+                  };
+                });
                 await page.locator('[data-menu-toggle]').click();
                 await wait(100);
                 mobileUi.menuHidden=await page.locator('[data-mobile-menu]').evaluate(el=>el.hidden);
                 mobileUi.menuBg=await page.locator('.mobile-menu-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
                 mobileUi.menuNumberColor=await page.locator('.mobile-menu nav span').first().evaluate(el=>getComputedStyle(el).color);
-                await page.locator('[data-menu-close]').last().click();
+                await page.locator('.mobile-menu-head [data-menu-close]').click();
               }
 
               if(name==='1440'){
@@ -175,6 +180,7 @@ jobs:
               if(!quote.panelBg.includes('244, 243, 238')) failures.push(`${name}: quote panel warm palette not applied ${quote.panelBg}`);
               if(!quote.progressBg.includes('40, 95, 80')) failures.push(`${name}: quote progress is not VSK green ${quote.progressBg}`);
               if(name==='mobile'){
+                if(!mobileUi.stickyExists) failures.push('mobile: sticky enquiry CTA markup is missing');
                 if(mobileUi.stickyDisplay==='none') failures.push('mobile: sticky enquiry CTA is not visible');
                 if(!mobileUi.stickyBg.includes('40, 95, 80')) failures.push(`mobile: sticky CTA is not VSK green ${mobileUi.stickyBg}`);
                 if(mobileUi.menuHidden!==false) failures.push('mobile: navigation menu did not open');
