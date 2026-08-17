@@ -1,0 +1,231 @@
+name: V16 Full Site Audit QA
+on:
+  push:
+    branches:
+      - client-review-v16-site-audit
+    paths:
+      - .github/workflows/v16-site-audit-qa.yml
+      - index.html
+      - projects.html
+      - machines.html
+      - gallery.html
+      - app.js
+      - app-v14.js
+      - data.js
+      - v16-desktop-100.css
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-site-audit
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index.html
+            /projects.html
+            /machines.html
+            /gallery.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /v16-subpages.css
+            /v16-blue-refinement.css
+            /v16-light-restore.css
+            /v16-original-recovery.css
+            /v16-desktop-balance.css
+            /v16-desktop-100.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - run: |
+          python3 -m http.server 4173 >/tmp/vsk-site-audit.log 2>&1 &
+          sleep 2
+      - name: Audit layout, media, copy and interactions
+        run: |
+          cat > site-audit.cjs <<'JS'
+          const {chromium}=require('playwright');
+          const fs=require('fs');
+          const wait=ms=>new Promise(r=>setTimeout(r,ms));
+          const near=(a,b,t=12)=>Math.abs(a-b)<=t;
+          const viewports=[
+            ['desktop-1920',1920,1080],
+            ['desktop-1680',1680,945],
+            ['desktop-1600',1600,900],
+            ['desktop-1440',1440,900],
+            ['laptop-1366',1366,768],
+            ['tablet-1024',1024,768],
+            ['tablet-768',768,1024],
+            ['mobile-390',390,844]
+          ];
+          const pages=['index.html','projects.html','machines.html','gallery.html'];
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const failures=[],rows=[];
+            for(const file of pages){
+              for(const [mode,w,h] of viewports){
+                const p=await browser.newPage({viewport:{width:w,height:h}});
+                const errors=[],badRequests=[];
+                p.on('pageerror',e=>errors.push(String(e)));
+                p.on('response',r=>{
+                  if(r.status()>=400 && r.url().startsWith('http://127.0.0.1:4173/')) badRequests.push(`${r.status()} ${r.url()}`);
+                });
+                await p.goto(`http://127.0.0.1:4173/${file}`,{waitUntil:'networkidle'});
+                await wait(file==='gallery.html'?900:550);
+
+                const base=await p.evaluate(()=>({
+                  scrollWidth:document.documentElement.scrollWidth,
+                  bodyWidth:document.body.scrollWidth,
+                  robots:document.querySelector('meta[name="robots"]')?.content||'',
+                  nav:[...document.querySelectorAll('.desktop-nav a')].map(a=>({text:a.textContent.trim(),href:a.getAttribute('href')})),
+                  broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src)
+                }));
+                if(base.scrollWidth>w+2||base.bodyWidth>w+2) failures.push(`${file}/${mode}: horizontal overflow ${base.scrollWidth}/${base.bodyWidth} > ${w}`);
+                if(base.broken.length) failures.push(`${file}/${mode}: initially broken images ${base.broken.join(', ')}`);
+                if(!base.robots.includes('noindex')) failures.push(`${file}/${mode}: review noindex lock missing`);
+
+                if(w>=1181){
+                  const expected=['Home','Company','Capabilities','Retrofit & CNC','Projects','Experience'];
+                  if(JSON.stringify(base.nav.map(x=>x.text))!==JSON.stringify(expected)) failures.push(`${file}/${mode}: nav labels ${JSON.stringify(base.nav)}`);
+                  const reconditioning=base.nav.find(x=>x.text==='Reconditioning');
+                  if(reconditioning) failures.push(`${file}/${mode}: duplicate Reconditioning nav survived`);
+                  const experience=base.nav.find(x=>x.text==='Experience');
+                  if(experience?.href!=='machines.html') failures.push(`${file}/${mode}: Experience should point to machines.html, got ${experience?.href}`);
+                }
+
+                if(file==='index.html'){
+                  const home=await p.evaluate(()=>{
+                    const rect=e=>e?e.getBoundingClientRect():null;
+                    const hero=document.querySelector('.hero.hero-blue'),copy=document.querySelector('.hero-blue-copy'),board=document.querySelector('.hero-engineering-board');
+                    const para=document.querySelector('.hero-blue-copy>p'),actions=document.querySelector('.hero-blue-copy .hero-actions'),next=document.querySelector('.credibility-band');
+                    const cta=document.querySelector('.header-cta'),arrow=cta?.querySelector('span');
+                    const cs=arrow?getComputedStyle(arrow):null,bs=cta?getComputedStyle(cta):null;
+                    return {hero:rect(hero),copy:rect(copy),board:rect(board),para:rect(para),actions:rect(actions),next:rect(next),
+                      cta:{bg:bs?.backgroundColor,border:bs?.borderTopColor},arrow:{bg:cs?.backgroundColor,border:cs?.borderTopWidth},
+                      featured:rect(document.querySelector('.featured-case')),
+                      selected:[...document.querySelectorAll('.selected-projects-strip .project-card')].map(rect),
+                      depthText:document.querySelector('.engineering-depth .depth-head>p')?.textContent.trim()||''
+                    };
+                  });
+                  if(w>=1181){
+                    if(!home.hero||Math.abs(home.hero.bottom-h)>3) failures.push(`home/${mode}: hero does not end at viewport ${home.hero?.bottom} vs ${h}`);
+                    if(home.next && home.next.top<h-2) failures.push(`home/${mode}: next section peeks at ${home.next.top}`);
+                    const top=Math.min(home.copy?.top??1e9,home.board?.top??1e9)-(home.hero?.top||0);
+                    const bottom=(home.hero?.bottom||h)-Math.max(home.copy?.bottom||0,home.board?.bottom||0);
+                    if(Math.abs(top-bottom)>95) failures.push(`home/${mode}: hero breathing room unbalanced top=${top.toFixed(1)} bottom=${bottom.toFixed(1)}`);
+                    if(home.para&&home.actions){const pc=(home.para.left+home.para.right)/2,ac=(home.actions.left+home.actions.right)/2;if(!near(pc,ac,10)) failures.push(`home/${mode}: hero CTAs not centered under paragraph ${pc.toFixed(1)} vs ${ac.toFixed(1)}`)}
+                    if(home.featured?.height>510) failures.push(`home/${mode}: featured engineering too tall ${home.featured.height}`);
+                    if(home.selected.length!==5) failures.push(`home/${mode}: selected project count ${home.selected.length}`);
+                    if(home.selected.length===5){const y=home.selected.map(r=>Math.round(r.top));if(!(near(y[0],y[1],3)&&near(y[2],y[3],3)&&near(y[3],y[4],3)&&y[2]>y[0]+100)) failures.push(`home/${mode}: selected projects not 2+3 hierarchy ${y}`)}
+                  }
+                  if(home.arrow.border!=='0px'||home.arrow.bg!=='rgba(0, 0, 0, 0)') failures.push(`home/${mode}: header CTA arrow still boxed ${JSON.stringify(home.arrow)}`);
+                  if(!home.depthText.startsWith('Compare proven tolerance')) failures.push(`home/${mode}: buyer-facing depth copy missing: ${home.depthText}`);
+
+                  // Every engineering discipline must lead to a distinct visual.
+                  const buttons=p.locator('[data-capability]');
+                  const srcs=[];
+                  for(let i=0;i<await buttons.count();i++){
+                    await buttons.nth(i).click();await wait(190);
+                    srcs.push(await p.locator('[data-capability-image]').getAttribute('src'));
+                  }
+                  if(new Set(srcs).size!==6) failures.push(`home/${mode}: capability images not unique ${JSON.stringify(srcs)}`);
+
+                  // Dossier must use the requested neutral stone/grey treatment.
+                  await p.locator('.featured-case-media').click();await wait(180);
+                  const dossier=await p.evaluate(()=>{const panel=document.querySelector('.dossier-panel'),copy=document.querySelector('.dossier-copy');return{hidden:document.querySelector('[data-dossier]')?.hidden,panel:panel?getComputedStyle(panel).backgroundColor:'',copy:copy?getComputedStyle(copy).backgroundColor:''}});
+                  if(dossier.hidden) failures.push(`home/${mode}: dossier did not open`);
+                  if(!['rgb(229, 228, 223)','rgb(229, 229, 225)'].includes(dossier.panel)) failures.push(`home/${mode}: dossier panel not neutral stone ${dossier.panel}`);
+                  await p.locator('[data-dossier-close]').last().click().catch(()=>{});
+
+                  if(mode==='desktop-1920'){
+                    await p.locator('.hero').screenshot({path:'audit-home-hero-1920.png'});
+                    await p.locator('.capabilities').screenshot({path:'audit-home-capabilities-1920.png'});
+                    await p.locator('.projects-showcase').screenshot({path:'audit-home-featured-1920.png'});
+                    await p.locator('.selected-projects-strip').screenshot({path:'audit-home-selected-1920.png'});
+                    await p.locator('.engineering-depth').screenshot({path:'audit-home-depth-1920.png'});
+                  }
+                }
+
+                if(file==='projects.html'&&w>=1181){
+                  const cards=await p.evaluate(()=>[...document.querySelectorAll('.project-page-card')].map(e=>{const r=e.getBoundingClientRect();return{w:r.width,h:r.height}}));
+                  if(!cards.length) failures.push(`projects/${mode}: no project cards`);
+                  if(cards.some(x=>x.h>480)) failures.push(`projects/${mode}: oversized project card ${JSON.stringify(cards.slice(0,4))}`);
+                }
+
+                if(file==='machines.html'){
+                  const m=await p.evaluate(()=>({
+                    noteH:document.querySelector('.archive-note h2')?.textContent.trim()||'',
+                    noteP:document.querySelector('.archive-note p')?.textContent.trim()||'',
+                    preview:document.querySelector('.archive-sticky-preview')?.getBoundingClientRect(),
+                    media:document.querySelector('.archive-preview-media')?.getBoundingClientRect(),
+                    bg:document.querySelector('.archive-sticky-preview')?getComputedStyle(document.querySelector('.archive-sticky-preview')).backgroundColor:''
+                  }));
+                  if(m.noteH.includes('Built to make relevance visible')) failures.push(`machines/${mode}: internal archive sentence survived`);
+                  if(!m.noteH.includes('proven starting point')) failures.push(`machines/${mode}: archive buyer copy missing ${m.noteH}`);
+                  if(w>=1181&&m.media?.height>260) failures.push(`machines/${mode}: archive preview image oversized ${m.media.height}`);
+                  if(w>=1181&&m.preview?.width>410) failures.push(`machines/${mode}: archive preview panel too wide ${m.preview.width}`);
+                  if(mode==='desktop-1920') await p.screenshot({path:'audit-experience-1920.png',fullPage:true});
+                }
+
+                if(file==='gallery.html'){
+                  const g=await p.evaluate(()=>{
+                    const controls=document.querySelector('.gallery-controls'),list=document.querySelector('[data-gallery-filter-list]');
+                    const groups=[...document.querySelectorAll('.gallery-project-media')].map(el=>({count:el.children.length,w:el.getBoundingClientRect().width,tiles:[...el.children].map(c=>{const r=c.getBoundingClientRect();return{w:r.width,h:r.height}})}));
+                    return{controls:controls?{cw:controls.clientWidth,sw:controls.scrollWidth}:null,list:list?{cw:list.clientWidth,sw:list.scrollWidth}:null,groups};
+                  });
+                  if(g.controls&&g.controls.sw>g.controls.cw+2) failures.push(`gallery/${mode}: controls horizontal overflow ${g.controls.sw}/${g.controls.cw}`);
+                  if(g.list&&g.list.sw>g.list.cw+2) failures.push(`gallery/${mode}: filter list horizontal overflow ${g.list.sw}/${g.list.cw}`);
+                  if(w>=1181){
+                    for(const gr of g.groups){
+                      if(gr.count===1&&gr.tiles[0]?.w>750) failures.push(`gallery/${mode}: one-media group too wide ${gr.tiles[0].w}`);
+                      if(gr.count===2&&gr.tiles.some(t=>t.w>550)) failures.push(`gallery/${mode}: two-media group too wide ${JSON.stringify(gr.tiles)}`);
+                      if(gr.tiles.some(t=>t.h>500)) failures.push(`gallery/${mode}: gallery tile too tall ${JSON.stringify(gr.tiles)}`);
+                    }
+                  }
+                  if(mode==='desktop-1920') await p.screenshot({path:'audit-gallery-1920.png',fullPage:true});
+                }
+
+                // Exercise lazy media and check final width/media state.
+                await p.evaluate(async()=>{const max=document.documentElement.scrollHeight-innerHeight;for(let y=0;y<=max;y+=Math.max(480,innerHeight*.7)){scrollTo(0,y);await new Promise(r=>setTimeout(r,45))}scrollTo(0,max)});
+                await wait(file==='gallery.html'?1200:450);
+                const final=await p.evaluate(()=>({
+                  width:document.documentElement.scrollWidth,
+                  broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src),
+                  footer:document.querySelector('.site-footer')?.getBoundingClientRect().height||0
+                }));
+                if(final.width>w+2) failures.push(`${file}/${mode}: final horizontal overflow ${final.width}`);
+                if(final.broken.length) failures.push(`${file}/${mode}: broken rendered media ${final.broken.join(', ')}`);
+                if(w>=1181&&final.footer>560) failures.push(`${file}/${mode}: footer too tall ${final.footer}`);
+                if(errors.length) failures.push(`${file}/${mode}: JS ${[...new Set(errors)].join(' | ')}`);
+                if(badRequests.length) failures.push(`${file}/${mode}: local request failures ${[...new Set(badRequests)].join(' | ')}`);
+                rows.push({file,mode,w,h,base,final});
+                await p.close();
+              }
+            }
+            fs.writeFileSync('audit-report.json',JSON.stringify({failures,rows},null,2));
+            console.log(JSON.stringify({failures},null,2));
+            await browser.close();
+            if(failures.length)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node site-audit.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-full-site-audit
+          path: |
+            audit-*.png
+            audit-report.json
+          retention-days: 14
