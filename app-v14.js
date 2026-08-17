@@ -301,13 +301,24 @@
   // V16 mobile sticky CTA — stay clear of the hero, appear after it.
   const mobileSticky=$('.mobile-sticky-cta'); const heroSection=$('#hero');
   if(mobileSticky&&heroSection){
-    const syncSticky=()=>{
-      const ready=heroSection.getBoundingClientRect().bottom<=Math.max(110,innerHeight*.12);
+    const setStickyReady=(ready)=>{
       mobileSticky.classList.toggle('is-ready',ready);
       mobileSticky.setAttribute('aria-hidden',ready?'false':'true');
       mobileSticky.tabIndex=ready?0:-1;
     };
-    addEventListener('scroll',syncSticky,{passive:true});
+    const syncSticky=()=>{
+      const heroBottom=heroSection.offsetTop+heroSection.offsetHeight;
+      const triggerLine=scrollY+Math.max(110,innerHeight*.12);
+      setStickyReady(triggerLine>=heroBottom);
+    };
+    const heroObserver=new IntersectionObserver(entries=>{
+      const entry=entries[0];
+      if(!entry)return;
+      if(!entry.isIntersecting&&scrollY>0)setStickyReady(true);
+      else syncSticky();
+    },{threshold:.01});
+    heroObserver.observe(heroSection);
+    addEventListener('scroll',()=>requestAnimationFrame(syncSticky),{passive:true});
     addEventListener('resize',syncSticky,{passive:true});
     syncSticky();
   }
