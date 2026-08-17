@@ -1,0 +1,67 @@
+name: V16 Final Polish Verification
+on:
+  push:
+    branches: [client-review-v16-blue-refinement]
+    paths: ['.github/workflows/v16-polish-verification.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Install browser
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Verify polish
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-polish.log 2>&1 &
+          sleep 2
+          cat > polish-verify.cjs <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const b=await chromium.launch({headless:true});
+            const p=await b.newPage({viewport:{width:1660,height:900}});
+            await p.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            await p.waitForTimeout(900);
+            const home=await p.evaluate(()=>{
+              const progress=getComputedStyle(document.querySelector('.page-progress')).display;
+              const btn=document.querySelector('.header-cta');
+              const arrow=btn.querySelector('span').getBoundingClientRect();
+              const br=btn.getBoundingClientRect();
+              const depth=document.querySelector('.depth-grid').getBoundingClientRect();
+              const stack=document.querySelector('.metric-stack').getBoundingClientRect();
+              const archive=document.querySelector('.archive-callout').getBoundingClientRect();
+              document.querySelector('[data-capability="fluid"]').click();
+              const fluid=document.querySelector('[data-capability-image]').getAttribute('src');
+              return {progress,arrowRight:Math.round(br.right-arrow.right),depthW:Math.round(depth.width),stackH:Math.round(stack.height),archiveH:Math.round(archive.height),fluid,heroText:document.querySelector('.hero-blue-copy>p').textContent.trim()};
+            });
+            console.log('HOME',JSON.stringify(home));
+            if(home.progress!=='none') throw new Error('progress strip still visible');
+            if(home.arrowRight<12 || home.arrowRight>30) throw new Error('header arrow spacing incorrect');
+            if(Math.abs(home.stackH-home.archiveH)>3) throw new Error('depth columns not aligned');
+            if(!home.fluid.includes('20230216-094120.webp')) throw new Error('hydraulics image not switched');
+            if(!home.heroText.startsWith('Bring VSK the part')) throw new Error('home buyer copy missing');
+            await p.locator('.engineering-depth').screenshot({path:'polish-depth.png'});
+            await p.locator('.site-header').screenshot({path:'polish-header.png'});
+            for(const [file,needle] of [['projects.html','If your requirement is unusual'],['machines.html','Search 54 documented'],['gallery.html','Inspect VSK workmanship']]){
+              await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'}); await p.waitForTimeout(600);
+              const txt=await p.locator('body').innerText();
+              if(!txt.includes(needle)) throw new Error(file+' buyer copy missing');
+              if(getComputedStyle(await p.locator('.page-progress').elementHandle()).display==='block') throw new Error(file+' progress visible');
+            }
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node polish-verify.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-polish-verification
+          path: polish-*.png
+          retention-days: 7
