@@ -16,15 +16,17 @@ jobs:
         with:
           ref: client-review-v16-blue-refinement
           fetch-depth: 0
-      - name: Apply header refinement
+      - name: Re-assert enlarged original-V16 header
         run: python3 .github/scripts/v16_header_refine.py
+      - name: Keep mobile sticky CTA clear of hero
+        run: python3 .github/scripts/v16_mobile_sticky_polish.py
       - name: Commit and safely push
         shell: bash
         run: |
           git config user.name "Asmita G V"
           git config user.email "gujjarasmita@gmail.com"
-          git add v16-blue-refinement.css
+          git add app-v14.js v16-blue-refinement.css
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Enlarge V16 header and restore original typography"
+          git commit -m "Finalize V16 header typography and mobile hero CTA behavior"
           git pull --rebase origin client-review-v16-blue-refinement
           git push origin HEAD:client-review-v16-blue-refinement
