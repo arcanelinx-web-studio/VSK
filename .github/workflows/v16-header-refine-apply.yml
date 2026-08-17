@@ -49,8 +49,8 @@ jobs:
             const before=await mobile.evaluate(()=>{const h=document.querySelector('.site-header'),logo=document.querySelector('.brand img'),brand=document.querySelector('.brand-copy strong'),s=document.querySelector('.mobile-sticky-cta');return{h:Math.round(h.getBoundingClientRect().height),logo:Math.round(logo.getBoundingClientRect().width),brand:getComputedStyle(brand).fontFamily,ready:s.classList.contains('is-ready'),opacity:getComputedStyle(s).opacity,pointer:getComputedStyle(s).pointerEvents}});
             if(before.h!==82||before.logo!==52||!before.brand.includes('Space Grotesk')||before.ready||before.opacity!=='0'||before.pointer!=='none')throw new Error('Mobile initial state mismatch '+JSON.stringify(before));
             const heroBottom=await mobile.evaluate(()=>{const hero=document.querySelector('#hero');return hero.offsetTop+hero.offsetHeight});
-            await mobile.evaluate(y=>window.scrollTo(0,y),heroBottom+180);
-            await mobile.waitForTimeout(350);
+            await mobile.evaluate(y=>{document.documentElement.style.scrollBehavior='auto';document.body.style.scrollBehavior='auto';window.scrollTo(0,y)},heroBottom+180);
+            await mobile.waitForTimeout(180);
             const after=await mobile.evaluate(()=>{const s=document.querySelector('.mobile-sticky-cta');return{scrollY,ready:s.classList.contains('is-ready'),opacity:getComputedStyle(s).opacity,pointer:getComputedStyle(s).pointerEvents}});
             if(!after.ready||after.opacity!=='1'||after.pointer==='none')throw new Error('Mobile sticky did not reveal '+JSON.stringify(after));
             console.log(JSON.stringify({desktop:d,mobileBefore:before,mobileAfter:after},null,2));
