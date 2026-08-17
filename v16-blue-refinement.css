@@ -388,3 +388,25 @@ body.error-page::before{content:"";position:fixed;inset:0;background-image:linea
 @media(prefers-reduced-motion:reduce){
   .hero-board-photo,.hero-tech-sheet{transform:none}
 }
+
+
+/* BLUE REFINEMENT FINAL SPECIFICITY CLEANUP */
+body.v8.v13.v14 .capability-row{border-color:#D4DEE6!important;color:#627486!important;background:transparent!important}
+body.v8.v13.v14 .capability-row>span,
+body.v8.v13.v14 .capability-row>i{color:#7890A3!important}
+body.v8.v13.v14 .capability-row.is-active,
+body.v8.v13.v14 .capability-row:hover{background:#FFFFFF!important;border-color:#B9CBD9!important;color:#142333!important}
+body.v8.v13.v14 .capability-row.is-active{border-left-color:#167BC4!important}
+body.v8.v13.v14 .capability-row.is-active>span,
+body.v8.v13.v14 .capability-row.is-active>i,
+body.v8.v13.v14 .capability-row:hover>i{color:#167BC4!important}
+body.v8.v13.v14 .capability-media figcaption>span{color:#164A9C!important}
+body.v8.v13.v14 .capability-media figcaption>p{color:#627486!important}
+body.v8.v13.v14 .tag-row b{color:#164A9C!important;border-color:#B9CBD9!important;background:#F8FBFD!important}
+body.v8.v13.v14 .metric-card small,
+body.v8.v13.v14 .metric-card i{color:#164A9C!important}
+body.v8.v13.v14 .metric-card strong{color:#164A9C!important}
+body.v8.v13.v14 .archive-callout .kicker{color:#45A9E8!important}
+body.v8.v13.v14 .archive-callout-split b{color:#B7D7F2!important}
+body.error-page{width:100%;max-width:100%;box-sizing:border-box}
+.error-shell{box-sizing:border-box;max-width:calc(100vw - 24px)}
