@@ -1,0 +1,205 @@
+name: V16 Blue Refinement QA
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-blue-refinement-qa.yml
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index.html
+            /projects.html
+            /machines.html
+            /gallery.html
+            /404.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /v16-subpages.css
+            /v16-blue-refinement.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start site
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-blue-server.log 2>&1 &
+          sleep 2
+      - name: Validate blue refinement
+        shell: bash
+        run: |
+          cat > blue-qa.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r=>setTimeout(r,ms));
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const failures=[];
+            const checks=[];
+            const localBase='http://127.0.0.1:4173/';
+            const pages=['index.html','projects.html','machines.html','gallery.html','404.html'];
+            const viewports=[['desktop',1440,1000],['mobile',390,844]];
+
+            for(const file of pages){
+              for(const [mode,width,height] of viewports){
+                const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+                const errors=[]; const bad=[];
+                page.on('pageerror',e=>errors.push(String(e)));
+                page.on('response',r=>{if(r.status()>=400&&r.url().startsWith(localBase))bad.push(`${r.status()} ${r.url()}`)});
+                await page.goto(localBase+file,{waitUntil:'networkidle'});
+                await wait(500);
+                const base=await page.evaluate(()=>({
+                  width:document.documentElement.scrollWidth,
+                  theme:document.querySelector('meta[name="theme-color"]')?.content||'',
+                  robots:document.querySelector('meta[name="robots"]')?.content||'',
+                  blueSheet:[...document.styleSheets].some(s=>(s.href||'').includes('v16-blue-refinement.css'))
+                }));
+                if(base.width>width+2)failures.push(`${file}/${mode}: overflow ${base.width}>${width}`);
+                if(base.theme.toUpperCase()!=='#0D1824')failures.push(`${file}/${mode}: wrong theme ${base.theme}`);
+                if(!base.robots.includes('noindex'))failures.push(`${file}/${mode}: indexing lock missing`);
+                if(file!=='404.html'&&!base.blueSheet)failures.push(`${file}/${mode}: blue refinement stylesheet missing`);
+
+                if(file==='index.html'){
+                  const hero=await page.evaluate(()=>{
+                    const span=document.querySelector('.hero-blue-copy h1 span');
+                    const em=document.querySelector('.hero-blue-copy h1 em');
+                    const board=document.querySelector('.hero-engineering-board');
+                    const main=document.querySelector('.hero-board-main img');
+                    const photo=document.querySelector('.hero-board-photo img');
+                    const sheet=document.querySelector('.hero-tech-sheet');
+                    const proof=document.querySelector('.hero-proof-chip');
+                    const header=document.querySelector('.site-header');
+                    const cta=document.querySelector('.header-cta');
+                    return {
+                      headline:(span?.textContent||'')+' '+(em?.textContent||''),
+                      white:span?getComputedStyle(span).color:'',
+                      blue:em?getComputedStyle(em).color:'',
+                      boardVisible:!!board&&board.getBoundingClientRect().width>250&&board.getBoundingClientRect().height>250,
+                      boardWidth:board?Math.round(board.getBoundingClientRect().width):0,
+                      mainOK:!!main&&main.complete&&main.naturalWidth>0,
+                      photoOK:!!photo&&photo.complete&&photo.naturalWidth>0,
+                      sheetVisible:!!sheet&&sheet.getBoundingClientRect().width>50,
+                      proofVisible:!!proof&&proof.getBoundingClientRect().width>50,
+                      proofText:proof?.textContent.trim()||'',
+                      headerBg:header?getComputedStyle(header).backgroundColor:'',
+                      ctaBg:cta?getComputedStyle(cta).backgroundColor:''
+                    }
+                  });
+                  if(!hero.headline.includes('Engineered around your production.'))failures.push(`home/${mode}: hero headline wrong ${hero.headline}`);
+                  if(!hero.white.includes('255, 255, 255'))failures.push(`home/${mode}: first headline half not white ${hero.white}`);
+                  if(!hero.blue.includes('69, 169, 232'))failures.push(`home/${mode}: second headline half not engineering blue ${hero.blue}`);
+                  if(!hero.boardVisible||!hero.mainOK||!hero.photoOK||!hero.sheetVisible||!hero.proofVisible)failures.push(`home/${mode}: hero board incomplete ${JSON.stringify(hero)}`);
+                  if(!hero.proofText.includes('300+'))failures.push(`home/${mode}: proof chip missing 300+`);
+                  if(mode==='desktop'&&hero.boardWidth<480)failures.push(`home desktop: engineering board too small ${hero.boardWidth}`);
+                  if(!hero.ctaBg.includes('22, 123, 196'))failures.push(`home/${mode}: header CTA not V16 blue ${hero.ctaBg}`);
+
+                  if(mode==='desktop'){
+                    await page.locator('.hero').screenshot({path:'blue-home-hero-desktop.png'});
+                    await page.locator('.capabilities').scrollIntoViewIfNeeded(); await wait(250);
+                    await page.locator('.capabilities').screenshot({path:'blue-home-capabilities-desktop.png'});
+                    await page.locator('.engineering-depth').scrollIntoViewIfNeeded(); await wait(250);
+                    await page.locator('.engineering-depth').screenshot({path:'blue-home-proof-desktop.png'});
+                  } else {
+                    await page.locator('.hero').screenshot({path:'blue-home-hero-mobile.png'});
+                    const toggle=page.locator('[data-menu-toggle]');
+                    await toggle.click(); await wait(100);
+                    const menu=await page.evaluate(()=>({hidden:document.querySelector('[data-mobile-menu]').hidden,bg:getComputedStyle(document.querySelector('.mobile-menu-panel')).backgroundColor,num:getComputedStyle(document.querySelector('.mobile-menu nav span')).color}));
+                    if(menu.hidden!==false)failures.push('home/mobile: menu did not open');
+                    if(!menu.bg.includes('8, 21, 34'))failures.push(`home/mobile: menu not navy ${menu.bg}`);
+                    if(!menu.num.includes('69, 169, 232'))failures.push(`home/mobile: menu numbering not blue ${menu.num}`);
+                    await page.locator('.mobile-menu-head [data-menu-close]').click();
+                  }
+
+                  const quoteOpen=page.locator('[data-quote-open]:visible').first();
+                  if(await quoteOpen.count()){
+                    await quoteOpen.click(); await wait(120);
+                    const q=await page.evaluate(()=>({hidden:document.querySelector('[data-quote-panel]').hidden,active:getComputedStyle(document.querySelector('.quote-progress i.is-active')).backgroundColor}));
+                    if(q.hidden!==false)failures.push(`home/${mode}: requirement dialog did not open`);
+                    if(!q.active.includes('22, 123, 196'))failures.push(`home/${mode}: quote progress not blue ${q.active}`);
+                    const close=page.locator('.quote-close[data-quote-close]'); if(await close.isVisible())await close.click();
+                  }
+                }
+
+                if(file==='projects.html'&&mode==='desktop'){
+                  await page.locator('.project-index').scrollIntoViewIfNeeded(); await wait(500);
+                  const count=await page.locator('.project-page-card').count();
+                  if(count<5)failures.push(`projects: only ${count} cards`);
+                  await page.locator('.page-hero').screenshot({path:'blue-projects-hero-desktop.png'});
+                }
+                if(file==='machines.html'&&mode==='desktop'){
+                  await page.locator('.archive-browser').scrollIntoViewIfNeeded(); await wait(500);
+                  const result=(await page.locator('[data-result-count]').textContent()||'').trim();
+                  if(!result.startsWith('54'))failures.push(`archive: result count ${result}`);
+                  await page.locator('.archive-hero').screenshot({path:'blue-archive-hero-desktop.png'});
+                }
+                if(file==='gallery.html'&&mode==='desktop'){
+                  await page.locator('.gallery-browser').scrollIntoViewIfNeeded(); await wait(600);
+                  const tiles=await page.locator('.gallery-tile').count();
+                  if(tiles<1)failures.push('gallery: no media tiles rendered');
+                  await page.locator('.gallery-hero').screenshot({path:'blue-gallery-hero-desktop.png'});
+                }
+                if(file==='404.html'){
+                  const error=await page.evaluate(()=>({title:document.querySelector('h1')?.textContent||'',bg:getComputedStyle(document.body).backgroundImage,link:getComputedStyle(document.querySelector('.error-shell a')).backgroundColor}));
+                  if(!error.title.includes('Wrong path.'))failures.push(`404/${mode}: wrong content`);
+                  if(!error.link.includes('22, 123, 196'))failures.push(`404/${mode}: CTA not blue ${error.link}`);
+                  await page.screenshot({path:`blue-404-${mode}.png`,fullPage:true});
+                }
+
+                await page.evaluate(async()=>{
+                  const root=document.documentElement,step=Math.max(480,Math.floor(innerHeight*.72));
+                  for(let y=0;y<root.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,45));}
+                  scrollTo(0,root.scrollHeight);
+                });
+                await wait(500);
+                const finalState=await page.evaluate(()=>{
+                  const imgs=[...document.images].filter(i=>i.offsetParent!==null);
+                  return {width:document.documentElement.scrollWidth,broken:imgs.filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src),pending:imgs.filter(i=>!i.complete).map(i=>i.src)};
+                });
+                if(finalState.width>width+2)failures.push(`${file}/${mode}: final overflow ${finalState.width}>${width}`);
+                if(finalState.broken.length)failures.push(`${file}/${mode}: broken images ${finalState.broken.join(',')}`);
+                if(finalState.pending.length)failures.push(`${file}/${mode}: pending images ${finalState.pending.join(',')}`);
+                if(errors.length)failures.push(`${file}/${mode}: page errors ${errors.join(' | ')}`);
+                const uniqueBad=[...new Set(bad)]; if(uniqueBad.length)failures.push(`${file}/${mode}: failed local requests ${uniqueBad.join(' | ')}`);
+                checks.push({file,mode,base,errors,bad:uniqueBad,finalState});
+                await page.close();
+              }
+            }
+
+            const copy=fs.readFileSync('index.html','utf8')+fs.readFileSync('projects.html','utf8')+fs.readFileSync('machines.html','utf8')+fs.readFileSync('gallery.html','utf8');
+            for(const phrase of ['giving buyers a practical way','Use the index for technical depth','Browse each project as a complete visual chapter','Explore selected machines and retrofits through the application']){
+              if(copy.includes(phrase))failures.push(`copy audit: old internal/site-facing phrase remains: ${phrase}`);
+            }
+            fs.writeFileSync('blue-qa-report.json',JSON.stringify({failures,checks},null,2));
+            console.log(JSON.stringify({failures},null,2));
+            await browser.close();
+            if(failures.length)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node blue-qa.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-blue-refinement-preview
+          path: |
+            blue-*.png
+            blue-qa-report.json
+          retention-days: 14
+          if-no-files-found: warn
