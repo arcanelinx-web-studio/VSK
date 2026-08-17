@@ -1,0 +1,67 @@
+/* VSK V16 — user-requested polish layer. Keep V14/original-V16 palette and geometry. */
+
+/* Remove the obsolete scroll-progress strip above the header. */
+body.v8.v13.v14 .page-progress{display:none!important}
+
+/* Header CTA: one uninterrupted cobalt surface, arrow visually anchored to the right. */
+body.v8.v13.v14 .header-cta{
+  position:relative!important;
+  justify-content:flex-start!important;
+  padding:0 48px 0 20px!important;
+  gap:0!important;
+}
+body.v8.v13.v14 .header-cta span{
+  position:absolute!important;
+  right:20px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  line-height:1!important;
+}
+body.v8.v13.v14 .header-cta:hover span{transform:translate(3px,calc(-50% - 3px))!important}
+
+/* Engineering Depth: pair the evidence stack and archive as one intentional system. */
+@media (min-width:1181px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    grid-template-columns:minmax(0,1.44fr) minmax(410px,.76fr)!important;
+    gap:14px!important;
+    padding:14px!important;
+    box-sizing:border-box!important;
+    background:var(--audit-stone,#F1F0EC)!important;
+    border:1px solid var(--audit-line,#D7DEE5)!important;
+    align-items:stretch!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-stack{
+    height:100%!important;
+    grid-template-rows:repeat(3,1fr)!important;
+    background:transparent!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-card{
+    min-height:0!important;
+    height:auto!important;
+    background:#fff!important;
+    border-color:#D3D9DE!important;
+    box-shadow:none!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    min-height:100%!important;
+    height:100%!important;
+    box-sizing:border-box!important;
+    padding:40px 42px!important;
+    justify-content:center!important;
+    border:1px solid #263A4E!important;
+    box-shadow:none!important;
+  }
+}
+@media (min-width:1181px) and (max-width:1439px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{gap:12px!important;padding:12px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout{padding:34px!important}
+}
+@media (max-width:1180px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    gap:10px!important;
+    padding:10px!important;
+    box-sizing:border-box!important;
+    background:var(--audit-stone,#F1F0EC)!important;
+    border:1px solid var(--audit-line,#D7DEE5)!important;
+  }
+}
