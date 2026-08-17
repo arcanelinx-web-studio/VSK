@@ -18,17 +18,27 @@
 
   const isRenderableMedia = (item) => {
     if (!item || item.sourceOnly || item.displayable === false) return false;
-    const src = item.thumb || item.poster || item.src || item.src_mp4 || item.web || '';
+    const src = item.src || item.web || item.src_mp4 || item.src_webm || item.thumb || item.poster || '';
     if (!src) return false;
     if (item.type === 'image') return !/\.(heic|heif)(?:$|[?#])/i.test(src);
-    if (item.type === 'video') return Boolean((item.poster || item.thumb) && (item.src_mp4 || item.web || item.src));
+    if (item.type === 'video') return Boolean(item.src_mp4 || item.src_webm || item.web || item.src);
     return false;
   };
 
   const cleanManifest = (input) => {
     if (!input || !Array.isArray(input.groups)) return input;
     const groups = input.groups
-      .map(group => ({ ...group, items: (group.items || []).filter(isRenderableMedia) }))
+      .map(group => {
+        const items = (group.items || []).filter(isRenderableMedia);
+        const groupImage = items.find(item => item.type === 'image');
+        const groupPoster = groupImage?.src || groupImage?.web || groupImage?.thumb || '';
+        return {
+          ...group,
+          items: items.map(item => item.type === 'image'
+            ? { ...item, thumb: item.src || item.web || item.thumb }
+            : { ...item, thumb: groupPoster || item.thumb || item.poster, poster: groupPoster || item.poster || item.thumb })
+        };
+      })
       .filter(group => group.items.length);
     const images = groups.reduce((n, group) => n + group.items.filter(item => item.type === 'image').length, 0);
     const videos = groups.reduce((n, group) => n + group.items.filter(item => item.type === 'video').length, 0);
@@ -145,7 +155,6 @@
     if (el) el.innerHTML = html;
   };
 
-  /* Global buyer-facing language. */
   setText('.footer-brand > p', 'Special purpose machines, CNC retrofit and automation engineered around difficult production requirements.');
   setText('.footer-brand small', 'Machine engineering for new equipment, retrofit and production improvement.');
   setText('.quote-head h2', 'Tell us the production or machine problem you need to solve.');
