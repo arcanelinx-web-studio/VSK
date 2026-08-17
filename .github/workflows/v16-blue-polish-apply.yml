@@ -1,0 +1,28 @@
+name: Apply V16 Blue Polish
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-blue-polish-apply.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Apply final blue visual polish
+        run: python3 .github/scripts/v16_blue_polish.py
+      - name: Commit and push
+        run: |
+          git config user.name "Asmita G V"
+          git config user.email "gujjarasmita@gmail.com"
+          git add index.html v16-blue-refinement.css
+          git commit -m "Use 4-servo CAD hero and remove residual green accents"
+          git pull --rebase origin client-review-v16-blue-refinement
+          git push origin HEAD:client-review-v16-blue-refinement
