@@ -94,7 +94,7 @@
   body.v8.v13.v14 .hero-blue-layout{
     height:100%!important;
     box-sizing:border-box!important;
-    padding-top:clamp(100px,15svh,118px)!important;
+    padding-top:clamp(82px,11svh,104px)!important;
     padding-bottom:0!important;
     align-items:start!important;
     grid-template-columns:minmax(0,1fr) minmax(470px,.92fr)!important;
@@ -112,18 +112,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   HEADER CTA — compact, deliberate and fixed-size so the header grid cannot
-   stretch it on wide or laptop screens.
+   HEADER CTA — single-line, compact and deliberate. Fixed sizing prevents the
+   header grid from stretching the action on wide screens.
    -------------------------------------------------------------------------- */
 body.v8.v13.v14 .header-cta{
-  width:196px!important;
-  min-width:196px!important;
-  max-width:196px!important;
+  width:210px!important;
+  min-width:210px!important;
+  max-width:210px!important;
   height:50px!important;
-  padding:0 11px 0 19px!important;
-  gap:17px!important;
+  padding:0 10px 0 18px!important;
+  gap:14px!important;
   justify-self:end!important;
   justify-content:space-between!important;
+  white-space:nowrap!important;
   background:#164A9C!important;
   border:1px solid #164A9C!important;
   box-shadow:0 7px 18px rgba(22,74,156,.13)!important;
@@ -137,6 +138,7 @@ body.v8.v13.v14 .header-cta span{
   height:27px!important;
   display:grid!important;
   place-items:center!important;
+  flex:0 0 27px!important;
   border:1px solid rgba(255,255,255,.38)!important;
   background:#167BC4!important;
   transition:transform .2s ease,background .2s ease!important;
