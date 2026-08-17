@@ -1,0 +1,58 @@
+name: V16 Blue Clean QA
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-blue-clean-qa.yml
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index.html
+            /projects.html
+            /machines.html
+            /gallery.html
+            /404.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /v16-subpages.css
+            /v16-blue-refinement.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - run: |
+          python3 -m http.server 4173 >/tmp/vsk-final.log 2>&1 &
+          sleep 2
+      - name: Check final render
+        run: |
+          cat > clean.cjs <<'JS'
+          const {chromium}=require('playwright');const fs=require('fs');const wait=ms=>new Promise(r=>setTimeout(r,ms));
+          (async()=>{const browser=await chromium.launch({headless:true}),fail=[],rows=[];for(const file of ['index.html','projects.html','machines.html','gallery.html','404.html'])for(const [mode,w,h] of [['desktop',1440,1000],['mobile',390,844]]){const p=await browser.newPage({viewport:{width:w,height:h}}),errs=[],bad=[];p.on('pageerror',e=>errs.push(String(e)));p.on('response',r=>{if(r.status()>=400&&r.url().startsWith('http://127.0.0.1:4173/'))bad.push(r.status()+' '+r.url())});await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});await wait(450);const a=await p.evaluate(()=>{const bad=[];for(const el of [...document.querySelectorAll('body *')].filter(x=>x.offsetParent!==null)){const s=getComputedStyle(el),v=[s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];if(v.some(x=>x.includes('40, 95, 80')||x.includes('159, 194, 181'))){bad.push({el:el.tagName+'.'+String(el.className||''),v});if(bad.length===10)break}}return{w:document.documentElement.scrollWidth,bad,theme:document.querySelector('meta[name="theme-color"]')?.content,robots:document.querySelector('meta[name="robots"]')?.content}});if(a.w>w+2)fail.push(`${file}/${mode} overflow ${a.w}`);if(a.bad.length)fail.push(`${file}/${mode} green ${JSON.stringify(a.bad)}`);if((a.theme||'').toUpperCase()!=='#0D1824')fail.push(`${file}/${mode} theme`);if(!String(a.robots).includes('noindex'))fail.push(`${file}/${mode} noindex`);if(file==='index.html'){const hero=await p.evaluate(()=>{const m=document.querySelector('.hero-board-main img'),s=document.querySelector('.hero-board-photo img'),x=document.querySelector('.hero-blue-copy h1 span'),y=document.querySelector('.hero-blue-copy h1 em');return{m:m?.src||'',s:s?.src||'',mo:m?.complete&&m?.naturalWidth>0,so:s?.complete&&s?.naturalWidth>0,x:getComputedStyle(x).color,y:getComputedStyle(y).color}});if(!hero.m.includes('slotting-mc-1.webp')||!hero.s.includes('slotting-detail.webp')||!hero.mo||!hero.so)fail.push(`home/${mode} hero media ${JSON.stringify(hero)}`);if(!hero.x.includes('255, 255, 255')||!hero.y.includes('69, 169, 232'))fail.push(`home/${mode} headline colors`);await p.locator('.hero').screenshot({path:`clean-hero-${mode}.png`})}await p.evaluate(async()=>{const d=document.documentElement;for(let y=0;y<d.scrollHeight;y+=Math.max(500,innerHeight*.75)){scrollTo(0,y);await new Promise(r=>setTimeout(r,55))}scrollTo(0,d.scrollHeight)});await wait(file==='gallery.html'?1300:500);const z=await p.evaluate(()=>({w:document.documentElement.scrollWidth,broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src)}));if(z.w>w+2)fail.push(`${file}/${mode} final overflow ${z.w}`);if(z.broken.length)fail.push(`${file}/${mode} broken ${z.broken}`);if(errs.length)fail.push(`${file}/${mode} JS ${errs}`);if(bad.length)fail.push(`${file}/${mode} requests ${[...new Set(bad)]}`);rows.push({file,mode,a,z});await p.close()}fs.writeFileSync('clean-report.json',JSON.stringify({fail,rows},null,2));console.log(JSON.stringify({fail},null,2));await browser.close();if(fail.length)process.exit(1)})().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node clean.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-blue-clean-preview
+          path: |
+            clean-hero-*.png
+            clean-report.json
+          retention-days: 14
