@@ -5,6 +5,8 @@ on:
       - client-review-v16-blue-refinement
     paths:
       - .github/workflows/v16-header-refine-apply.yml
+      - .github/scripts/v16_header_refine.py
+      - .github/scripts/v16_mobile_sticky_polish.py
   workflow_dispatch:
 permissions:
   contents: write
