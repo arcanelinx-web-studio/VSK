@@ -16,27 +16,46 @@
     document.head.appendChild(polish);
   }
 
-  const isRenderableMedia = (item) => {
-    if (!item || item.sourceOnly || item.displayable === false) return false;
-    const src = item.src || item.web || item.src_mp4 || item.src_webm || item.thumb || item.poster || '';
-    if (!src) return false;
-    if (item.type === 'image') return !/\.(heic|heif)(?:$|[?#])/i.test(src);
-    if (item.type === 'video') return Boolean(item.src_mp4 || item.src_webm || item.web || item.src);
-    return false;
+  const nativeFetch = window.fetch.bind(window);
+  const validMediaSetPromise = nativeFetch('media/valid-paths.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : [])
+    .then(paths => new Set((paths || []).map(p => String(p).replace(/^\.\//, ''))))
+    .catch(() => null);
+
+  const validPath = (set, ...paths) => {
+    const candidates = paths.filter(Boolean).map(p => String(p).replace(/^\.\//, ''));
+    if (!candidates.length) return '';
+    if (!set) return candidates[0];
+    return candidates.find(p => set.has(p)) || '';
   };
 
-  const cleanManifest = (input) => {
+  const cleanManifest = (input, validSet = null) => {
     if (!input || !Array.isArray(input.groups)) return input;
     const groups = input.groups
       .map(group => {
-        const items = (group.items || []).filter(isRenderableMedia);
-        const groupImage = items.find(item => item.type === 'image');
-        const groupPoster = groupImage?.src || groupImage?.web || groupImage?.thumb || '';
+        const normalized = (group.items || []).map(item => {
+          if (!item || item.sourceOnly || item.displayable === false) return null;
+          if (item.type === 'image') {
+            const src = validPath(validSet, item.src, item.web, item.thumb);
+            if (!src || /\.(heic|heif)(?:$|[?#])/i.test(src)) return null;
+            return { ...item, src, web: src, thumb: src };
+          }
+          if (item.type === 'video') {
+            const mp4 = validPath(validSet, item.src_mp4);
+            const webm = validPath(validSet, item.src_webm);
+            const generic = validPath(validSet, item.web, item.src);
+            if (!mp4 && !webm && !generic) return null;
+            return { ...item, src_mp4: mp4 || undefined, src_webm: webm || undefined, web: generic || mp4 || webm, src: generic || mp4 || webm };
+          }
+          return null;
+        }).filter(Boolean);
+        const groupImage = normalized.find(item => item.type === 'image');
+        const groupPoster = groupImage?.src || '';
         return {
           ...group,
-          items: items.map(item => item.type === 'image'
-            ? { ...item, thumb: item.src || item.web || item.thumb }
-            : { ...item, thumb: groupPoster || item.thumb || item.poster, poster: groupPoster || item.poster || item.thumb })
+          items: normalized.map(item => item.type === 'video'
+            ? { ...item, thumb: groupPoster || item.thumb || '', poster: groupPoster || item.poster || '' }
+            : item)
         };
       })
       .filter(group => group.items.length);
@@ -49,14 +68,13 @@
     };
   };
 
-  const nativeFetch = window.fetch.bind(window);
   window.fetch = (input, init) => {
     const url = typeof input === 'string' ? input : (input && input.url) || '';
     return nativeFetch(input, init).then(async response => {
       if (!response.ok || !url.includes('media/archive-manifest.json')) return response;
       try {
-        const data = await response.clone().json();
-        const clean = cleanManifest(data);
+        const [data, validSet] = await Promise.all([response.clone().json(), validMediaSetPromise]);
+        const clean = cleanManifest(data, validSet);
         return new Response(JSON.stringify(clean), {
           status: response.status,
           statusText: response.statusText,
@@ -212,28 +230,30 @@
     document.body.appendChild(script);
   };
 
-  nativeFetch('media/v16/manifest.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : Promise.reject(new Error('V16 media not built yet')))
-    .then(rawManifest => {
-      const manifest = cleanManifest(rawManifest);
+  Promise.all([
+    nativeFetch('media/v16/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
+    validMediaSetPromise
+  ])
+    .then(([rawManifest, validSet]) => {
+      const manifest = cleanManifest(rawManifest, validSet);
       if (typeof siteProjects !== 'undefined') {
-        siteProjects.forEach(project => { if (mediaMap[project.id]) project.cover = mediaMap[project.id]; });
+        siteProjects.forEach(project => { if (mediaMap[project.id] && (!validSet || validSet.has(mediaMap[project.id]))) project.cover = mediaMap[project.id]; });
       }
       if (typeof featureData !== 'undefined') {
         Object.entries(mediaMap).forEach(([id, src]) => {
-          if (featureData[id]) featureData[id].media = [src, ...featureData[id].media.filter(x => x !== src)];
+          if (featureData[id] && (!validSet || validSet.has(src))) featureData[id].media = [src, ...featureData[id].media.filter(x => x !== src)];
         });
       }
 
       const hero = document.querySelector('[data-hero-image]');
-      if (hero && mediaMap.kellenberg) {
+      if (hero && mediaMap.kellenberg && (!validSet || validSet.has(mediaMap.kellenberg))) {
         const fallback = hero.getAttribute('src');
         hero.addEventListener('error', () => { if (hero.getAttribute('src') !== fallback) hero.setAttribute('src', fallback); }, { once: true });
         hero.setAttribute('src', mediaMap.kellenberg);
       }
 
       const galleryHero = document.querySelectorAll('.gallery-hero-strip img');
-      const galleryImages = [mediaMap.kellenberg, mediaMap.jig, mediaMap.airleak, mediaMap.slotting].filter(Boolean);
+      const galleryImages = [mediaMap.kellenberg, mediaMap.jig, mediaMap.airleak, mediaMap.slotting].filter(src => src && (!validSet || validSet.has(src)));
       galleryHero.forEach((img, i) => { if (galleryImages[i]) img.src = galleryImages[i]; });
 
       const summary = manifest?.summary || {};
