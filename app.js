@@ -12,7 +12,7 @@
   if (!document.querySelector('link[href^="v16-user-polish.css"]')) {
     const polish = document.createElement('link');
     polish.rel = 'stylesheet';
-    polish.href = 'v16-user-polish.css?v=16.1';
+    polish.href = 'v16-user-polish.css?v=16.2';
     document.head.appendChild(polish);
   }
 
@@ -101,38 +101,38 @@
     Object.assign(capabilityData.mechanical, {
       image: 'media/legacy/spindle-interface.webp',
       alt: 'Machine-tool spindle and workholding interface',
-      title: 'Machine architecture, workholding and mechanisms engineered around the component.',
-      copy: 'Machine structure, mechanisms, fixtures and workholding are developed from the operation, component and production target.'
+      title: 'Machine architecture built around your component and operation.',
+      copy: 'Structure, mechanisms, fixtures and workholding are developed around the part, process, access, accuracy and cycle target you need.'
     });
     Object.assign(capabilityData.controls, {
       image: 'media/retrofit/jig-grinding.webp',
       alt: 'Jig grinding machine CNC PLC and HMI retrofit',
-      title: 'Controls that make the complete machine behave as one production system.',
-      copy: 'CNC, PLC, HMI, servo and drive systems are integrated around machine sequence, safety, repeatability and operator use.'
+      title: 'Controls engineered for the way your machine must actually run.',
+      copy: 'CNC, PLC, HMI, servo and drive systems are integrated around sequence, safety, repeatability, diagnostics and operator use.'
     });
     Object.assign(capabilityData.fluid, {
       image: 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp',
       alt: 'VSK hydraulic pressing system',
-      title: 'Hydraulic and pneumatic systems designed for reliable machine action.',
-      copy: 'Clamping, pressing, testing and machine movement are engineered with the required force, sequence and serviceability in mind.'
+      title: 'Hydraulic and pneumatic systems sized for the force and motion your process needs.',
+      copy: 'Clamping, pressing, testing and machine movement are engineered for dependable force, sequence, response and serviceability.'
     });
     Object.assign(capabilityData.electrical, {
       image: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp',
       alt: 'VSK machine control panel and electrical system',
-      title: 'Electrical systems built for dependable control, diagnostics and field service.',
-      copy: 'Panels, drives, field devices and machine wiring are integrated for clean commissioning and practical maintenance.'
+      title: 'Electrical systems designed for reliable operation and easier fault finding.',
+      copy: 'Panels, drives, field devices and machine wiring are integrated for clean commissioning, practical diagnostics and maintainable field service.'
     });
     Object.assign(capabilityData.automation, {
       image: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp',
       alt: 'VSK four-servo automated slotting machine',
-      title: 'Automation built around part flow, repeatability and operator efficiency.',
-      copy: 'Servo motion, indexing, loading, handling and interlocks are engineered around the cycle rather than added after the machine is built.'
+      title: 'Automation that improves flow, repeatability and operator efficiency.',
+      copy: 'Servo motion, indexing, loading, handling and interlocks are engineered around the required cycle instead of being added after the machine is built.'
     });
     Object.assign(capabilityData.manufacturing, {
       image: 'media/legacy/metal-facing-machine.webp',
       alt: 'VSK precision metal facing machine',
-      title: 'Manufacturing knowledge that keeps machine design grounded in the process.',
-      copy: 'Turning, machining, grinding and finishing experience supports practical workholding, tooling and process decisions.'
+      title: 'Process knowledge that keeps the machine practical on the shop floor.',
+      copy: 'Turning, machining, grinding and finishing experience supports realistic choices in workholding, tooling, access, tolerance and process stability.'
     });
   }
 
@@ -145,23 +145,43 @@
     if (el) el.innerHTML = html;
   };
 
+  /* Global buyer-facing language. */
+  setText('.footer-brand > p', 'Special purpose machines, CNC retrofit and automation engineered around difficult production requirements.');
+  setText('.footer-brand small', 'Machine engineering for new equipment, retrofit and production improvement.');
+  setText('.quote-head h2', 'Tell us the production or machine problem you need to solve.');
+
   if (page === 'home') {
-    setText('.engineering-depth .depth-head > p', 'Compare proven tolerance, alignment and cycle-time references with the demands of your own application — then explore 54 documented VSK machine and retrofit projects.');
-    setText('.archive-callout > p', 'Find VSK experience relevant to your process, machine type, customer application or control platform.');
-    setText('.process .section-intro > p', 'Follow the path from application study and machine architecture through controls, trials and commissioning — with one engineering team accountable for the result.');
-    setText('.about-copy > p', 'If you need a new machine, a difficult retrofit or a more reliable production process, VSK brings machine-building, controls and machine-tool experience together under one engineering team.');
+    setText('.hero-blue-copy > p', 'Bring VSK the part, cycle, tolerance or machine problem. We engineer the mechanics, controls and process around the production result you need — from a new SPM to automation or CNC retrofit.');
+    setText('.capabilities .section-intro > p', 'One requirement, one engineering team. Mechanical design, controls, electrical systems, fluid power and manufacturing decisions stay aligned to the production result you need.');
+    setText('.projects-showcase .section-intro > p', 'Judge how VSK approaches a difficult application: from workholding and machine architecture to controls, cycle and the finished production solution.');
+    setText('.engineering-depth .depth-head > p', 'Compare proven tolerance, alignment and cycle-time references with the demands of your own application — then explore 54 documented machine and retrofit projects.');
+    setText('.archive-callout > p', 'Find the VSK references closest to your process, machine type, application or control platform before you start a new requirement.');
+    setText('.retrofit-inner > p', 'Keep a sound mechanical platform productive for longer. VSK combines machine reconditioning with modern CNC, PLC, drive and electrical systems to recover capability and serviceability.');
+    setText('.process .section-intro > p', 'From the first application study to trials and commissioning, the same production target guides machine architecture, controls, build and validation.');
+    setText('.about-copy > p', 'For a new machine, a difficult retrofit or a production problem that needs more than an off-the-shelf answer, VSK brings machine-building, controls and machine-tool experience together under one engineering team.');
   }
+
   if (page === 'projects') {
-    setText('.page-hero-copy > p', 'Review completed VSK machines and retrofit work by application, controls and machine configuration — and find the experience closest to your production requirement.');
-    setText('.project-index .section-intro > p', 'Compare real machine builds by application, control platform and configuration to find the strongest starting point for your requirement.');
+    setText('.page-hero-copy > p', 'If your requirement is unusual, start with machines VSK has already delivered. Compare applications, controls and machine configurations to judge where our experience matches your production challenge.');
+    setText('.project-index .section-intro > p', 'Use these completed cases to compare machine architecture, controls, workholding and application fit before discussing your own requirement.');
+    setHTML('.additional-media .section-intro h2', 'More applications.<br><em>More ways to judge fit.</em>');
+    setText('.additional-media .section-intro > p', 'Explore additional machines, process equipment and retrofit work to find an application, mechanism or control approach relevant to your plant.');
+    setHTML('.projects-cta h2', 'Need a closer match?<br><em>Search all 54 references.</em>');
+    setText('.projects-cta p', 'Filter VSK experience by machine, process, application and control platform to find the strongest precedent for your requirement.');
   }
+
   if (page === 'machines') {
-    setText('.archive-hero p', 'Search 54 documented VSK machine-building and retrofit references by process, machine type, customer and control platform.');
-    setHTML('.archive-note h2', 'Find a proven starting point.<br><em>Then engineer from there.</em>');
-    setText('.archive-note p', 'Search by process, machine type, customer or control platform to reach the VSK references most relevant to your next requirement.');
+    setText('.archive-hero p', 'Search 54 documented machine-building and retrofit references to find experience close to your process, machine type, customer application or control platform.');
+    setHTML('.archive-note h2', 'Find the closest engineering precedent.<br><em>Start your requirement with evidence.</em>');
+    setText('.archive-note p', 'Use process, machine type and control-platform filters to find where VSK has already solved a comparable engineering problem.');
+    setText('.archive-sticky-preview > p', 'Select a reference to review the machine, application and engineering context before opening the full dossier.');
   }
+
   if (page === 'gallery') {
-    setText('.gallery-policy p', 'Review the wider visual record of VSK machine builds, retrofits and process equipment to see the breadth of execution beyond the featured case studies.');
+    setText('.gallery-hero-copy > p', 'Inspect VSK workmanship up close — machine construction, retrofit detail, fixtures, controls and process equipment from real project groups.');
+    setText('.gallery-browser-head > p', 'Look beyond the finished machine. Compare construction, integration, controls and execution detail to judge how VSK work is carried through on the shop floor.');
+    setHTML('.gallery-policy h2', 'See the range of work.<br><em>Then find what matches your requirement.</em>');
+    setText('.gallery-policy p', 'From new machines and automation to retrofit and process equipment, use the wider gallery to find work relevant to the kind of engineering support you need.');
   }
 
   const mediaMap = {
