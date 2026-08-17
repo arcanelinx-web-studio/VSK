@@ -1,0 +1,265 @@
+name: Apply User-Requested V16 Restore
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-user-requested-restore.yml
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 0
+      - name: Restore earlier project layouts and correct hero/header
+        shell: bash
+        run: |
+          cat >> v16-desktop-100.css <<'CSS'
+
+          /* ======================================================================
+             USER-REQUESTED RESTORE — 2026-08-18
+             Restore the preferred earlier V16 Projects / Selected Projects layouts.
+             Only correct the marked hero and header geometry; no redesign.
+             ====================================================================== */
+
+          /* Header: make the brand descriptor and navigation properly legible. */
+          :root{--audit-header:104px}
+          body.v8.v13.v14 .site-header,
+          body.v8.v13.v14 .site-header.is-solid,
+          body.v8.v13.v14 .site-header.is-scrolled{
+            height:104px!important;
+            padding-left:44px!important;
+            padding-right:44px!important;
+            grid-template-columns:minmax(390px,1fr) auto 210px!important;
+            gap:30px!important;
+          }
+          body.v8.v13.v14 .brand{gap:15px!important}
+          body.v8.v13.v14 .brand img,
+          body.v8.v13.v14 .site-header.is-solid .brand img,
+          body.v8.v13.v14 .site-header.is-scrolled .brand img{
+            width:64px!important;
+            height:64px!important;
+          }
+          body.v8.v13.v14 .brand-copy strong{
+            font-size:19px!important;
+            line-height:1.08!important;
+          }
+          body.v8.v13.v14 .brand-copy small{
+            margin-top:4px!important;
+            font-size:8.4px!important;
+            line-height:1.25!important;
+            letter-spacing:.115em!important;
+            color:#687A8B!important;
+          }
+          body.v8.v13.v14 .desktop-nav{gap:30px!important}
+          body.v8.v13.v14 .desktop-nav a{
+            font-size:12px!important;
+            font-weight:600!important;
+            letter-spacing:.018em!important;
+          }
+          body.v8.v13.v14 .header-cta{
+            width:210px!important;
+            min-width:210px!important;
+            max-width:210px!important;
+            height:54px!important;
+          }
+
+          /* Hero: pull both columns inward and center the CTA/chip group under the
+             complete left headline block instead of anchoring it to the page edge. */
+          @media (min-width:1440px){
+            body.v8.v13.v14 .hero-blue-layout{
+              width:min(1600px,calc(100vw - 160px))!important;
+              max-width:1600px!important;
+              margin-left:auto!important;
+              margin-right:auto!important;
+              grid-template-columns:minmax(0,700px) minmax(520px,620px)!important;
+              gap:clamp(70px,5vw,92px)!important;
+              justify-content:center!important;
+            }
+            body.v8.v13.v14 .hero-blue-copy{
+              max-width:700px!important;
+              justify-self:center!important;
+            }
+            body.v8.v13.v14 .hero-blue-copy h1{max-width:700px!important}
+            body.v8.v13.v14 .hero-blue-copy>p,
+            body.v8.v13.v14 .hero-blue-copy .hero-actions,
+            body.v8.v13.v14 .hero-blue-copy .hero-chips{
+              width:100%!important;
+              max-width:700px!important;
+            }
+            body.v8.v13.v14 .hero-blue-copy .hero-actions,
+            body.v8.v13.v14 .hero-blue-copy .hero-chips{
+              justify-content:center!important;
+            }
+            body.v8.v13.v14 .hero-engineering-board{
+              width:620px!important;
+              max-width:620px!important;
+              justify-self:center!important;
+            }
+          }
+          @media (min-width:1181px) and (max-width:1439px){
+            body.v8.v13.v14 .hero-blue-layout{
+              width:calc(100vw - 96px)!important;
+              margin-left:auto!important;
+              margin-right:auto!important;
+              grid-template-columns:minmax(0,1fr) minmax(470px,540px)!important;
+              gap:46px!important;
+            }
+            body.v8.v13.v14 .hero-blue-copy>p,
+            body.v8.v13.v14 .hero-blue-copy .hero-actions,
+            body.v8.v13.v14 .hero-blue-copy .hero-chips{
+              width:100%!important;
+              max-width:640px!important;
+            }
+            body.v8.v13.v14 .hero-blue-copy .hero-actions,
+            body.v8.v13.v14 .hero-blue-copy .hero-chips{justify-content:center!important}
+            body.v8.v13.v14 .hero-engineering-board{justify-self:center!important}
+          }
+
+          /* Selected Projects: restore the earlier V16 editorial 2 + 3 treatment. */
+          body.v8.v13.v14 .selected-projects-strip{
+            padding:0 0 clamp(76px,5vw,96px)!important;
+          }
+          body.v8.v13.v14 .selected-projects-strip .project-collection-head{
+            min-height:64px!important;
+            margin:0 auto 16px!important;
+          }
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+            display:grid!important;
+            width:var(--shell)!important;
+            max-width:none!important;
+            grid-template-columns:repeat(6,minmax(0,1fr))!important;
+            grid-template-rows:none!important;
+            grid-auto-rows:clamp(225px,14vw,275px)!important;
+            gap:16px!important;
+          }
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card,
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){
+            min-height:0!important;
+            height:auto!important;
+            aspect-ratio:auto!important;
+            margin:0!important;
+            grid-row:auto!important;
+          }
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-0,
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-1{grid-column:span 3!important}
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-2,
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-3,
+          body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-4{grid-column:span 2!important}
+          body.v8.v13.v14 .selected-projects-strip .project-card .project-copy{inset:auto 18px 17px!important}
+          body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{font-size:clamp(21px,1.6vw,28px)!important}
+
+          /* Projects page: restore the premium editorial hierarchy that existed
+             before the audit flattened every card to the same 2-column geometry. */
+          body.v8.v13.v14[data-page="projects"] .page-hero{
+            min-height:610px!important;
+            max-height:none!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-index{
+            padding-bottom:clamp(88px,7vw,118px)!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-grid{
+            display:grid!important;
+            width:var(--shell)!important;
+            max-width:none!important;
+            grid-template-columns:repeat(12,minmax(0,1fr))!important;
+            gap:18px!important;
+            align-items:stretch!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-card{
+            grid-column:span 4!important;
+            grid-row:auto!important;
+            min-height:520px!important;
+            max-height:none!important;
+            display:grid!important;
+            grid-template-rows:320px 1fr!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-0{
+            grid-column:span 8!important;
+            grid-template-rows:470px 1fr!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-1{
+            grid-column:span 4!important;
+            grid-template-rows:470px 1fr!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-2,
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-3,
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-4,
+          body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-5{
+            grid-column:span 6!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-media{
+            min-height:0!important;
+            max-height:none!important;
+          }
+          body.v8.v13.v14[data-page="projects"] .project-page-copy{padding:21px!important}
+          body.v8.v13.v14[data-page="projects"] .additional-project-grid{
+            width:var(--shell)!important;
+            max-width:none!important;
+            grid-template-columns:repeat(4,minmax(0,1fr))!important;
+            gap:14px!important;
+          }
+
+          /* Preserve the original responsive project hierarchy. */
+          @media (max-width:1180px){
+            body.v8.v13.v14 .site-header,
+            body.v8.v13.v14 .site-header.is-solid,
+            body.v8.v13.v14 .site-header.is-scrolled{height:82px!important}
+            :root{--audit-header:82px}
+            body.v8.v13.v14 .brand img,
+            body.v8.v13.v14 .site-header.is-solid .brand img,
+            body.v8.v13.v14 .site-header.is-scrolled .brand img{width:52px!important;height:52px!important}
+            body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+              grid-template-columns:repeat(2,minmax(0,1fr))!important;
+              grid-template-rows:none!important;
+              grid-auto-rows:260px!important;
+            }
+            body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){grid-column:auto!important}
+            body.v8.v13.v14[data-page="projects"] .project-page-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+            body.v8.v13.v14[data-page="projects"] .project-page-card,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-0,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-1,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-2,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-3,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-4,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-5{
+              grid-column:auto!important;
+              grid-template-rows:330px 1fr!important;
+              min-height:520px!important;
+            }
+            body.v8.v13.v14[data-page="projects"] .additional-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+          }
+          @media (max-width:760px){
+            body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+              grid-template-columns:1fr!important;
+              grid-auto-rows:280px!important;
+              gap:12px!important;
+            }
+            body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){grid-column:1/-1!important}
+            body.v8.v13.v14[data-page="projects"] .project-page-grid{grid-template-columns:1fr!important}
+            body.v8.v13.v14[data-page="projects"] .project-page-card,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-0,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-1,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-2,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-3,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-4,
+            body.v8.v13.v14[data-page="projects"] .project-page-card.project-layout-5{
+              grid-template-rows:290px 1fr!important;
+              min-height:480px!important;
+            }
+            body.v8.v13.v14[data-page="projects"] .additional-project-grid{grid-template-columns:1fr!important}
+          }
+          CSS
+          git diff --check
+      - name: Commit targeted restore
+        shell: bash
+        run: |
+          git config user.name "VSK Visual Restore"
+          git config user.email "actions@users.noreply.github.com"
+          git add v16-desktop-100.css
+          git commit -m "Restore preferred projects and rebalance hero header"
+          git push origin HEAD:client-review-v16-blue-refinement
