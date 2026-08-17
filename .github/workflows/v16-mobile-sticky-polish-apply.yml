@@ -1,0 +1,30 @@
+name: Apply V16 Mobile Sticky Polish
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-mobile-sticky-polish-apply.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 0
+      - name: Apply mobile sticky polish
+        run: python3 .github/scripts/v16_mobile_sticky_polish.py
+      - name: Commit and safely push
+        shell: bash
+        run: |
+          git config user.name "Asmita G V"
+          git config user.email "gujjarasmita@gmail.com"
+          git add app-v14.js v16-blue-refinement.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Keep mobile sticky CTA clear of hero"
+          git pull --rebase origin client-review-v16-blue-refinement
+          git push origin HEAD:client-review-v16-blue-refinement
