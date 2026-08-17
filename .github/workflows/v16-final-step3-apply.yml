@@ -1,0 +1,42 @@
+name: Apply V16 Final Step 3
+
+on:
+  push:
+    branches: [client-review-v16-final-step3-working]
+    paths:
+      - '.github/workflows/v16-final-step3-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step3-working
+          fetch-depth: 0
+      - name: Link Step 3 stylesheet
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          target='<link href="v16-final.css" rel="stylesheet"/>'
+          addition=target+'\n<link href="v16-step3.css" rel="stylesheet"/>'
+          if 'v16-step3.css' in s:
+              raise SystemExit('Step 3 stylesheet already linked.')
+          if target not in s:
+              raise SystemExit('Expected V16 final stylesheet link not found.')
+          p.write_text(s.replace(target,addition,1))
+          PY
+      - name: Verify Step 3 link
+        run: grep -q 'v16-step3.css' index.html
+      - name: Commit Step 3 link
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Enable V16 Final project showcase layer' || exit 0
+          git push origin HEAD:client-review-v16-final-step3-working
