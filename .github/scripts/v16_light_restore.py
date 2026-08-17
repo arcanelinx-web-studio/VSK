@@ -1,0 +1,169 @@
+from pathlib import Path
+
+branch_pages = [Path('index.html'), Path('projects.html'), Path('machines.html'), Path('gallery.html')]
+
+css = r'''/* V16 LIGHT RESTORE — focused override only.
+   Keep the current V16 structure, proportions, typography, interactions and engineering collage.
+   Restore the earlier light/simple palette and remove the hero grid treatment. */
+:root{
+  --v16-light-ink:#0D1824;
+  --v16-light-ink-2:#263646;
+  --v16-light-cobalt:#164A9C;
+  --v16-light-blue:#167BC4;
+  --v16-light-blue-bright:#2B8DD0;
+  --v16-light-ivory:#FAFAF7;
+  --v16-light-stone:#F1F0EC;
+  --v16-light-cool:#F4F7FA;
+  --v16-light-white:#FFFFFF;
+  --v16-light-muted:#66717C;
+  --v16-light-line:#D5DCE2;
+}
+
+html{background:var(--v16-light-ivory)!important}
+body.v8.v13.v14{background:var(--v16-light-ivory)!important;color:var(--v16-light-ink)!important}
+
+/* Header — preserve the enlarged V16 sizing and original font roles, only restore the light palette. */
+body.v8.v13.v14 .site-header,
+body.v8.v13.v14 .site-header.is-solid,
+body.v8.v13.v14 .site-header.is-scrolled{
+  background:rgba(250,250,247,.965)!important;
+  color:var(--v16-light-ink)!important;
+  border-bottom-color:rgba(13,24,36,.12)!important;
+  box-shadow:0 10px 30px rgba(13,24,36,.045)!important;
+  backdrop-filter:blur(18px) saturate(115%);
+}
+body.v8.v13.v14 .brand-copy strong{color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .brand-copy small{color:#71808D!important}
+body.v8.v13.v14 .desktop-nav a{color:#526170!important}
+body.v8.v13.v14 .desktop-nav a:hover,
+body.v8.v13.v14 .desktop-nav a.is-current{color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .desktop-nav a::after{background:var(--v16-light-blue)!important}
+body.v8.v13.v14 .header-cta{
+  background:var(--v16-light-blue)!important;
+  border-color:var(--v16-light-blue)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+body.v8.v13.v14 .header-cta:hover{background:var(--v16-light-cobalt)!important;border-color:var(--v16-light-cobalt)!important}
+body.v8.v13.v14 .menu-toggle span{background:var(--v16-light-ink)!important}
+body.v8.v13.v14 .page-progress i{background:var(--v16-light-blue)!important}
+
+/* Hero — same layout and collage, light/simple background, no grid. */
+body.v8.v13.v14 .hero.hero-blue{
+  color:var(--v16-light-ink)!important;
+  background:
+    radial-gradient(circle at 78% 38%,rgba(22,123,196,.075),transparent 31%),
+    linear-gradient(135deg,#FCFCFA 0%,#F8F9F8 48%,#EEF4F8 100%)!important;
+}
+body.v8.v13.v14 .hero.hero-blue::before{background:none!important;mask-image:none!important}
+body.v8.v13.v14 .hero.hero-blue::after{
+  left:auto!important;right:-11vw!important;bottom:-18vw!important;width:42vw!important;height:42vw!important;
+  border-color:rgba(22,123,196,.07)!important;
+  box-shadow:0 0 0 48px rgba(22,123,196,.018),0 0 0 96px rgba(22,123,196,.012)!important;
+}
+.hero-blue-grid,.hero-board-grid{display:none!important;background:none!important}
+body.v8.v13.v14 .hero-blue-copy .hero-kicker{color:var(--v16-light-cobalt)!important}
+body.v8.v13.v14 .hero-blue-copy .hero-kicker::before{background:var(--v16-light-blue)!important}
+body.v8.v13.v14 .hero-blue-copy h1 span{color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .hero-blue-copy h1 em{color:var(--v16-light-blue)!important}
+body.v8.v13.v14 .hero-blue-copy>p{color:#4F5F6E!important}
+body.v8.v13.v14 .hero-blue-copy>p strong{color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .hero-blue-copy .text-cta{
+  background:var(--v16-light-blue)!important;
+  border-color:var(--v16-light-blue)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+body.v8.v13.v14 .hero-blue-copy .text-cta:hover{background:var(--v16-light-cobalt)!important;border-color:var(--v16-light-cobalt)!important}
+body.v8.v13.v14 .hero-blue-copy .ghost-cta{
+  color:var(--v16-light-cobalt)!important;
+  border-color:#C6D3DD!important;
+  background:rgba(255,255,255,.72)!important;
+}
+body.v8.v13.v14 .hero-blue-copy .ghost-cta:hover{color:var(--v16-light-ink)!important;border-color:#9FB7C9!important;background:#fff!important}
+body.v8.v13.v14 .hero-blue-copy .hero-chips span{
+  color:#657582!important;
+  border-color:#D2DCE4!important;
+  background:rgba(255,255,255,.72)!important;
+}
+
+/* Right-side engineering composition — same geometry, simply lighter and cleaner. */
+.hero-engineering-board{
+  background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(237,243,247,.95))!important;
+  border-color:#CFDBE4!important;
+  box-shadow:0 28px 70px rgba(22,52,75,.12)!important;
+}
+.hero-engineering-board::before{border-color:rgba(22,123,196,.10)!important}
+.hero-board-tag{
+  background:#fff!important;
+  color:#485D6E!important;
+  border-left-color:var(--v16-light-blue)!important;
+  box-shadow:0 10px 26px rgba(25,54,76,.08)!important;
+}
+.hero-board-tag b{color:var(--v16-light-blue)!important}
+.hero-board-main{box-shadow:0 20px 48px rgba(26,56,78,.12)!important}
+.hero-board-photo{background:#fff!important;border-color:#C9D7E1!important;box-shadow:0 16px 34px rgba(25,54,76,.14)!important}
+.hero-board-photo::after{background:rgba(255,255,255,.92)!important;color:#27445A!important}
+.hero-tech-sheet{box-shadow:0 18px 38px rgba(25,54,76,.14)!important}
+.hero-proof-chip{
+  background:rgba(255,255,255,.94)!important;
+  border-color:#C9D7E1!important;
+  box-shadow:0 12px 30px rgba(25,54,76,.10)!important;
+}
+.hero-proof-chip strong{color:var(--v16-light-blue)!important}
+.hero-proof-chip span{color:#44596A!important}
+.hero-board-side-note{color:#6F8799!important}
+.hero-crosshair{border-color:rgba(22,123,196,.10)!important}
+.hero-crosshair::before,.hero-crosshair::after{background:rgba(22,123,196,.14)!important}
+.hero-crosshair i{border-color:rgba(22,123,196,.12)!important}
+
+/* Restore the earlier simple light surfaces without changing section layout. */
+body.v8.v13.v14 .section-light{background:var(--v16-light-ivory)!important;color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .section-ivory{background:var(--v16-light-stone)!important;color:var(--v16-light-ink)!important}
+body.v8.v13.v14 .credibility-band{background:var(--v16-light-ivory)!important;border-color:var(--v16-light-line)!important}
+body.v8.v13.v14 .capabilities{background:var(--v16-light-ivory)!important}
+body.v8.v13.v14 .engineering-depth,
+body.v8.v13.v14 .process,
+body.v8.v13.v14 .about{background:var(--v16-light-stone)!important}
+body.v8.v13.v14 .kicker{color:var(--v16-light-cobalt)!important}
+body.v8.v13.v14 h2 em{color:var(--v16-light-cobalt)!important}
+
+/* Subpage header/chrome follows the same light palette; page layouts remain unchanged. */
+body.v8.v13.v14[data-page="projects"],
+body.v8.v13.v14[data-page="machines"],
+body.v8.v13.v14[data-page="gallery"]{background:var(--v16-light-ivory)!important}
+body.v8.v13.v14 .project-index,
+body.v8.v13.v14 .archive-browser,
+body.v8.v13.v14 .gallery-browser{background:var(--v16-light-ivory)!important}
+
+@media(max-width:760px){
+  body.v8.v13.v14 .site-header,
+  body.v8.v13.v14 .site-header.is-solid,
+  body.v8.v13.v14 .site-header.is-scrolled{background:rgba(250,250,247,.985)!important}
+}
+'''
+
+Path('v16-light-restore.css').write_text(css, encoding='utf-8')
+
+# Only requested copy change on the homepage.
+index = Path('index.html')
+s = index.read_text(encoding='utf-8')
+s = s.replace('<h1><span>Engineered around</span><em>your production.</em></h1>', '<h1><span>Engineered for</span><em>Precision</em></h1>')
+link = '<link href="v16-light-restore.css" rel="stylesheet"/>'
+if link not in s:
+    s = s.replace('<link href="v16-blue-refinement.css" rel="stylesheet"/>', '<link href="v16-blue-refinement.css" rel="stylesheet"/>\n' + link)
+s = s.replace('<meta content="#0D1824" name="theme-color"/>', '<meta content="#FAFAF7" name="theme-color"/>')
+index.write_text(s, encoding='utf-8')
+
+for page in branch_pages[1:]:
+    s = page.read_text(encoding='utf-8')
+    if link not in s:
+        s = s.replace('<link href="v16-blue-refinement.css" rel="stylesheet"/>', '<link href="v16-blue-refinement.css" rel="stylesheet"/>\n' + link)
+    s = s.replace('<meta content="#0D1824" name="theme-color"/>', '<meta content="#FAFAF7" name="theme-color"/>')
+    page.write_text(s, encoding='utf-8')
+
+# Guardrails: no layout redesign and no grid treatment left in the hero.
+check = index.read_text(encoding='utf-8')
+assert '<h1><span>Engineered for</span><em>Precision</em></h1>' in check
+assert link in check
+print('V16 focused light palette restoration prepared')
