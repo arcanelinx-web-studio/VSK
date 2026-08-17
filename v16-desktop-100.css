@@ -11,7 +11,6 @@
   body.v8.v13.v14{--shell:min(1680px,calc(100vw - 96px))!important}
   body.v8.v13.v14 .shell{width:var(--shell)!important;max-width:none!important}
 
-  /* Header stays full-width and independent of the content shell. */
   body.v8.v13.v14 .site-header{
     padding-left:48px!important;
     padding-right:48px!important;
@@ -28,31 +27,27 @@
 }
 
 /* --------------------------------------------------------------------------
-   HERO — fill only the visible area below the 104px header, then balance the
-   complete copy + engineering board as one composition.
+   HERO — exact visible area below the fixed header, with the complete hero
+   composition positioned as one balanced block.
    -------------------------------------------------------------------------- */
-@media (min-width:1181px){
+@media (min-width:1440px){
   body.v8.v13.v14 .hero.hero-blue{
     height:calc(100svh - 104px)!important;
-    min-height:720px!important;
+    min-height:0!important;
     max-height:none!important;
   }
   body.v8.v13.v14 .hero-blue-layout{
     height:100%!important;
     box-sizing:border-box!important;
-    padding-top:clamp(126px,17svh,184px)!important;
+    padding-top:clamp(120px,13svh,150px)!important;
     padding-bottom:0!important;
     align-items:start!important;
     grid-template-columns:minmax(0,1.03fr) minmax(540px,.97fr)!important;
     gap:clamp(44px,4vw,72px)!important;
   }
   body.v8.v13.v14 .hero-blue-copy,
-  body.v8.v13.v14 .hero-engineering-board{
-    align-self:start!important;
-  }
-  body.v8.v13.v14 .hero-blue-copy{
-    max-width:720px!important;
-  }
+  body.v8.v13.v14 .hero-engineering-board{align-self:start!important}
+  body.v8.v13.v14 .hero-blue-copy{max-width:720px!important}
   body.v8.v13.v14 .hero-blue-copy h1{
     max-width:720px!important;
     font-size:clamp(4.55rem,5vw,6rem)!important;
@@ -65,7 +60,6 @@
     font-size:16px!important;
     line-height:1.68!important;
   }
-  /* CTAs and chips are centered under the paragraph width. */
   body.v8.v13.v14 .hero-blue-copy .hero-actions{
     width:min(100%,640px)!important;
     max-width:640px!important;
@@ -92,23 +86,43 @@
 }
 
 @media (min-width:1181px) and (max-width:1439px){
+  body.v8.v13.v14 .hero.hero-blue{
+    height:calc(100svh - 98px)!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
   body.v8.v13.v14 .hero-blue-layout{
-    padding-top:clamp(104px,15svh,126px)!important;
+    height:100%!important;
+    box-sizing:border-box!important;
+    padding-top:clamp(100px,15svh,118px)!important;
+    padding-bottom:0!important;
+    align-items:start!important;
     grid-template-columns:minmax(0,1fr) minmax(470px,.92fr)!important;
     gap:30px!important;
   }
+  body.v8.v13.v14 .hero-blue-copy,
+  body.v8.v13.v14 .hero-engineering-board{align-self:start!important}
   body.v8.v13.v14 .hero-blue-copy h1{font-size:clamp(3.9rem,5.2vw,5.05rem)!important}
+  body.v8.v13.v14 .hero-blue-copy>p,
+  body.v8.v13.v14 .hero-blue-copy .hero-actions,
+  body.v8.v13.v14 .hero-blue-copy .hero-chips{width:min(100%,640px)!important;max-width:640px!important}
+  body.v8.v13.v14 .hero-blue-copy .hero-actions,
+  body.v8.v13.v14 .hero-blue-copy .hero-chips{justify-content:center!important}
   body.v8.v13.v14 .hero-engineering-board{width:min(100%,585px)!important;min-height:470px!important}
 }
 
 /* --------------------------------------------------------------------------
-   HEADER CTA — clean original-V16 action, no gradient/shimmer treatment
+   HEADER CTA — compact, deliberate and fixed-size so the header grid cannot
+   stretch it on wide or laptop screens.
    -------------------------------------------------------------------------- */
 body.v8.v13.v14 .header-cta{
+  width:196px!important;
   min-width:196px!important;
+  max-width:196px!important;
   height:50px!important;
   padding:0 11px 0 19px!important;
   gap:17px!important;
+  justify-self:end!important;
   justify-content:space-between!important;
   background:#164A9C!important;
   border:1px solid #164A9C!important;
@@ -227,7 +241,6 @@ body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{font
     gap:42px!important;
   }
 
-  /* Five-media machine groups use the actual desktop width rather than a sparse 3-column row. */
   body.v8.v13.v14[data-page="gallery"] .gallery-project-media{
     display:grid!important;
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
@@ -254,7 +267,7 @@ body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{font
 
 /* Preserve the established tablet/mobile structures. */
 @media (max-width:1180px){
-  body.v8.v13.v14 .header-cta{min-width:184px!important;height:48px!important}
+  body.v8.v13.v14 .header-cta{width:auto!important;min-width:184px!important;max-width:none!important;height:48px!important}
   body.v8.v13.v14 .featured-case,
   body.v8.v13.v14 .featured-case-media,
   body.v8.v13.v14 .featured-case-copy{height:auto!important;min-height:0!important}
