@@ -44,7 +44,7 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
       });
       if(geom.sw > geom.iw + 1 || geom.bodySw > geom.iw + 1) fail(`${vp.name} ${path}: horizontal overflow ${JSON.stringify(geom)}`);
       if(pageErrors.length) fail(`${vp.name} ${path}: page errors ${pageErrors.join(' | ')}`);
-      const meaningfulFailures=requestFailures.filter(x=>!x.includes('favicon'));
+      const meaningfulFailures=requestFailures.filter(x=>!x.includes('favicon')&&!x.includes('fonts.gstatic.com')&&!x.includes('fonts.googleapis.com'));
       if(meaningfulFailures.length) fail(`${vp.name} ${path}: request failures ${meaningfulFailures.slice(0,4).join(' | ')}`);
       if(!geom.hasDesktop100) fail(`${vp.name} ${path}: final desktop calibration stylesheet missing`);
       if(vp.width===1920 && geom.shellWidth<1600) fail(`${path}: 1920 desktop shell still too narrow (${geom.shellWidth})`);

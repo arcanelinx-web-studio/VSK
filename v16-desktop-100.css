@@ -301,3 +301,15 @@ body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{font
   }
   body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){grid-column:1/-1!important}
 }
+
+
+/* SELECTED PROJECTS — FULL-BLEED PORTRAIT MEDIA */
+body.v8.v13.v14 .selected-projects-strip .project-card.media-card-portrait .project-image{
+  background:#0D1824!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-card.media-card-portrait .project-image img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  padding:0!important;
+}
