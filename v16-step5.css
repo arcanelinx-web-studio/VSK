@@ -1,0 +1,301 @@
+/* V16 Final — Step 5: retrofit proof + engineering process */
+
+/* Retrofit remains the second cinematic moment, but now belongs to the same VSK palette. */
+body.v8.v13.v14 .retrofit{
+  min-height:clamp(600px,72vh,720px);
+  background:#101713;
+  color:#fff;
+  border-top:1px solid rgba(185,213,202,.2);
+  border-bottom:1px solid rgba(185,213,202,.18);
+}
+body.v8.v13.v14 .retrofit-media video{
+  filter:saturate(.78) contrast(1.04) brightness(.86);
+}
+body.v8.v13.v14 .retrofit-overlay{
+  background:
+    linear-gradient(90deg,rgba(13,22,18,.96) 0%,rgba(13,22,18,.83) 34%,rgba(13,22,18,.42) 61%,rgba(13,22,18,.11) 82%,rgba(13,22,18,.34) 100%),
+    linear-gradient(0deg,rgba(10,16,13,.38),transparent 46%);
+}
+body.v8.v13.v14 .retrofit-inner{
+  padding-top:clamp(74px,7vh,96px);
+  padding-bottom:clamp(74px,7vh,96px);
+}
+body.v8.v13.v14 .retrofit-inner>.kicker{
+  color:#a9c9bd;
+  font-size:9px;
+  letter-spacing:.13em;
+}
+body.v8.v13.v14 .retrofit-inner h2{
+  max-width:860px;
+  margin:18px 0 30px;
+  color:#fff;
+  font-size:clamp(4rem,6.5vw,7rem);
+  line-height:.84;
+  letter-spacing:-.062em;
+  font-weight:600;
+}
+body.v8.v13.v14 .retrofit-inner h2 em{
+  color:#b9d5ca;
+}
+body.v8.v13.v14 .retrofit-facts{
+  width:min(620px,100%);
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
+  margin:0 0 24px;
+  border-top:1px solid rgba(185,213,202,.27);
+  border-bottom:1px solid rgba(185,213,202,.27);
+}
+body.v8.v13.v14 .retrofit-facts span{
+  min-width:0;
+  padding:15px 18px 15px 0;
+  color:#9fc2b5;
+  font-size:8px;
+  letter-spacing:.1em;
+}
+body.v8.v13.v14 .retrofit-facts span+span{
+  padding-left:18px;
+  border-left:1px solid rgba(185,213,202,.2);
+}
+body.v8.v13.v14 .retrofit-facts strong{
+  margin-top:5px;
+  color:#fff;
+  font-size:11px;
+  line-height:1.35;
+  letter-spacing:.01em;
+}
+body.v8.v13.v14 .retrofit-inner>p{
+  max-width:590px;
+  color:rgba(248,247,242,.72);
+  font-size:16px;
+  line-height:1.72;
+}
+body.v8.v13.v14 .retrofit-actions{
+  margin-top:30px;
+  gap:10px;
+}
+body.v8.v13.v14 .retrofit-actions .btn-light{
+  border-color:var(--vsk-green);
+  background:var(--vsk-green);
+  color:#fff;
+}
+body.v8.v13.v14 .retrofit-actions .btn-light:hover{
+  border-color:var(--vsk-green-dark);
+  background:var(--vsk-green-dark);
+}
+body.v8.v13.v14 .retrofit-actions .btn-ghost-light{
+  border-color:rgba(255,255,255,.42);
+  background:rgba(18,29,24,.2);
+  color:#fff;
+  backdrop-filter:blur(8px);
+}
+body.v8.v13.v14 .retrofit-actions .btn-ghost-light:hover{
+  border-color:#fff;
+  background:#fff;
+  color:var(--vsk-charcoal);
+}
+
+/* Methodology: an engineering sequence, not six disconnected cards. */
+body.v8.v13.v14 .process{
+  padding-bottom:clamp(82px,7vw,108px);
+  background:#f8f7f2;
+  color:var(--vsk-charcoal);
+  border-bottom:1px solid var(--vsk-line);
+}
+body.v8.v13.v14 .process .section-intro{
+  padding-top:clamp(80px,7vw,106px);
+  margin-bottom:clamp(38px,3.7vw,54px);
+  grid-template-columns:minmax(0,.98fr) minmax(350px,.62fr);
+  gap:clamp(58px,6vw,96px);
+}
+body.v8.v13.v14 .process .section-intro .kicker{
+  color:var(--vsk-green);
+}
+body.v8.v13.v14 .process .section-intro h2{
+  color:var(--vsk-charcoal);
+  font-weight:600;
+  letter-spacing:-.058em;
+}
+body.v8.v13.v14 .process .section-intro h2 em{
+  color:var(--vsk-green);
+}
+body.v8.v13.v14 .process .section-intro p{
+  color:var(--vsk-muted);
+  font-size:15px;
+  line-height:1.72;
+}
+body.v8.v13.v14 .process-line{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  border-top:1px solid #aeb6b1;
+  border-bottom:1px solid #c9ceca;
+}
+body.v8.v13.v14 .process-line>i{
+  top:-1px;
+  height:2px;
+  background:var(--vsk-green);
+  box-shadow:none;
+}
+body.v8.v13.v14 .process-line article{
+  position:relative;
+  min-width:0;
+  min-height:228px;
+  padding:26px 18px 24px 0;
+  border-right:1px solid #d0d4d1;
+  border-bottom:0;
+  background:transparent;
+  transition:background .2s ease;
+}
+body.v8.v13.v14 .process-line article+article{
+  padding-left:18px;
+}
+body.v8.v13.v14 .process-line article:last-child{
+  border-right:0;
+}
+body.v8.v13.v14 .process-line article:hover{
+  background:rgba(40,95,80,.035);
+}
+body.v8.v13.v14 .process-line article::after{
+  content:"";
+  position:absolute;
+  top:-4px;
+  left:0;
+  width:7px;
+  height:7px;
+  border:1px solid var(--vsk-green);
+  border-radius:50%;
+  background:#f8f7f2;
+}
+body.v8.v13.v14 .process-line article+article::after{
+  left:18px;
+}
+body.v8.v13.v14 .process-line span{
+  display:block;
+  color:var(--vsk-green);
+  font-size:8.5px;
+  letter-spacing:.1em;
+}
+body.v8.v13.v14 .process-line strong{
+  margin:46px 0 11px;
+  color:var(--vsk-charcoal);
+  font-size:clamp(19px,1.45vw,23px);
+  line-height:1.05;
+  font-weight:500;
+}
+body.v8.v13.v14 .process-line p{
+  max-width:170px;
+  color:var(--vsk-muted);
+  font-size:12px;
+  line-height:1.58;
+}
+
+@media (max-width:1100px){
+  body.v8.v13.v14 .process-line{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  body.v8.v13.v14 .process-line article{
+    min-height:195px;
+    border-bottom:1px solid #d0d4d1;
+  }
+  body.v8.v13.v14 .process-line article:nth-child(3n){border-right:0}
+  body.v8.v13.v14 .process-line article:nth-last-child(-n+3){border-bottom:0}
+}
+
+@media (max-width:820px){
+  body.v8.v13.v14 .process .section-intro{
+    display:block;
+    padding-top:72px;
+    margin-bottom:32px;
+  }
+  body.v8.v13.v14 .process .section-intro p{
+    margin-top:18px;
+    max-width:700px;
+  }
+}
+
+@media (max-width:700px){
+  body.v8.v13.v14 .retrofit{
+    min-height:650px;
+    align-items:flex-end;
+  }
+  body.v8.v13.v14 .retrofit-overlay{
+    background:
+      linear-gradient(0deg,rgba(13,22,18,.97) 0%,rgba(13,22,18,.86) 43%,rgba(13,22,18,.35) 73%,rgba(13,22,18,.2) 100%),
+      linear-gradient(90deg,rgba(13,22,18,.55),rgba(13,22,18,.08));
+  }
+  body.v8.v13.v14 .retrofit-inner{
+    padding-top:180px;
+    padding-bottom:54px;
+  }
+  body.v8.v13.v14 .retrofit-inner h2{
+    margin:14px 0 24px;
+    font-size:clamp(3.6rem,15vw,5.35rem);
+    line-height:.86;
+  }
+  body.v8.v13.v14 .retrofit-facts{
+    grid-template-columns:1fr;
+  }
+  body.v8.v13.v14 .retrofit-facts span,
+  body.v8.v13.v14 .retrofit-facts span+span{
+    padding:12px 0;
+    border-left:0;
+  }
+  body.v8.v13.v14 .retrofit-facts span+span{
+    border-top:1px solid rgba(185,213,202,.18);
+  }
+  body.v8.v13.v14 .retrofit-inner>p{
+    font-size:14px;
+    line-height:1.62;
+  }
+  body.v8.v13.v14 .retrofit-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  body.v8.v13.v14 .retrofit-actions .btn{
+    width:100%;
+  }
+
+  body.v8.v13.v14 .process{
+    padding-bottom:72px;
+  }
+  body.v8.v13.v14 .process .section-intro{
+    padding-top:62px;
+    margin-bottom:28px;
+  }
+  body.v8.v13.v14 .process .section-intro h2{
+    font-size:clamp(2.55rem,11vw,3.5rem);
+    line-height:.95;
+  }
+  body.v8.v13.v14 .process .section-intro p{
+    font-size:14px;
+    line-height:1.62;
+  }
+  body.v8.v13.v14 .process-line{
+    grid-template-columns:1fr;
+    border-bottom:0;
+  }
+  body.v8.v13.v14 .process-line article,
+  body.v8.v13.v14 .process-line article+article{
+    min-height:0;
+    padding:21px 0 22px 34px;
+    border-right:0;
+    border-bottom:1px solid #d0d4d1;
+  }
+  body.v8.v13.v14 .process-line article::after,
+  body.v8.v13.v14 .process-line article+article::after{
+    top:25px;
+    left:0;
+  }
+  body.v8.v13.v14 .process-line span{
+    font-size:8px;
+  }
+  body.v8.v13.v14 .process-line strong{
+    margin:8px 0 7px;
+    font-size:21px;
+  }
+  body.v8.v13.v14 .process-line p{
+    max-width:300px;
+    font-size:12px;
+  }
+}
