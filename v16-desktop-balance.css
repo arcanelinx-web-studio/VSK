@@ -1,0 +1,277 @@
+/*
+  V16 DESKTOP BALANCE POLISH
+  --------------------------
+  Purpose: correct 100% desktop proportions without changing the V14/V16 design language.
+  Targets: hero vertical balance, CTA alignment, featured engineering composition,
+  neutral engineering dossier and stronger primary enquiry CTA.
+*/
+
+:root{
+  --vsk-neutral-panel:#E6E4DE;
+  --vsk-neutral-soft:#F1F0EC;
+  --vsk-neutral-deep:#2A3035;
+  --vsk-neutral-line:#C9C7C1;
+}
+
+/* Stronger but still restrained primary header action. */
+body.v8.v13.v14 .header-cta{
+  position:relative;
+  min-width:218px;
+  height:56px;
+  padding:0 18px 0 21px!important;
+  justify-content:space-between;
+  gap:18px;
+  border:1px solid rgba(22,74,156,.96)!important;
+  background:linear-gradient(135deg,#164A9C 0%,#1558A7 54%,#167BC4 100%)!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px rgba(22,74,156,.16)!important;
+  overflow:hidden;
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease!important;
+}
+body.v8.v13.v14 .header-cta::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 0 58%,rgba(255,255,255,.13) 58% 72%,transparent 72%);
+  transform:translateX(-115%);
+  transition:transform .48s cubic-bezier(.2,.65,.2,1);
+  pointer-events:none;
+}
+body.v8.v13.v14 .header-cta span{
+  position:relative;
+  z-index:1;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.36);
+  font-size:14px!important;
+  line-height:1;
+  transition:transform .22s ease,background .22s ease!important;
+}
+body.v8.v13.v14 .header-cta:hover{
+  transform:translateY(-2px)!important;
+  filter:saturate(1.06);
+  box-shadow:0 15px 30px rgba(22,74,156,.23)!important;
+}
+body.v8.v13.v14 .header-cta:hover::before{transform:translateX(115%)}
+body.v8.v13.v14 .header-cta:hover span{transform:translate(2px,-2px);background:rgba(255,255,255,.10)}
+
+/* Desktop hero: fill the visible screen below the header, then balance content inside it. */
+@media (min-width:1181px){
+  body.v8.v13.v14 .hero.hero-blue{
+    height:calc(100svh - 104px)!important;
+    min-height:700px!important;
+    max-height:none!important;
+  }
+  body.v8.v13.v14 .hero-blue-layout{
+    height:100%!important;
+    align-items:start!important;
+    padding-top:clamp(118px,14vh,156px)!important;
+    padding-bottom:58px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy{
+    align-self:start!important;
+    max-width:710px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy .hero-actions{
+    width:min(100%,710px)!important;
+    justify-content:center!important;
+    justify-self:start!important;
+    margin-top:28px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy .hero-chips{
+    width:min(100%,710px)!important;
+    max-width:710px!important;
+    justify-content:center!important;
+  }
+  body.v8.v13.v14 .hero-engineering-board{
+    align-self:start!important;
+    justify-self:end!important;
+  }
+}
+
+/* Preserve the wide desktop composition without letting either side become oversized. */
+@media (min-width:1680px){
+  body.v8.v13.v14 .hero-blue-layout.shell{
+    width:min(1792px,calc(100vw - 96px))!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy h1{font-size:clamp(4.5rem,4.85vw,5.8rem)!important}
+  body.v8.v13.v14 .hero-engineering-board{width:min(100%,650px)!important}
+}
+
+@media (min-width:1181px) and (max-width:1380px){
+  body.v8.v13.v14 .hero-blue-layout{
+    padding-top:clamp(102px,13vh,126px)!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy .hero-actions,
+  body.v8.v13.v14 .hero-blue-copy .hero-chips{width:min(100%,660px)!important}
+}
+
+/* Featured Engineering: return to the tighter original-V16 project-story composition. */
+body.v8.v13.v14 .projects-showcase{
+  padding-bottom:clamp(72px,5vw,92px)!important;
+}
+body.v8.v13.v14 .projects-showcase .section-intro{
+  padding-top:clamp(78px,5.5vw,96px)!important;
+  margin-bottom:clamp(36px,3vw,46px)!important;
+  grid-template-columns:minmax(0,.95fr) minmax(360px,.65fr)!important;
+  gap:clamp(54px,5vw,82px)!important;
+}
+body.v8.v13.v14 .featured-case{
+  grid-template-columns:minmax(0,1.16fr) minmax(400px,.84fr)!important;
+  min-height:540px!important;
+  border-top:1px solid rgba(22,123,196,.34)!important;
+  border-bottom:1px solid rgba(255,255,255,.16)!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .featured-case-media{
+  position:relative!important;
+  min-height:540px!important;
+  border-right:1px solid rgba(22,123,196,.30)!important;
+  background:#111B24!important;
+}
+body.v8.v13.v14 .featured-case-media::after{
+  content:"OPEN PROJECT  ↗";
+  position:absolute;
+  right:18px;
+  bottom:18px;
+  z-index:3;
+  padding:9px 11px;
+  border:1px solid rgba(255,255,255,.48);
+  background:rgba(13,24,36,.72);
+  color:#fff;
+  backdrop-filter:blur(9px);
+  font:500 8px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.11em;
+}
+body.v8.v13.v14 .featured-case-media img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  filter:saturate(.88) contrast(1.035) brightness(.95)!important;
+}
+body.v8.v13.v14 .featured-case-copy{
+  min-width:0!important;
+  padding:clamp(36px,3.1vw,48px) clamp(32px,2.8vw,44px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  background:#101E2C!important;
+  border-left:2px solid var(--vsk-r-cobalt)!important;
+}
+body.v8.v13.v14 .featured-case-copy>.kicker{
+  color:#5AADE2!important;
+  font-size:9px!important;
+  letter-spacing:.12em!important;
+}
+body.v8.v13.v14 .featured-case-copy h3{
+  margin:16px 0 20px!important;
+  font-size:clamp(3rem,3.75vw,4.55rem)!important;
+  line-height:.89!important;
+  letter-spacing:-.058em!important;
+  color:#fff!important;
+}
+body.v8.v13.v14 .featured-case-copy>p{
+  max-width:500px!important;
+  margin:0!important;
+  color:rgba(255,255,255,.68)!important;
+  font-size:14px!important;
+  line-height:1.72!important;
+}
+body.v8.v13.v14 .featured-facts{
+  margin:28px 0 24px!important;
+  gap:0!important;
+  background:transparent!important;
+  border-top:1px solid rgba(255,255,255,.17)!important;
+  border-bottom:1px solid rgba(255,255,255,.17)!important;
+}
+body.v8.v13.v14 .featured-facts span{
+  min-width:0!important;
+  padding:15px 12px!important;
+  background:transparent!important;
+  border-right:1px solid rgba(255,255,255,.14)!important;
+}
+body.v8.v13.v14 .featured-facts span:last-child{border-right:0!important}
+body.v8.v13.v14 .featured-facts small{color:#58A9DF!important}
+body.v8.v13.v14 .featured-facts strong{color:#F7FAFC!important;font-size:12px!important}
+body.v8.v13.v14 .featured-case-copy .text-arrow{
+  align-self:flex-start!important;
+  min-height:36px!important;
+  padding:0 0 5px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(90,173,226,.72)!important;
+  color:#fff!important;
+  font-size:9px!important;
+}
+body.v8.v13.v14 .featured-case-copy .text-arrow span{color:#62B6EA!important}
+
+/* Machine/project engineering dossier: neutral warm grey, not white or blue. */
+body.v8.v13.v14 .dossier-panel{
+  width:min(1280px,92vw)!important;
+  background:var(--vsk-neutral-panel)!important;
+  color:var(--vsk-r-ink)!important;
+  box-shadow:-28px 0 72px rgba(13,24,36,.24)!important;
+}
+body.v8.v13.v14 .dossier-top{
+  height:66px!important;
+  background:rgba(230,228,222,.96)!important;
+  border-bottom:1px solid var(--vsk-neutral-line)!important;
+  color:var(--vsk-r-ink)!important;
+}
+body.v8.v13.v14 .dossier-top>span{color:var(--vsk-r-cobalt)!important}
+body.v8.v13.v14 .dossier-top button{
+  color:#37424B!important;
+  transition:color .18s ease,background .18s ease!important;
+}
+body.v8.v13.v14 .dossier-top button:hover{color:var(--vsk-r-cobalt)!important;background:rgba(255,255,255,.34)!important}
+body.v8.v13.v14 .dossier-grid{
+  grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr)!important;
+  background:var(--vsk-neutral-panel)!important;
+}
+body.v8.v13.v14 .dossier-media{
+  padding:18px!important;
+  background:var(--vsk-neutral-deep)!important;
+  gap:12px!important;
+}
+body.v8.v13.v14 .dossier-media-item{
+  background:#23282D!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+body.v8.v13.v14 .dossier-media img,
+body.v8.v13.v14 .dossier-media video{background:#23282D!important}
+body.v8.v13.v14 .dossier-copy{
+  padding:44px 38px!important;
+  background:var(--vsk-neutral-soft)!important;
+  color:var(--vsk-r-ink)!important;
+}
+body.v8.v13.v14 .dossier-id{color:var(--vsk-r-cobalt)!important}
+body.v8.v13.v14 .dossier-copy h2{color:var(--vsk-r-ink)!important}
+body.v8.v13.v14 .dossier-summary{color:#5F676D!important}
+body.v8.v13.v14 .dossier-facts,
+body.v8.v13.v14 .dossier-facts div,
+body.v8.v13.v14 .dossier-sections article,
+body.v8.v13.v14 .dossier-bottom{border-color:#CBC9C3!important}
+body.v8.v13.v14 .dossier-facts span{color:#737A7E!important}
+body.v8.v13.v14 .dossier-facts strong,
+body.v8.v13.v14 .dossier-sections h3{color:#29343D!important}
+body.v8.v13.v14 .dossier-sections p{color:#666E73!important}
+body.v8.v13.v14 .dossier-bottom button{color:var(--vsk-r-cobalt)!important}
+
+@media (max-width:1180px){
+  body.v8.v13.v14 .header-cta{min-width:190px;height:50px}
+  body.v8.v13.v14 .featured-case{grid-template-columns:1fr!important;min-height:0!important}
+  body.v8.v13.v14 .featured-case-media{min-height:0!important;aspect-ratio:16/10!important;border-right:0!important;border-bottom:1px solid rgba(22,123,196,.28)!important}
+  body.v8.v13.v14 .featured-case-copy{border-left:0!important;border-top:2px solid var(--vsk-r-cobalt)!important}
+  body.v8.v13.v14 .dossier-grid{grid-template-columns:1fr!important}
+}
+
+@media (max-width:760px){
+  body.v8.v13.v14 .featured-case-media{aspect-ratio:4/3!important}
+  body.v8.v13.v14 .featured-case-copy{padding:28px 18px 32px!important}
+  body.v8.v13.v14 .featured-facts{grid-template-columns:1fr!important}
+  body.v8.v13.v14 .featured-facts span{border-right:0!important;border-bottom:1px solid rgba(255,255,255,.12)!important}
+  body.v8.v13.v14 .featured-facts span:last-child{border-bottom:0!important}
+  body.v8.v13.v14 .dossier-panel{width:100vw!important}
+  body.v8.v13.v14 .dossier-copy{padding:28px 18px!important}
+}
