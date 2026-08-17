@@ -1,0 +1,208 @@
+name: V16 Final Homepage QA
+
+on:
+  push:
+    branches: [client-review-v16-final-step6-working]
+    paths:
+      - '.github/workflows/v16-final-step6-preview.yml'
+      - 'v16-step6.css'
+      - 'v16-step5.css'
+      - 'v16-step4.css'
+      - 'v16-step3.css'
+      - 'v16-final.css'
+      - 'index.html'
+      - 'app.js'
+      - 'app-v14.js'
+      - 'data.js'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step6-working
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start site
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-server.log 2>&1 &
+          sleep 2
+      - name: Render and validate final homepage
+        run: |
+          cat > visual-final.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r=>setTimeout(r,ms));
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const checks=[]; const failures=[];
+            for (const [name,width,height] of [['1440',1440,1000],['1366',1366,768],['mobile',390,844]]) {
+              const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+              const pageErrors=[],badResponses=[];
+              page.on('pageerror',e=>pageErrors.push(String(e)));
+              page.on('response',r=>{if(r.status()>=400 && r.url().startsWith('http://127.0.0.1:4173/')) badResponses.push(`${r.status()} ${r.url()}`)});
+              await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+
+              // Exercise lazy-loading and scroll-triggered counters across the whole homepage.
+              await page.evaluate(async()=>{
+                const root=document.documentElement;
+                const step=Math.max(450,Math.floor(innerHeight*.7));
+                for(let y=0;y<root.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,80));}
+                scrollTo(0,root.scrollHeight);
+              });
+              await wait(1500);
+
+              await page.locator('#about').scrollIntoViewIfNeeded();
+              await wait(200);
+              await page.evaluate(()=>document.activeElement?.blur());
+              await page.locator('#about').screenshot({path:`final-about-${name}.png`});
+
+              await page.locator('#contact').scrollIntoViewIfNeeded();
+              await wait(200);
+              await page.evaluate(()=>document.activeElement?.blur());
+              await page.locator('#contact').screenshot({path:`final-contact-${name}.png`});
+
+              // Primary conversion path: contact CTA -> requirement dialog.
+              await page.locator('#contact .contact-main').click();
+              await wait(160);
+              const quote=await page.evaluate(()=>{
+                const dialog=document.querySelector('[data-quote-dialog]');
+                const panel=dialog?.querySelector('.quote-panel');
+                const active=dialog?.querySelector('.quote-progress i.is-active');
+                return {
+                  hidden:dialog?.hidden,
+                  heading:dialog?.querySelector('.quote-head h2')?.textContent?.trim()||'',
+                  panelBg:panel?getComputedStyle(panel).backgroundColor:'',
+                  progressBg:active?getComputedStyle(active).backgroundColor:''
+                };
+              });
+              if(quote.hidden!==false || !quote.heading.includes('Your requirement')) failures.push(`${name}: contact CTA did not open requirement dialog`);
+              await page.locator('[data-quote-close]').click();
+              await wait(100);
+
+              let mobileUi=null;
+              if(name==='mobile'){
+                mobileUi=await page.evaluate(()=>({
+                  stickyDisplay:getComputedStyle(document.querySelector('.mobile-sticky-cta')).display,
+                  stickyBg:getComputedStyle(document.querySelector('.mobile-sticky-cta')).backgroundColor
+                }));
+                await page.locator('[data-menu-toggle]').click();
+                await wait(120);
+                mobileUi.menuHidden=await page.locator('[data-mobile-menu]').evaluate(el=>el.hidden);
+                mobileUi.menuBg=await page.locator('.mobile-menu-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
+                mobileUi.menuNumberColor=await page.locator('.mobile-menu nav span').first().evaluate(el=>getComputedStyle(el).color);
+                await page.locator('[data-menu-close]').last().click();
+              }
+
+              if(name==='1440'){
+                await page.evaluate(()=>scrollTo(0,0));
+                await wait(180);
+                await page.screenshot({path:'final-homepage-1440.png',fullPage:true});
+              }
+
+              const result=await page.evaluate(()=>{
+                const root=document.documentElement;
+                const sheets=[...document.styleSheets].map(s=>s.href||'');
+                const imgs=[...document.images].filter(i=>i.offsetParent!==null);
+                const broken=imgs.filter(i=>i.complete && i.naturalWidth===0).map(i=>i.src);
+                const pending=imgs.filter(i=>!i.complete).map(i=>i.src);
+                const proof=[...document.querySelectorAll('.credibility-band .proof-grid strong')].map(x=>x.textContent.trim());
+                const depth=[...document.querySelectorAll('.engineering-depth .metric-number')].map(x=>x.innerText.replace(/\s+/g,' ').trim());
+                const aboutStats=[...document.querySelectorAll('.about-mini-stats strong')].map(x=>x.textContent.trim());
+                const contact=document.querySelector('#contact');
+                const about=document.querySelector('#about');
+                const footer=document.querySelector('.site-footer');
+                const blockquote=about.querySelector('blockquote');
+                return {
+                  viewport:innerWidth,
+                  scrollWidth:root.scrollWidth,
+                  links:{
+                    final:sheets.some(x=>x.includes('v16-final.css')),
+                    s3:sheets.some(x=>x.includes('v16-step3.css')),
+                    s4:sheets.some(x=>x.includes('v16-step4.css')),
+                    s5:sheets.some(x=>x.includes('v16-step5.css')),
+                    s6:sheets.some(x=>x.includes('v16-step6.css'))
+                  },
+                  proof,
+                  selectedProjects:document.querySelectorAll('[data-home-projects] .project-card').length,
+                  depth,
+                  processStages:document.querySelectorAll('.process-line article').length,
+                  aboutStats,
+                  aboutBg:getComputedStyle(about).backgroundColor,
+                  blockquoteBorder:getComputedStyle(blockquote).borderLeftColor,
+                  contactBg:getComputedStyle(contact).backgroundColor,
+                  footerBg:getComputedStyle(footer).backgroundColor,
+                  footerLabel:getComputedStyle(footer.querySelector('.footer-col>span')).color,
+                  email:contact.querySelector('a[href^="mailto:"]')?.getAttribute('href')||'',
+                  phone:contact.querySelector('a[href^="tel:"]')?.getAttribute('href')||'',
+                  pageProgress:getComputedStyle(document.querySelector('.page-progress i')).backgroundColor,
+                  broken,pending
+                };
+              });
+              const uniqueBad=[...new Set(badResponses)];
+              checks.push({name,...result,quote,mobileUi,pageErrors,badResponses:uniqueBad});
+
+              if(result.scrollWidth>width+2) failures.push(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
+              if(Object.values(result.links).some(v=>!v)) failures.push(`${name}: one or more V16 Final stylesheet layers are missing ${JSON.stringify(result.links)}`);
+              if(result.proof.join('|')!=='2011|300+|54|6') failures.push(`${name}: credibility proof changed ${result.proof.join('|')}`);
+              if(result.selectedProjects!==5) failures.push(`${name}: selected project count changed ${result.selectedProjects}`);
+              if(result.depth.join('|')!=='0.02 mm|20 μm|12 sec') failures.push(`${name}: engineering metrics changed ${result.depth.join('|')}`);
+              if(result.processStages!==6) failures.push(`${name}: process stage count changed ${result.processStages}`);
+              if(result.aboutStats.join('|')!=='2011|300+|54') failures.push(`${name}: about proof changed ${result.aboutStats.join('|')}`);
+              if(!result.aboutBg.includes('244, 243, 238')) failures.push(`${name}: about warm palette not applied ${result.aboutBg}`);
+              if(!result.blockquoteBorder.includes('40, 95, 80')) failures.push(`${name}: about quote accent is not VSK green ${result.blockquoteBorder}`);
+              if(!result.contactBg.includes('32, 41, 37')) failures.push(`${name}: contact palette not applied ${result.contactBg}`);
+              if(!result.footerBg.includes('17, 24, 20')) failures.push(`${name}: footer palette not applied ${result.footerBg}`);
+              if(!result.footerLabel.includes('159, 194, 181')) failures.push(`${name}: footer label accent not green ${result.footerLabel}`);
+              if(result.email!=='mailto:sivakumarmtc@gmail.com') failures.push(`${name}: contact email changed ${result.email}`);
+              if(result.phone!=='tel:+919790010957') failures.push(`${name}: contact phone changed ${result.phone}`);
+              if(!result.pageProgress.includes('40, 95, 80')) failures.push(`${name}: page progress is not VSK green ${result.pageProgress}`);
+              if(!quote.panelBg.includes('244, 243, 238')) failures.push(`${name}: quote panel warm palette not applied ${quote.panelBg}`);
+              if(!quote.progressBg.includes('40, 95, 80')) failures.push(`${name}: quote progress is not VSK green ${quote.progressBg}`);
+              if(name==='mobile'){
+                if(mobileUi.stickyDisplay==='none') failures.push('mobile: sticky enquiry CTA is not visible');
+                if(!mobileUi.stickyBg.includes('40, 95, 80')) failures.push(`mobile: sticky CTA is not VSK green ${mobileUi.stickyBg}`);
+                if(mobileUi.menuHidden!==false) failures.push('mobile: navigation menu did not open');
+                if(!mobileUi.menuBg.includes('23, 32, 28')) failures.push(`mobile: menu palette not applied ${mobileUi.menuBg}`);
+                if(!mobileUi.menuNumberColor.includes('159, 194, 181')) failures.push(`mobile: menu numbering is not green ${mobileUi.menuNumberColor}`);
+              }
+              if(result.broken.length) failures.push(`${name}: broken visible images ${result.broken.join(', ')}`);
+              if(result.pending.length) failures.push(`${name}: pending visible images ${result.pending.join(', ')}`);
+              if(pageErrors.length) failures.push(`${name}: page errors ${pageErrors.join(' | ')}`);
+              if(uniqueBad.length) failures.push(`${name}: failed requests ${uniqueBad.join(' | ')}`);
+              await page.close();
+            }
+            fs.writeFileSync('final-report.json',JSON.stringify({checks,failures},null,2));
+            console.log(fs.readFileSync('final-report.json','utf8'));
+            await browser.close();
+            if(failures.length) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node visual-final.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-final-homepage-preview
+          path: |
+            final-*.png
+            final-report.json
+          retention-days: 14
