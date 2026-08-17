@@ -33,9 +33,11 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
 
       const geom = await page.evaluate(()=>({
         iw: innerWidth,
+        ih: innerHeight,
         sw: document.documentElement.scrollWidth,
         bodySw: document.body.scrollWidth,
         bodyBg: getComputedStyle(document.body).backgroundColor,
+        hasBalance:[...document.querySelectorAll('link[rel="stylesheet"]')].some(x=>(x.getAttribute('href')||'').includes('v16-desktop-balance.css')),
       }));
       if(geom.sw > geom.iw + 1 || geom.bodySw > geom.iw + 1){
         fail(`${vp.name} ${path}: horizontal overflow ${JSON.stringify(geom)}`);
@@ -44,7 +46,7 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
       const meaningfulFailures=requestFailures.filter(x=>!x.includes('favicon'));
       if(meaningfulFailures.length) fail(`${vp.name} ${path}: request failures ${meaningfulFailures.slice(0,4).join(' | ')}`);
 
-      const data = {viewport:vp.name,path,overflow:Math.max(geom.sw,geom.bodySw)-geom.iw};
+      const data = {viewport:vp.name,path,overflow:Math.max(geom.sw,geom.bodySw)-geom.iw,hasBalance:geom.hasBalance};
 
       if(path==='index.html'){
         const home = await page.evaluate(()=>{
@@ -55,12 +57,13 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
             const x=el.getBoundingClientRect(); return {x:x.x,y:x.y,w:x.width,h:x.height};
           });
           const footer=r('.site-footer'), footerGrid=r('.footer-grid');
-          const copy=r('.hero-blue-copy'), actions=r('.hero-blue-copy .hero-actions');
+          const copy=r('.hero-blue-copy'), actions=r('.hero-blue-copy .hero-actions'), h1=r('.hero-blue-copy h1');
+          const featured=r('.featured-case'), featuredMedia=r('.featured-case-media'), featuredCopy=r('.featured-case-copy');
           return {
             hero:r('.hero.hero-blue'), board:r('.hero-engineering-board'),
-            h1:r('.hero-blue-copy h1'), first:r('.hero-blue-copy h1 span'), precisionColor:c('.hero-blue-copy h1 em')?.color,
+            h1, first:r('.hero-blue-copy h1 span'), precisionColor:c('.hero-blue-copy h1 em')?.color,
             firstWhiteSpace:c('.hero-blue-copy h1 span')?.whiteSpace,
-            actionCenter: actions&&copy ? {actions:actions.x+actions.width/2,copy:copy.x+Math.min(copy.width,630)/2} : null,
+            actionCenter: actions&&h1 ? {actions:actions.x+actions.width/2,h1:h1.x+h1.width/2} : null,
             heroGrid:c('.hero-blue-grid')?.display, boardGrid:c('.hero-board-grid')?.display,
             capAccent:c('.capabilities h2 em')?.color,
             capBg:c('.capabilities')?.backgroundColor,
@@ -72,20 +75,37 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
             aboutTop:r('.about')?.top,
             footerHeight:footer?.height, footerGridOffset:footer&&footerGrid?footerGrid.top-footer.top:null,
             headerHeight:r('.site-header')?.height,
+            heroHeadlineGap:h1 ? h1.top-(r('.site-header')?.height||0) : null,
+            credibilityTop:r('.credibility-band')?.top,
+            featured,featuredMedia,featuredCopy,
+            featuredCopyBg:c('.featured-case-copy')?.backgroundColor,
+            featuredTitleSize:parseFloat(c('.featured-case-copy h3')?.fontSize||'0'),
             brandFont:c('.brand-copy strong')?.fontFamily, navFont:c('.desktop-nav a')?.fontFamily,
           };
         });
         Object.assign(data,{home});
 
         if(vp.width>=1366){
-          if(home.hero?.height > 830) fail(`${vp.name}: hero too tall at 100% desktop (${home.hero?.height})`);
+          if(!geom.hasBalance && home.hero?.height > 830) fail(`${vp.name}: hero too tall at 100% desktop (${home.hero?.height})`);
+          if(geom.hasBalance){
+            if(home.hero && home.hero.bottom < geom.ih-2) fail(`${vp.name}: next section peeks below hero (${home.hero.bottom} < ${geom.ih})`);
+            if(vp.width>=1440 && home.heroHeadlineGap>225) fail(`${vp.name}: headline still sits too far below header (${home.heroHeadlineGap})`);
+            if(home.actionCenter && !near(home.actionCenter.actions,home.actionCenter.h1,24)) fail(`${vp.name}: hero buttons are not centered under headline ${JSON.stringify(home.actionCenter)}`);
+            if(home.featured && home.featuredMedia && home.featuredCopy){
+              const mediaShare=home.featuredMedia.width/home.featured.width;
+              if(mediaShare<.53 || mediaShare>.64) fail(`${vp.name}: featured engineering media/copy balance drifted (${mediaShare})`);
+              if(home.featuredCopyBg!=='rgb(16, 30, 44)') fail(`${vp.name}: featured engineering copy panel color wrong ${home.featuredCopyBg}`);
+              if(home.featuredTitleSize>78) fail(`${vp.name}: featured engineering title oversized ${home.featuredTitleSize}`);
+            }
+          } else if(home.actionCenter && !near(home.actionCenter.actions,home.actionCenter.h1,50)) {
+            fail(`${vp.name}: legacy hero buttons drifted too far ${JSON.stringify(home.actionCenter)}`);
+          }
           if(home.firstWhiteSpace!=='nowrap') fail(`${vp.name}: Engineered for line not locked to one line`);
           if(home.precisionColor!=='rgb(22, 74, 156)') fail(`${vp.name}: Precision is not exact Deep Cobalt: ${home.precisionColor}`);
           if(home.capAccent!=='rgb(22, 74, 156)') fail(`${vp.name}: capability headline accent drifted: ${home.capAccent}`);
           if(home.capBg!=='rgb(250, 250, 247)') fail(`${vp.name}: capabilities not ivory: ${home.capBg}`);
           if(home.projectBg!=='rgb(13, 24, 36)') fail(`${vp.name}: projects not Industrial Navy: ${home.projectBg}`);
           if(home.heroGrid!=='none' || home.boardGrid!=='none') fail(`${vp.name}: hero grid is visible`);
-          if(home.actionCenter && !near(home.actionCenter.actions,home.actionCenter.copy,26)) fail(`${vp.name}: hero buttons are not centered ${JSON.stringify(home.actionCenter)}`);
           if(home.cards.length!==3) fail(`${vp.name}: expected 3 engineering metric rows, got ${home.cards.length}`);
           if(home.cards.some(x=>x.h>235)) fail(`${vp.name}: engineering metrics became oversized again ${JSON.stringify(home.cards)}`);
           if(home.cards.length===3 && !(home.cards[1].y>home.cards[0].y+50 && home.cards[2].y>home.cards[1].y+50)) fail(`${vp.name}: engineering metrics are not stacked rows ${JSON.stringify(home.cards)}`);
@@ -130,6 +150,27 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
           if(m.bg!=='rgb(255, 255, 255)') fail(`${vp.name} archive: sticky preview is not light ${m.bg}`);
           if(m.color!=='rgb(13, 24, 36)') fail(`${vp.name} archive: preview heading contrast wrong ${m.color}`);
         }
+        if(geom.hasBalance && vp.width>=1366){
+          await page.locator('.archive-row').first().click();
+          try{await page.waitForFunction(()=>{const d=document.querySelector('[data-dossier]');return d&&!d.hidden;},{timeout:2500});}catch{}
+          const dossier=await page.evaluate(()=>{
+            const panel=document.querySelector('.dossier-panel'),copy=document.querySelector('.dossier-copy'),top=document.querySelector('.dossier-top');
+            return panel?{
+              panelBg:getComputedStyle(panel).backgroundColor,
+              copyBg:copy?getComputedStyle(copy).backgroundColor:null,
+              topBg:top?getComputedStyle(top).backgroundColor:null,
+              width:panel.getBoundingClientRect().width,
+              viewport:innerWidth,
+            }:null;
+          });
+          data.dossier=dossier;
+          if(!dossier) fail(`${vp.name} archive: dossier did not open`);
+          else {
+            if(dossier.panelBg!=='rgb(230, 228, 222)') fail(`${vp.name} archive: dossier panel is not neutral grey ${dossier.panelBg}`);
+            if(dossier.copyBg!=='rgb(241, 240, 236)') fail(`${vp.name} archive: dossier copy is not warm stone ${dossier.copyBg}`);
+            if(dossier.width>dossier.viewport*.94) fail(`${vp.name} archive: dossier is too wide ${dossier.width}`);
+          }
+        }
       }
 
       if(path==='gallery.html'){
@@ -139,7 +180,6 @@ function near(a,b,t=3){ return Math.abs(a-b) <= t; }
         if(g.groups<1 || g.tiles<1) fail(`${vp.name} gallery: project media did not render ${JSON.stringify(g)}`);
       }
 
-      // Trigger lazy media and validate visible images after the page has been exercised.
       await page.evaluate(async()=>{
         for(let y=0;y<document.documentElement.scrollHeight;y+=Math.max(500,innerHeight*.7)){
           window.scrollTo(0,y); await new Promise(r=>setTimeout(r,20));
