@@ -775,3 +775,15 @@ body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list] button.is-active
   body.v8.v13.v14 .engineering-depth .metric-stack .metric-card:first-child,
   body.v8.v13.v14 .engineering-depth .metric-stack .metric-card:last-child{grid-template-columns:1fr!important;gap:14px!important}
 }
+
+
+/* V16 RECOVERY QA — DESKTOP HERO FINAL OVERRIDE */
+@media (min-width:1181px){
+  body.v8.v13.v14 .hero.hero-blue{
+    height:clamp(700px,76svh,820px)!important;
+    min-height:700px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy .hero-actions{
+    justify-self:start!important;
+  }
+}
