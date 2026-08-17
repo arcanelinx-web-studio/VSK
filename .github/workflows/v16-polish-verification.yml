@@ -18,44 +18,76 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install playwright@1.55.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
-      - name: Verify polish
+      - name: Verify responsive polish
         run: |
           python3 -m http.server 4173 >/tmp/vsk-polish.log 2>&1 &
           sleep 2
           cat > polish-verify.cjs <<'JS'
           const {chromium}=require('playwright');
+          const sizes=[
+            ['desktop-xl',1920,1080],['desktop',1660,900],['laptop',1440,900],['laptop-sm',1366,768],
+            ['tablet-landscape',1024,768],['tablet',768,1024],['mobile',390,844]
+          ];
+          const pages=[
+            ['index.html','Bring VSK the part'],
+            ['projects.html','If your requirement is unusual'],
+            ['machines.html','Search 54 documented'],
+            ['gallery.html','Inspect VSK workmanship']
+          ];
           (async()=>{
             const b=await chromium.launch({headless:true});
-            const p=await b.newPage({viewport:{width:1660,height:900}});
-            await p.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
-            await p.waitForTimeout(900);
-            const home=await p.evaluate(()=>{
-              const progress=getComputedStyle(document.querySelector('.page-progress')).display;
-              const btn=document.querySelector('.header-cta');
-              const arrow=btn.querySelector('span').getBoundingClientRect();
-              const br=btn.getBoundingClientRect();
-              const depth=document.querySelector('.depth-grid').getBoundingClientRect();
-              const stack=document.querySelector('.metric-stack').getBoundingClientRect();
-              const archive=document.querySelector('.archive-callout').getBoundingClientRect();
-              document.querySelector('[data-capability="fluid"]').click();
-              const fluid=document.querySelector('[data-capability-image]').getAttribute('src');
-              return {progress,arrowRight:Math.round(br.right-arrow.right),depthW:Math.round(depth.width),stackH:Math.round(stack.height),archiveH:Math.round(archive.height),fluid,heroText:document.querySelector('.hero-blue-copy>p').textContent.trim()};
-            });
-            console.log('HOME',JSON.stringify(home));
-            if(home.progress!=='none') throw new Error('progress strip still visible');
-            if(home.arrowRight<12 || home.arrowRight>30) throw new Error('header arrow spacing incorrect');
-            if(Math.abs(home.stackH-home.archiveH)>3) throw new Error('depth columns not aligned');
-            if(!home.fluid.includes('20230216-094120.webp')) throw new Error('hydraulics image not switched');
-            if(!home.heroText.startsWith('Bring VSK the part')) throw new Error('home buyer copy missing');
-            await p.locator('.engineering-depth').screenshot({path:'polish-depth.png'});
-            await p.locator('.site-header').screenshot({path:'polish-header.png'});
-            for(const [file,needle] of [['projects.html','If your requirement is unusual'],['machines.html','Search 54 documented'],['gallery.html','Inspect VSK workmanship']]){
-              await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'}); await p.waitForTimeout(600);
-              const txt=await p.locator('body').innerText();
-              if(!txt.includes(needle)) throw new Error(file+' buyer copy missing');
-              if(getComputedStyle(await p.locator('.page-progress').elementHandle()).display==='block') throw new Error(file+' progress visible');
+            const failures=[];
+            for(const [size,w,h] of sizes){
+              const p=await b.newPage({viewport:{width:w,height:h}});
+              for(const [file,needle] of pages){
+                await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});
+                await p.waitForTimeout(650);
+                const basic=await p.evaluate(()=>({
+                  vw:innerWidth,
+                  docW:document.documentElement.scrollWidth,
+                  progress:getComputedStyle(document.querySelector('.page-progress')).display,
+                  text:document.body.innerText,
+                  imgs:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth,rect:i.getBoundingClientRect().toJSON()}))
+                }));
+                if(basic.docW>basic.vw+1) failures.push(`${size}/${file}: horizontal overflow ${basic.docW}>${basic.vw}`);
+                if(basic.progress!=='none') failures.push(`${size}/${file}: obsolete progress strip visible`);
+                if(!basic.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
+                const broken=basic.imgs.filter(i=>!i.complete||i.nw===0);
+                if(broken.length) failures.push(`${size}/${file}: ${broken.length} broken visible images`);
+
+                if(file==='index.html'){
+                  if(w>=1181){
+                    const home=await p.evaluate(()=>{
+                      const btn=document.querySelector('.header-cta'), arrow=btn.querySelector('span').getBoundingClientRect(), br=btn.getBoundingClientRect();
+                      const stack=document.querySelector('.metric-stack').getBoundingClientRect(), archive=document.querySelector('.archive-callout').getBoundingClientRect();
+                      const hero=document.querySelector('.hero-blue-layout').getBoundingClientRect();
+                      const actions=document.querySelector('.hero-actions').getBoundingClientRect();
+                      const para=document.querySelector('.hero-blue-copy>p').getBoundingClientRect();
+                      return {arrowRight:br.right-arrow.right,stackH:stack.height,archiveH:archive.height,heroLeft:hero.left,heroRight:innerWidth-hero.right,actionsCenter:actions.left+actions.width/2,paraCenter:para.left+para.width/2};
+                    });
+                    if(home.arrowRight<12||home.arrowRight>30) failures.push(`${size}/home: header arrow spacing ${home.arrowRight}`);
+                    if(Math.abs(home.stackH-home.archiveH)>4) failures.push(`${size}/home: Engineering Depth heights ${home.stackH}/${home.archiveH}`);
+                    if(Math.abs(home.actionsCenter-home.paraCenter)>3) failures.push(`${size}/home: hero CTAs not centered under paragraph`);
+                    if(Math.abs(home.heroLeft-home.heroRight)>3) failures.push(`${size}/home: hero shell not centered`);
+                  }
+                  await p.locator('[data-capability="fluid"]').click();
+                  await p.waitForTimeout(220);
+                  const fluid=await p.locator('[data-capability-image]').getAttribute('src');
+                  if(!fluid?.includes('20230216-094120.webp')) failures.push(`${size}/home: alternate hydraulics image not active (${fluid})`);
+                }
+              }
+              await p.close();
             }
+
+            const shot=await b.newPage({viewport:{width:1660,height:900}});
+            await shot.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'}); await shot.waitForTimeout(700);
+            await shot.locator('.site-header').screenshot({path:'polish-header.png'});
+            await shot.locator('.engineering-depth').screenshot({path:'polish-depth.png'});
+            await shot.locator('[data-capability="fluid"]').click(); await shot.waitForTimeout(220);
+            await shot.locator('.capability-layout').screenshot({path:'polish-hydraulics.png'});
             await b.close();
+            if(failures.length){console.error(failures.join('\n'));process.exit(1)}
+            console.log(`PASS: ${sizes.length*pages.length} responsive page/viewport combinations`);
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
           node polish-verify.cjs
