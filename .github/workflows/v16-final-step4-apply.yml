@@ -33,10 +33,12 @@ jobs:
           PY
       - name: Verify Step 4 link
         run: grep -q 'v16-step4.css' index.html
-      - name: Commit Step 4 link
+      - name: Commit and safely push Step 4 link
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Enable V16 Final engineering depth layer' || exit 0
+          git commit -m 'Enable V16 Final engineering depth layer'
+          git fetch origin client-review-v16-final-step4-working
+          git rebase origin/client-review-v16-final-step4-working
           git push origin HEAD:client-review-v16-final-step4-working
