@@ -42,7 +42,7 @@
     padding-top:clamp(120px,13svh,150px)!important;
     padding-bottom:0!important;
     align-items:start!important;
-    grid-template-columns:minmax(0,1.03fr) minmax(540px,.97fr)!important;
+    grid-template-columns:minmax(0,1fr) minmax(620px,.92fr)!important;
     gap:clamp(44px,4vw,72px)!important;
   }
   body.v8.v13.v14 .hero-blue-copy,
@@ -75,7 +75,7 @@
   }
   body.v8.v13.v14 .hero-engineering-board{
     justify-self:end!important;
-    width:min(100%,690px)!important;
+    width:min(100%,710px)!important;
     min-height:570px!important;
   }
 }
