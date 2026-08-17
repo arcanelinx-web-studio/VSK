@@ -1,0 +1,46 @@
+name: Add V16 Final Mobile Enquiry CTA
+
+on:
+  push:
+    branches: [client-review-v16-final-step6-working]
+    paths:
+      - '.github/workflows/v16-final-step6-mobile-cta-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step6-working
+          fetch-depth: 0
+      - name: Add mobile sticky enquiry CTA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          marker='<div aria-hidden="true" class="dossier" data-dossier="" hidden="">'
+          button='<button class="mobile-sticky-cta" data-quote-open="" type="button"><span>Discuss a Machine</span><i>↗</i></button>\n'
+          if 'class="mobile-sticky-cta"' in s:
+              raise SystemExit('Mobile sticky CTA already present.')
+          if marker not in s:
+              raise SystemExit('Dossier insertion marker not found.')
+          p.write_text(s.replace(marker,button+marker,1))
+          PY
+      - name: Verify CTA
+        run: |
+          grep -q 'class="mobile-sticky-cta"' index.html
+          grep -q 'mobile-sticky-cta.*data-quote-open' index.html
+      - name: Commit and safely push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Add mobile sticky engineering enquiry CTA'
+          git fetch origin client-review-v16-final-step6-working
+          git rebase origin/client-review-v16-final-step6-working
+          git push origin HEAD:client-review-v16-final-step6-working
