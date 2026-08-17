@@ -383,3 +383,10 @@ body.v8.v13.v14 .dossier-media video{
     padding:28px 18px 86px;
   }
 }
+
+/* V16 Final mobile sticky CTA visibility fix */
+@media (max-width:700px){
+  body.v8.v13.v14 .mobile-sticky-cta{
+    display:flex!important;
+  }
+}
