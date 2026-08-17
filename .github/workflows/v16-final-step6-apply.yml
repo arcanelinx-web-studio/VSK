@@ -1,0 +1,44 @@
+name: Apply V16 Final Step 6
+
+on:
+  push:
+    branches: [client-review-v16-final-step6-working]
+    paths:
+      - '.github/workflows/v16-final-step6-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step6-working
+          fetch-depth: 0
+      - name: Link Step 6 stylesheet
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          target='<link href="v16-step5.css" rel="stylesheet"/>'
+          addition=target+'\n<link href="v16-step6.css" rel="stylesheet"/>'
+          if 'v16-step6.css' in s:
+              raise SystemExit('Step 6 stylesheet already linked.')
+          if target not in s:
+              raise SystemExit('Expected Step 5 stylesheet link not found.')
+          p.write_text(s.replace(target,addition,1))
+          PY
+      - name: Verify Step 6 link
+        run: grep -q 'v16-step6.css' index.html
+      - name: Commit and safely push Step 6 link
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Enable V16 Final company and enquiry layer'
+          git fetch origin client-review-v16-final-step6-working
+          git rebase origin/client-review-v16-final-step6-working
+          git push origin HEAD:client-review-v16-final-step6-working
