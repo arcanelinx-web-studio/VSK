@@ -1,0 +1,48 @@
+name: Apply Remaining V16 Audit Corrections
+on:
+  push:
+    branches:
+      - client-review-v16-site-audit
+    paths:
+      - .github/workflows/v16-site-audit-fix2.yml
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-site-audit
+          fetch-depth: 0
+      - name: Patch final calibration layer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('v16-desktop-100.css')
+          s=p.read_text()
+          replacements={
+            'min-height:690px!important;':'min-height:0!important;',
+            'grid-template-columns:minmax(0,720px)!important;':'grid-template-columns:minmax(0,600px)!important;',
+            'grid-template-columns:repeat(2,minmax(0,520px))!important':'grid-template-columns:repeat(2,minmax(0,480px))!important'
+          }
+          for old,new in replacements.items():
+            if old not in s:
+              raise SystemExit(f'Missing expected CSS token: {old}')
+            s=s.replace(old,new,1)
+          marker='''  body.v8.v13.v14 .footer-grid{grid-template-columns:1fr!important;gap:28px!important}\n}'''
+          mobile='''  body.v8.v13.v14 .footer-grid{grid-template-columns:1fr!important;gap:28px!important}\n\n  /* Projects: no legacy card, CTA or hero can establish a width wider than the phone. */\n  body.v8.v13.v14[data-page="projects"] .subpage-main,\n  body.v8.v13.v14[data-page="projects"] .page-hero,\n  body.v8.v13.v14[data-page="projects"] .page-hero-copy,\n  body.v8.v13.v14[data-page="projects"] .project-index,\n  body.v8.v13.v14[data-page="projects"] .project-page-grid,\n  body.v8.v13.v14[data-page="projects"] .project-page-card,\n  body.v8.v13.v14[data-page="projects"] .project-page-media,\n  body.v8.v13.v14[data-page="projects"] .additional-media,\n  body.v8.v13.v14[data-page="projects"] .additional-project-grid,\n  body.v8.v13.v14[data-page="projects"] .additional-project-card,\n  body.v8.v13.v14[data-page="projects"] .projects-cta,\n  body.v8.v13.v14[data-page="projects"] .projects-cta-grid,\n  body.v8.v13.v14[data-page="projects"] .big-link{\n    min-width:0!important;\n    max-width:100%!important;\n  }\n  body.v8.v13.v14[data-page="projects"] .page-hero-copy h1,\n  body.v8.v13.v14[data-page="projects"] .project-page-copy h3,\n  body.v8.v13.v14[data-page="projects"] .big-link strong{overflow-wrap:anywhere!important}\n}\n'''
+          if marker not in s:
+            raise SystemExit('Missing mobile footer marker')
+          s=s.replace(marker,mobile,1)
+          p.write_text(s)
+          PY
+          git diff --check
+          git diff -- v16-desktop-100.css
+      - name: Commit correction
+        run: |
+          git config user.name "VSK Site Audit"
+          git config user.email "actions@users.noreply.github.com"
+          git add v16-desktop-100.css
+          git commit -m "Finish V16 viewport and gallery calibration"
+          git push origin HEAD:client-review-v16-site-audit
