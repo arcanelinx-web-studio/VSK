@@ -2,31 +2,29 @@ from pathlib import Path
 import re
 
 
-def replace_required(text, old, new, label):
+def required(text, old, new, label):
     if old not in text:
         raise SystemExit(f"Missing replacement target: {label}")
     return text.replace(old, new, 1)
 
 
-def add_style_layers(text):
+def add_layers(text):
     if 'v16.css?v=16.2' not in text:
-        text = replace_required(
+        text = required(
             text,
             '<link href="styles.css" rel="stylesheet"/>',
             '<link href="styles.css" rel="stylesheet"/>\n<link href="v16.css?v=16.2" rel="stylesheet"/>',
-            'styles.css link',
+            'base stylesheet link',
         )
     if 'v16-blue-refinement.css' not in text:
         text = text.replace('</head>', '<link href="v16-blue-refinement.css" rel="stylesheet"/>\n</head>', 1)
+    text = re.sub(r'<meta content="#[0-9A-Fa-f]{6}" name="theme-color"/>', '<meta content="#0D1824" name="theme-color"/>', text, count=1)
     return text
 
 
-# HOME
+# HOME — preserve the first-V16 structure, improve the hero and buyer-facing narrative.
 p = Path('index.html')
-text = p.read_text(encoding='utf-8')
-text = text.replace('<meta content="#F4F3EE" name="theme-color"/>', '<meta content="#0D1824" name="theme-color"/>', 1)
-text = add_style_layers(text)
-
+text = add_layers(p.read_text(encoding='utf-8'))
 hero = '''<section class="hero hero-blue" id="hero">
 <div aria-hidden="true" class="hero-blue-grid"></div>
 <div class="shell hero-blue-layout">
@@ -49,50 +47,36 @@ hero = '''<section class="hero hero-blue" id="hero">
 </div>
 </div>
 </section>'''
+text, count = re.subn(r'<section class="hero" id="hero">.*?</section>', hero, text, count=1, flags=re.S)
+if count != 1:
+    raise SystemExit(f'Hero replacement count: {count}')
 
-text, n = re.subn(r'<section class="hero" id="hero">.*?</section>', hero, text, count=1, flags=re.S)
-if n != 1:
-    raise SystemExit(f'Hero replacement count: {n}')
-
-home_replacements = [
-    ('One team for the machine, the controls and the part.', 'One engineering partner from mechanism to controls to finished part.'),
-    ('VSK combines mechanical design, machine building, CNC and PLC control, retrofit engineering and precision manufacturing so complex production problems do not get divided between disconnected vendors.', 'Fewer handoffs. Better engineering decisions. Mechanical design, machine building, CNC and PLC systems, retrofit and precision manufacturing stay connected to the same production objective.'),
-    ('Designed around your part, process, loading method, takt target and operator.', 'Built around the part, process, loading method, takt target and operator — not a catalogue machine forced into the job.'),
-    ('Mechanical rebuilds, CNC migration, servo systems, PLC/HMI integration and commissioning.', 'Recover mechanical value while upgrading CNC, servo, PLC/HMI and feedback systems for the performance production needs now.'),
-    ('Prototype and production machining when tolerances, geometry and repeatability cannot move.', 'Prototype and production machining for parts where tolerance, geometry and repeatability have no room to drift.'),
-    ('Fixtures, tooling and supporting hardware engineered around the process instead of treated as an afterthought.', 'Fixtures and tooling designed as part of the process, so location, loading and repeatability are solved at the source.'),
-    ('Reverse-engineered and build-to-print components for machines that cannot stay down.', 'Reverse-engineered and build-to-print components that help critical machines return to production when standard supply is no longer enough.'),
-    ('Machining, fabrication and engineering support for defined production requirements.', 'Machining, fabrication and engineering capacity when your requirement needs a capable extension of the production team.'),
-    ('A hard production problem. A machine built around it.', 'A difficult production problem. A machine engineered around it.'),
-    ('Engineered for deep, controlled boring where concentricity, stability and repeatability matter.', 'Deep, controlled boring demanded concentricity, stability and repeatability. The machine architecture was engineered around those constraints.'),
-    ('Different industries. Same first question: what does production need?', 'Proof across the problems that matter on the shop floor.'),
-    ('Five documented references across new machine building, automation, process integration and retrofit work.', 'New machines, automation and retrofits built around real parts, real constraints and real production targets.'),
-    ('Claims matter less when the machine can prove them.', 'Precision is more convincing when it is measurable.'),
-    ('Three project references show the kind of dimensions VSK works around: loading repeatability, process accuracy and cycle time.', 'Repeatability, accuracy and cycle time become meaningful when they are engineered into the machine and documented in the result.'),
-    ('Keep the iron. Replace the limitations.', 'Recover the machine you trust. Upgrade what holds it back.'),
-    ('When machine geometry still has value, VSK rebuilds the mechanical and control systems around it instead of forcing a complete replacement.', 'When the machine structure still earns its place on your floor, VSK modernizes the mechanics, feedback, drives and controls around it — preserving what works and replacing what limits production.'),
-    ('Mechanical rebuild, CNC/control modernization, feedback-system integration and recommissioning around an existing grinding platform.', 'A grinding platform with proven mechanical value, rebuilt around modern CNC/control, feedback and drive systems to return capability to production.'),
-    ('From your requirement to a machine running on your floor.', 'Your requirement stays connected from first concept to final commissioning.'),
-    ('A disciplined engineering process keeps the part, process, controls and production environment connected from concept through commissioning.', 'Every stage keeps part geometry, process logic, control architecture and production reality in the same engineering conversation.'),
-    ('Machine-building depth built one project at a time.', 'Engineering depth built on machines that had to work.'),
-    ('VSK Electro-Mech Solutions is a Bengaluru-based machine engineering company working across special purpose machines, CNC and PLC systems, retrofit engineering, fixtures and precision manufacturing.', 'Since 2011, VSK has built its engineering depth through special purpose machines, CNC and PLC systems, retrofit programs, fixtures and precision manufacturing for real production requirements.'),
-    ('Fifteen years of solving production problems through machine engineering, retrofit and precision manufacturing.', 'Experience earned across machine building, retrofit and precision manufacturing — one production requirement at a time.'),
-    ('Bring the production problem. We’ll start with the engineering.', 'Put your toughest production requirement on the table.'),
-    ('New machine, retrofit, automation, control upgrade or precision component — share the application, drawings or constraints and start the discussion.', 'Share the part, drawing, cycle target, existing machine or bottleneck. The conversation starts with what the solution must achieve.'),
-    ('Tell VSK what the machine needs to do, what the part needs to hold and what production cannot compromise.', 'Tell us what the part must hold, what the machine must achieve and what production cannot compromise. That is where the right engineering starts.'),
-    ('Start with the requirement.', 'Start with what production needs to achieve.'),
-    ('If you have a drawing, existing machine, cycle-time target or tolerance problem, include it. The engineering discussion can begin from there.', 'Bring the drawing, existing machine, cycle-time target or tolerance challenge. The more real the requirement, the more useful the first engineering discussion becomes.'),
+home_pairs = [
+    ('<span class="kicker">MULTI-DISCIPLINARY ENGINEERING</span><h2>One requirement.<br/><em>Every discipline connected.</em></h2><p>From the first mechanism to the final control sequence, VSK combines mechanical, CNC/PLC, electrical, fluid-power and manufacturing expertise around the result your production line needs.</p>',
+     '<span class="kicker">MULTI-DISCIPLINARY ENGINEERING</span><h2>One production objective.<br/><em>Every discipline connected.</em></h2><p>Bring one requirement. VSK connects mechanical engineering, CNC/PLC, electrical systems, fluid power and manufacturing around the result your production line needs to achieve.</p>'),
+    ('<span class="kicker light">FEATURED ENGINEERING</span><h2>Purpose-built around<br/><em>the process.</em></h2></div><p>A closer look at machines and retrofit work where the application, workholding, control system and production target are engineered as one solution.</p>',
+     '<span class="kicker light">FEATURED ENGINEERING</span><h2>Built around the part.<br/><em>Proven through the process.</em></h2></div><p>See how application, workholding, controls and production targets become one engineered machine — not a collection of disconnected subsystems.</p>'),
+    ('<p>Purpose-built for PTFE tube pre-boring with a Siemens 802D two-axis platform, VFD-controlled spindle and dedicated workholding.</p>',
+     '<p>Built specifically for PTFE tube pre-boring, with Siemens 802D control, a VFD-driven spindle and dedicated workholding selected around the application.</p>'),
+    ('<div class="shell depth-head reveal"><div><span class="kicker">ENGINEERING DEPTH</span><h2>Precision you can<br/><em>put a number on.</em></h2></div><p>Application tolerances, alignment targets and cycle references sit alongside 54 named engineering references — giving buyers a practical way to judge relevant experience.</p></div>',
+     '<div class="shell depth-head reveal"><div><span class="kicker">ENGINEERING DEPTH</span><h2>Precision you can<br/><em>put a number on.</em></h2></div><p>Compare recorded tolerance, alignment and cycle references alongside 54 named engineering projects — measurable proof that makes relevant experience easier to judge.</p></div>'),
+    ('<p>Modern controls, renewed machine capability and a practical route to extending productive machine life.</p>',
+     '<p>Modern controls and renewed machine capability show how a sound mechanical platform can return to productive service without starting from zero.</p>'),
+    ('<div class="shell section-intro split reveal"><div><span class="kicker">HOW VSK WORKS</span><h2>From production problem<br/><em>to working machine.</em></h2></div><p>VSK starts with the application, builds the engineering around it, then validates the result on the machine — not on a presentation slide.</p></div>',
+     '<div class="shell section-intro split reveal"><div><span class="kicker">HOW VSK WORKS</span><h2>Your requirement stays connected<br/><em>all the way to commissioning.</em></h2></div><p>Application, mechanism, controls, build and validation stay connected to the same production objective from first discussion to a working machine.</p></div>'),
+    ('<div class="about-copy reveal"><span class="kicker">VSK ELECTRO-MECH SOLUTIONS</span><h2>Engineering from<br/><em>Peenya since 2011.</em></h2><p>For manufacturers that need a new machine, a control retrofit or a better production process, VSK brings machine-building and machine-tool experience together under one engineering team.</p><blockquote>Understand the production problem before designing the machine.</blockquote>',
+     '<div class="about-copy reveal"><span class="kicker">VSK ELECTRO-MECH SOLUTIONS</span><h2>Engineering from<br/><em>Peenya since 2011.</em></h2><p>Whether the requirement is a new machine, a critical retrofit or a better production process, VSK brings machine-building and machine-tool experience together around one result: making the application work.</p><blockquote>Understand the production problem before designing the machine.</blockquote>'),
+    ('<div class="contact-copy reveal"><span class="kicker light">START AN ENGINEERING REQUIREMENT</span><h2>Have a machine, component<br/>or automation requirement?</h2><p>Share the application, current bottleneck, drawing or specification. VSK can review the requirement against relevant machine-building, retrofit and automation experience.</p></div>',
+     '<div class="contact-copy reveal"><span class="kicker light">START AN ENGINEERING REQUIREMENT</span><h2>Bring the requirement.<br/>Start with the engineering.</h2><p>Share the part, bottleneck, drawing, existing machine or production target. VSK can connect your requirement to relevant machine-building, retrofit and automation experience from the first discussion.</p></div>'),
 ]
-for old, new in home_replacements:
-    if old not in text:
-        raise SystemExit('Missing home copy target: ' + old[:70])
-    text = text.replace(old, new, 1)
+for old, new in home_pairs:
+    text = required(text, old, new, 'home buyer-facing copy')
 p.write_text(text, encoding='utf-8')
 
 # PROJECTS
 p = Path('projects.html')
-text = add_style_layers(p.read_text(encoding='utf-8'))
-project_replacements = [
+text = add_layers(p.read_text(encoding='utf-8'))
+project_pairs = [
     ('Explore selected machines and retrofits through the application, engineering decisions, controls and machine views that shaped the final solution.', 'See how VSK turns production constraints into machine architecture, controls and commissioned hardware — with the engineering decisions visible, not hidden behind a finished photograph.'),
     ('See how the machine<br/><em>comes together.</em>', 'See the engineering<br/><em>behind the machine.</em>'),
     ('Each case brings the application, controls, machine configuration and project media together so you can judge experience relevant to your own requirement.', 'Compare real machine builds by application, controls and configuration, and find the experience closest to the production problem you need to solve.'),
@@ -101,55 +85,49 @@ project_replacements = [
     ('Ten stories up front.<br/><em>Fifty-four references underneath.</em>', 'Start with the standout builds.<br/><em>Go deeper into 54 references.</em>'),
     ('When you need to go deeper, search the complete Engineering Archive or browse the full visual gallery project by project.', 'When your requirement gets specific, the full Engineering Archive makes it easier to find VSK experience by machine, process, application and control platform.'),
 ]
-for old, new in project_replacements:
-    if old not in text:
-        raise SystemExit('Missing projects copy target: ' + old[:70])
-    text = text.replace(old, new, 1)
+for old, new in project_pairs:
+    text = required(text, old, new, 'projects buyer-facing copy')
 p.write_text(text, encoding='utf-8')
 
 # ARCHIVE
 p = Path('machines.html')
-text = add_style_layers(p.read_text(encoding='utf-8'))
-archive_replacements = [
+text = add_layers(p.read_text(encoding='utf-8'))
+archive_pairs = [
     ('Find the right<br/><em>engineering experience.</em>', 'Find the experience<br/><em>closest to your challenge.</em>'),
     ('Search VSK’s recorded machine-building and retrofit experience by process, customer, application or control platform.', 'Find the VSK reference closest to your process, machine and controls challenge — across 54 documented machine-building and retrofit references.'),
     ('54 references.<br/><em>One place to find relevance.</em>', '54 references.<br/><em>Built to make relevance visible.</em>'),
     ('Use the index for technical depth, or switch to the Visual Archive when you want to scan VSK’s experience machine by machine.', 'From a specific process to a specific control platform, the right engineering precedent is easier to find when VSK’s experience is organized machine by machine.'),
 ]
-for old, new in archive_replacements:
-    if old not in text:
-        raise SystemExit('Missing archive copy target: ' + old[:70])
-    text = text.replace(old, new, 1)
+for old, new in archive_pairs:
+    text = required(text, old, new, 'archive buyer-facing copy')
 p.write_text(text, encoding='utf-8')
 
 # GALLERY
 p = Path('gallery.html')
-text = add_style_layers(p.read_text(encoding='utf-8'))
-gallery_replacements = [
+text = add_layers(p.read_text(encoding='utf-8'))
+gallery_pairs = [
     ('Inside the work.<br/><em>Project by project.</em>', 'See the engineering.<br/><em>Up close.</em>'),
     ('Browse machine builds, retrofit work, fixtures, controls and process equipment as complete project groups rather than a stream of unrelated photographs.', 'See VSK engineering up close — machine construction, retrofit detail, fixtures, controls and process equipment captured as complete project groups.'),
     ('Project by project.<br/><em>Every useful view.</em>', 'From machine overview<br/><em>to engineering detail.</em>'),
     ('Browse each project as a complete visual chapter — machine overview, technical detail, alternate views and motion where available.', 'Inspect the machine from overview to technical detail and judge the workmanship, integration and execution behind the finished result.'),
     ('The gallery complements the curated Projects page with the broader visual record of VSK engineering work across multiple machine and process categories.', 'The wider visual record shows the range behind the selected case studies — machine builds, retrofits and process equipment across multiple engineering categories.'),
 ]
-for old, new in gallery_replacements:
-    if old not in text:
-        raise SystemExit('Missing gallery copy target: ' + old[:70])
-    text = text.replace(old, new, 1)
+for old, new in gallery_pairs:
+    text = required(text, old, new, 'gallery buyer-facing copy')
 p.write_text(text, encoding='utf-8')
 
-# 404
-error = '''<!doctype html>
+# 404 matches the restored blue technical identity.
+Path('404.html').write_text('''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found | VSK Electro-Mech Solutions</title><meta name="theme-color" content="#0D1824"><meta name="robots" content="noindex,nofollow"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link href="media/brand/vsk-logo.webp" rel="icon" type="image/webp"><link href="v16-blue-refinement.css" rel="stylesheet"></head>
-<body class="error-page"><main class="error-shell"><img src="media/brand/vsk-logo.webp" alt="VSK Electro-Mech Solutions logo"><div class="error-kicker">404 · OUTSIDE THE MACHINE ENVELOPE</div><h1>Wrong path.<em>Right way back.</em></h1><p>This page is not part of the VSK engineering archive. Return to the machine-building, retrofit and production experience that is.</p><a href="index.html">Return to VSK <span>↗</span></a></main></body></html>'''
-Path('404.html').write_text(error, encoding='utf-8')
+<body class="error-page"><main class="error-shell"><img src="media/brand/vsk-logo.webp" alt="VSK Electro-Mech Solutions logo"><div class="error-kicker">404 · OUTSIDE THE MACHINE ENVELOPE</div><h1>Wrong path.<em>Right way back.</em></h1><p>This page is not part of the VSK engineering archive. Return to the machine-building, retrofit and production experience that is.</p><a href="index.html">Return to VSK <span>↗</span></a></main></body></html>''', encoding='utf-8')
 
-# Keep client-review build out of search engines.
+# Review-site safety and deterministic cascade.
 for name in ('index.html', 'projects.html', 'machines.html', 'gallery.html', '404.html'):
     value = Path(name).read_text(encoding='utf-8')
     if 'noindex,nofollow' not in value:
         raise SystemExit(f'Indexing lock missing in {name}')
-    if name != '404.html' and 'v16-blue-refinement.css' not in value:
-        raise SystemExit(f'Blue refinement stylesheet missing in {name}')
+    if name != '404.html':
+        if 'v16.css?v=16.2' not in value or 'v16-blue-refinement.css' not in value:
+            raise SystemExit(f'V16 blue style stack missing in {name}')
 
 print('V16 blue refinement applied successfully')
