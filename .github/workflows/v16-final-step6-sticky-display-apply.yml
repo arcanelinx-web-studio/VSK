@@ -1,0 +1,44 @@
+name: Fix V16 Final Mobile Sticky CTA Display
+
+on:
+  push:
+    branches: [client-review-v16-final-step6-working]
+    paths:
+      - '.github/workflows/v16-final-step6-sticky-display-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-step6-working
+          fetch-depth: 0
+      - name: Override legacy V8 hidden rule on mobile
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('v16-step6.css')
+          s=p.read_text()
+          marker='/* V16 Final mobile sticky CTA visibility fix */'
+          if marker in s:
+              raise SystemExit('Visibility fix already present.')
+          fix='''\n\n/* V16 Final mobile sticky CTA visibility fix */\n@media (max-width:700px){\n  body.v8.v13.v14 .mobile-sticky-cta{\n    display:flex!important;\n  }\n}\n'''
+          p.write_text(s.rstrip()+fix)
+          PY
+      - name: Verify visibility override
+        run: |
+          grep -q 'V16 Final mobile sticky CTA visibility fix' v16-step6.css
+          grep -q 'display:flex!important' v16-step6.css
+      - name: Commit and safely push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v16-step6.css
+          git commit -m 'Fix mobile sticky enquiry CTA visibility'
+          git fetch origin client-review-v16-final-step6-working
+          git rebase origin/client-review-v16-final-step6-working
+          git push origin HEAD:client-review-v16-final-step6-working
