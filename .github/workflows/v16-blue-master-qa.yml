@@ -1,0 +1,163 @@
+name: V16 Blue Master QA
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-blue-master-qa.yml
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /index.html
+            /projects.html
+            /machines.html
+            /gallery.html
+            /404.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /v16-subpages.css
+            /v16-blue-refinement.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - run: |
+          python3 -m http.server 4173 >/tmp/vsk-master.log 2>&1 &
+          sleep 2
+      - name: Run master QA
+        run: |
+          cat > master.cjs <<'JS'
+          const {chromium}=require('playwright');
+          const fs=require('fs');
+          const wait=ms=>new Promise(r=>setTimeout(r,ms));
+          const base='http://127.0.0.1:4173/';
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const fail=[],rows=[];
+            const pages=['index.html','projects.html','machines.html','gallery.html','404.html'];
+            const viewports=[['1440',1440,1000],['1366',1366,900],['tablet',1024,900],['mobile',390,844]];
+            for(const file of pages){
+              for(const [mode,w,h] of viewports){
+                if(file!=='index.html' && !['1440','mobile'].includes(mode)) continue;
+                const p=await browser.newPage({viewport:{width:w,height:h}});
+                const errors=[],bad=[];
+                p.on('pageerror',e=>errors.push(String(e)));
+                p.on('response',r=>{if(r.status()>=400&&r.url().startsWith(base))bad.push(`${r.status()} ${r.url()}`)});
+                await p.goto(base+file,{waitUntil:'networkidle'});await wait(450);
+                const state=await p.evaluate(()=>{
+                  const badGreen=[];
+                  for(const el of [...document.querySelectorAll('body *')].filter(x=>x.offsetParent!==null)){
+                    const s=getComputedStyle(el),vals=[s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];
+                    if(vals.some(v=>v.includes('40, 95, 80')||v.includes('159, 194, 181'))){badGreen.push({el:el.tagName+'.'+String(el.className||''),vals});if(badGreen.length>=30)break;}
+                  }
+                  const header=document.querySelector('.site-header'),logo=document.querySelector('.brand img'),brand=document.querySelector('.brand-copy strong'),nav=document.querySelector('.desktop-nav a'),cta=document.querySelector('.header-cta'),menu=document.querySelector('.menu-toggle');
+                  return {
+                    width:document.documentElement.scrollWidth,
+                    theme:document.querySelector('meta[name="theme-color"]')?.content||'',robots:document.querySelector('meta[name="robots"]')?.content||'',
+                    green:badGreen,
+                    header:header?Math.round(header.getBoundingClientRect().height):0,
+                    logo:logo?Math.round(logo.getBoundingClientRect().width):0,
+                    brandFont:brand?getComputedStyle(brand).fontFamily:'',brandSize:brand?getComputedStyle(brand).fontSize:'',
+                    navFont:nav?getComputedStyle(nav).fontFamily:'',navDisplay:nav?getComputedStyle(document.querySelector('.desktop-nav')).display:'',
+                    ctaFont:cta?getComputedStyle(cta).fontFamily:'',ctaDisplay:cta?getComputedStyle(cta).display:'',
+                    menuDisplay:menu?getComputedStyle(menu).display:''
+                  };
+                });
+                if(state.width>w+2)fail.push(`${file}/${mode}: overflow ${state.width}>${w}`);
+                if(state.theme.toUpperCase()!=='#0D1824')fail.push(`${file}/${mode}: theme ${state.theme}`);
+                if(!state.robots.includes('noindex'))fail.push(`${file}/${mode}: noindex missing`);
+                if(state.green.length)fail.push(`${file}/${mode}: green survivors ${JSON.stringify(state.green.slice(0,10))}`);
+                if(!state.brandFont.includes('Space Grotesk'))fail.push(`${file}/${mode}: brand font ${state.brandFont}`);
+                if(mode==='1440'){
+                  if(state.header!==104)fail.push(`${file}/1440: header ${state.header}, expected 104`);
+                  if(state.logo!==70)fail.push(`${file}/1440: logo ${state.logo}, expected 70`);
+                  if(!state.navFont.includes('Inter'))fail.push(`${file}/1440: nav font ${state.navFont}`);
+                  if(!state.ctaFont.includes('Inter'))fail.push(`${file}/1440: CTA font ${state.ctaFont}`);
+                }
+                if(file==='index.html'&&mode==='1366'){
+                  if(state.header!==98)fail.push(`home/1366: header ${state.header}, expected 98`);
+                  if(state.logo!==64)fail.push(`home/1366: logo ${state.logo}, expected 64`);
+                  if(state.navDisplay==='none')fail.push('home/1366: desktop nav hidden unexpectedly');
+                }
+                if(file==='index.html'&&mode==='tablet'){
+                  if(state.navDisplay!=='none')fail.push('home/tablet: desktop nav should collapse');
+                  if(state.menuDisplay==='none')fail.push('home/tablet: menu toggle missing');
+                }
+                if(mode==='mobile'){
+                  if(state.header!==82)fail.push(`${file}/mobile: header ${state.header}, expected 82`);
+                  if(state.logo!==52)fail.push(`${file}/mobile: logo ${state.logo}, expected 52`);
+                  if(state.ctaDisplay!=='none')fail.push(`${file}/mobile: desktop CTA still visible`);
+                }
+                if(file==='index.html'){
+                  const hero=await p.evaluate(()=>{
+                    const a=document.querySelector('.hero-blue-copy h1 span'),b=document.querySelector('.hero-blue-copy h1 em'),main=document.querySelector('.hero-board-main img'),sec=document.querySelector('.hero-board-photo img'),board=document.querySelector('.hero-engineering-board'),copy=document.querySelector('.hero-blue-copy');
+                    const br=board?.getBoundingClientRect(),cr=copy?.getBoundingClientRect();
+                    return {text:(a?.textContent||'')+' '+(b?.textContent||''),white:a?getComputedStyle(a).color:'',blue:b?getComputedStyle(b).color:'',main:main?.getAttribute('src')||'',sec:sec?.getAttribute('src')||'',mainOK:!!main&&main.complete&&main.naturalWidth>0,secOK:!!sec&&sec.complete&&sec.naturalWidth>0,boardW:br?Math.round(br.width):0,overlap:br&&cr?!(cr.right<=br.left||br.right<=cr.left||cr.bottom<=br.top||br.bottom<=cr.top):false};
+                  });
+                  if(!hero.text.includes('Engineered around your production.'))fail.push(`home/${mode}: hero text ${hero.text}`);
+                  if(!hero.white.includes('255, 255, 255')||!hero.blue.includes('69, 169, 232'))fail.push(`home/${mode}: headline colors ${hero.white}/${hero.blue}`);
+                  if(!hero.main.includes('slotting-mc-1.webp')||!hero.sec.includes('slotting-detail.webp')||!hero.mainOK||!hero.secOK)fail.push(`home/${mode}: hero media ${JSON.stringify(hero)}`);
+                  if(['1440','1366'].includes(mode)&&hero.overlap)fail.push(`home/${mode}: hero copy/board overlap`);
+                  if(mode==='1440'){
+                    await p.locator('.site-header').screenshot({path:'master-header-1440.png'});
+                    await p.locator('.hero').screenshot({path:'master-hero-1440.png'});
+                    await p.locator('.projects-showcase').scrollIntoViewIfNeeded();await wait(200);await p.locator('.featured-case').screenshot({path:'master-featured.png'});
+                    await p.locator('.retrofit').scrollIntoViewIfNeeded();await wait(200);await p.locator('.retrofit').screenshot({path:'master-retrofit.png'});
+                    await p.locator('.about').scrollIntoViewIfNeeded();await wait(200);await p.locator('.about').screenshot({path:'master-about.png'});
+                  }
+                  if(mode==='mobile'){
+                    await p.locator('.site-header').screenshot({path:'master-header-mobile.png'});
+                    await p.locator('.hero').screenshot({path:'master-hero-mobile.png'});
+                    await p.locator('[data-menu-toggle]').click();await wait(100);
+                    if(await p.locator('[data-mobile-menu]').getAttribute('hidden')!==null)fail.push('home/mobile: menu failed to open');
+                    await p.locator('[data-menu-close]').last().click();
+                  }
+                  const q=p.locator('[data-quote-open]:visible').first();if(await q.count()){await q.click();await wait(100);if(await p.locator('[data-quote-panel]').getAttribute('hidden')!==null)fail.push(`home/${mode}: quote failed to open`);const close=p.locator('.quote-close[data-quote-close]');if(await close.isVisible())await close.click();}
+                }
+                await p.evaluate(async()=>{const d=document.documentElement,step=Math.max(500,Math.floor(innerHeight*.7));for(let y=0;y<d.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,55));}scrollTo(0,d.scrollHeight)});await wait(file==='gallery.html'?1400:550);
+                const end=await p.evaluate(()=>({width:document.documentElement.scrollWidth,broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src),pending:[...document.images].filter(i=>i.offsetParent!==null&&!i.complete).map(i=>i.src)}));
+                if(end.width>w+2)fail.push(`${file}/${mode}: final overflow ${end.width}>${w}`);
+                if(end.broken.length)fail.push(`${file}/${mode}: broken ${end.broken.join(',')}`);
+                if(end.pending.length)fail.push(`${file}/${mode}: pending ${end.pending.join(',')}`);
+                if(errors.length)fail.push(`${file}/${mode}: JS ${errors.join(' | ')}`);
+                const ub=[...new Set(bad)];if(ub.length)fail.push(`${file}/${mode}: requests ${ub.join(' | ')}`);
+                rows.push({file,mode,state,end,errors,bad:ub});
+                await p.close();
+              }
+            }
+            const home=fs.readFileSync('index.html','utf8');
+            if(!home.includes('slotting-mc-1.webp" rel="preload"'))fail.push('home: hero preload not aligned');
+            for(const phrase of ['giving buyers a practical way','Use the index for technical depth','Browse each project as a complete visual chapter','Explore selected machines and retrofits through the application']){
+              const all=['index.html','projects.html','machines.html','gallery.html'].map(f=>fs.readFileSync(f,'utf8')).join('\n');if(all.includes(phrase))fail.push('copy audit: '+phrase);
+            }
+            fs.writeFileSync('master-report.json',JSON.stringify({fail,rows},null,2));
+            console.log(JSON.stringify({fail},null,2));
+            await browser.close();if(fail.length)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node master.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-blue-master-preview
+          path: |
+            master-*.png
+            master-report.json
+          retention-days: 14
