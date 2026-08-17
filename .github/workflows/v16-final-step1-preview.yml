@@ -6,6 +6,8 @@ on:
     branches: [client-review-v16-final-step1-working]
     paths:
       - '.github/workflows/v16-final-step1-preview.yml'
+      - 'v16-final.css'
+      - 'index.html'
 
 jobs:
   render:
