@@ -1,0 +1,49 @@
+name: Apply V16 Media Fallback Fix
+on:
+  push:
+    branches: [client-review-v16-blue-refinement]
+    paths: ['.github/workflows/v16-media-fallback-fix.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Normalize manifest media fallbacks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app.js')
+          s=p.read_text()
+          old="""    const groups = input.groups
+      .map(group => ({ ...group, items: (group.items || []).filter(isRenderableMedia) }))
+      .filter(group => group.items.length);"""
+          new="""    const groups = input.groups
+      .map(group => {
+        const items = (group.items || []).filter(isRenderableMedia);
+        const groupImage = items.find(item => item.type === 'image');
+        const groupPoster = groupImage?.src || groupImage?.web || groupImage?.thumb || '';
+        return {
+          ...group,
+          items: items.map(item => item.type === 'image'
+            ? { ...item, thumb: item.src || item.web || item.thumb }
+            : { ...item, thumb: groupPoster || item.thumb || item.poster, poster: groupPoster || item.poster || item.thumb })
+        };
+      })
+      .filter(group => group.items.length);"""
+          if old not in s:
+              raise SystemExit('cleanManifest target not found')
+          p.write_text(s.replace(old,new,1))
+          PY
+          git diff --check
+      - name: Commit media fallback fix
+        run: |
+          git config user.name 'VSK Media Fix'
+          git config user.email 'actions@users.noreply.github.com'
+          git add app.js
+          git commit -m 'Use real project media when generated thumbnails are unavailable'
+          git push origin HEAD:client-review-v16-blue-refinement
