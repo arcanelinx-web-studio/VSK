@@ -1,0 +1,281 @@
+/*
+  VSK V16 — 100% DESKTOP CALIBRATION
+  ----------------------------------
+  Final wide-screen proportion layer based on V14/original-V16.
+  No new palette. No new content system.
+*/
+
+/* One desktop content rhythm instead of mixed 1500 / 1792 / section-specific widths. */
+@media (min-width:1440px){
+  :root{--shell:min(1680px,calc(100vw - 96px))!important}
+  body.v8.v13.v14 .shell{width:var(--shell)!important;max-width:none!important}
+
+  /* Header remains deliberately full-width rather than being pulled into the content shell. */
+  body.v8.v13.v14 .site-header{
+    padding-left:48px!important;
+    padding-right:48px!important;
+    gap:clamp(24px,2vw,34px)!important;
+  }
+
+  /* Section headings use the wider desktop canvas without becoming oversized. */
+  body.v8.v13.v14 .section-intro.split,
+  body.v8.v13.v14 .depth-head,
+  body.v8.v13.v14 .contact-grid,
+  body.v8.v13.v14 .about-v8-grid{
+    width:var(--shell)!important;
+    max-width:none!important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   HERO — true viewport centering below the fixed header
+   -------------------------------------------------------------------------- */
+@media (min-width:1181px){
+  body.v8.v13.v14 .hero.hero-blue{
+    height:100svh!important;
+    min-height:760px!important;
+    max-height:none!important;
+  }
+  body.v8.v13.v14 .hero-blue-layout{
+    height:100%!important;
+    box-sizing:border-box!important;
+    padding-top:104px!important;
+    padding-bottom:0!important;
+    align-items:center!important;
+    grid-template-columns:minmax(0,1.03fr) minmax(520px,.97fr)!important;
+    gap:clamp(44px,4vw,72px)!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy,
+  body.v8.v13.v14 .hero-engineering-board{
+    align-self:center!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy{
+    max-width:710px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy h1{
+    max-width:710px!important;
+    font-size:clamp(4.35rem,4.75vw,5.65rem)!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy>p{
+    width:min(100%,640px)!important;
+    max-width:640px!important;
+    margin-top:26px!important;
+  }
+  /* Center both CTAs under the paragraph, not under the wider headline column. */
+  body.v8.v13.v14 .hero-blue-copy .hero-actions{
+    width:min(100%,640px)!important;
+    max-width:640px!important;
+    justify-content:center!important;
+    justify-self:start!important;
+    margin:28px 0 0!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy .hero-chips{
+    width:min(100%,640px)!important;
+    max-width:640px!important;
+    justify-content:center!important;
+    margin-top:22px!important;
+  }
+  body.v8.v13.v14 .hero-engineering-board{
+    justify-self:end!important;
+    width:min(100%,630px)!important;
+    min-height:500px!important;
+  }
+}
+
+@media (min-width:1680px){
+  body.v8.v13.v14 .hero-blue-layout.shell{
+    width:var(--shell)!important;
+  }
+  body.v8.v13.v14 .hero-engineering-board{
+    width:min(100%,650px)!important;
+  }
+}
+
+@media (min-width:1181px) and (max-width:1439px){
+  body.v8.v13.v14 .hero-blue-layout{
+    padding-top:98px!important;
+    grid-template-columns:minmax(0,1fr) minmax(470px,.92fr)!important;
+    gap:30px!important;
+  }
+  body.v8.v13.v14 .hero-blue-copy h1{font-size:clamp(3.8rem,5.15vw,5rem)!important}
+  body.v8.v13.v14 .hero-engineering-board{width:min(100%,570px)!important;min-height:455px!important}
+}
+
+/* --------------------------------------------------------------------------
+   HEADER CTA — cleaner original-V16 action, no gradient/shimmer treatment
+   -------------------------------------------------------------------------- */
+body.v8.v13.v14 .header-cta{
+  min-width:202px!important;
+  height:52px!important;
+  padding:0 12px 0 20px!important;
+  gap:18px!important;
+  justify-content:space-between!important;
+  background:#164A9C!important;
+  border:1px solid #164A9C!important;
+  box-shadow:0 8px 20px rgba(22,74,156,.14)!important;
+  transform:none!important;
+  filter:none!important;
+  overflow:visible!important;
+}
+body.v8.v13.v14 .header-cta::before{display:none!important}
+body.v8.v13.v14 .header-cta span{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.38)!important;
+  background:#167BC4!important;
+  transition:transform .2s ease,background .2s ease!important;
+}
+body.v8.v13.v14 .header-cta:hover{
+  background:#0D1824!important;
+  border-color:#0D1824!important;
+  box-shadow:0 10px 24px rgba(13,24,36,.16)!important;
+  transform:none!important;
+}
+body.v8.v13.v14 .header-cta:hover span{background:#167BC4!important;transform:translate(2px,-2px)!important}
+
+/* --------------------------------------------------------------------------
+   FEATURED ENGINEERING — restore the strong image-led original-V16 proportion
+   -------------------------------------------------------------------------- */
+body.v8.v13.v14 .projects-showcase{
+  padding-bottom:clamp(76px,5vw,94px)!important;
+}
+body.v8.v13.v14 .projects-showcase .section-intro{
+  padding-top:clamp(76px,5vw,92px)!important;
+  margin-bottom:40px!important;
+  grid-template-columns:minmax(0,1.12fr) minmax(360px,.58fr)!important;
+  gap:clamp(54px,5vw,84px)!important;
+}
+body.v8.v13.v14 .featured-case{
+  grid-template-columns:minmax(0,1.32fr) minmax(390px,.68fr)!important;
+  min-height:520px!important;
+  width:var(--shell)!important;
+  max-width:none!important;
+}
+body.v8.v13.v14 .featured-case-media{
+  min-height:520px!important;
+}
+body.v8.v13.v14 .featured-case-copy{
+  padding:38px 38px 36px!important;
+  background:#0D1824!important;
+  border-left:2px solid #164A9C!important;
+}
+body.v8.v13.v14 .featured-case-copy h3{
+  font-size:clamp(2.9rem,3.25vw,4.15rem)!important;
+  line-height:.91!important;
+}
+body.v8.v13.v14 .featured-case-copy>p{font-size:13px!important;line-height:1.68!important}
+body.v8.v13.v14 .featured-facts{margin:24px 0 22px!important}
+
+/* --------------------------------------------------------------------------
+   SELECTED PROJECTS — original editorial 2 + 3 composition
+   -------------------------------------------------------------------------- */
+body.v8.v13.v14 .selected-projects-strip{
+  padding:0 0 clamp(76px,5vw,96px)!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-collection-head{
+  min-height:66px!important;
+  margin:0 auto 16px!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+  display:grid!important;
+  width:var(--shell)!important;
+  max-width:none!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-auto-rows:clamp(225px,14vw,280px)!important;
+  gap:16px!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card,
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  grid-row:auto!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-0,
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-1{
+  grid-column:span 3!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-2,
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-3,
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-4{
+  grid-column:span 2!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-card .project-copy{
+  inset:auto 18px 17px!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{
+  font-size:clamp(21px,1.6vw,28px)!important;
+}
+
+/* --------------------------------------------------------------------------
+   WIDE DESKTOP PAGE CONTENT — Projects / Experience / Gallery / footer
+   -------------------------------------------------------------------------- */
+@media (min-width:1440px){
+  body.v8.v13.v14[data-page="projects"] .project-page-grid,
+  body.v8.v13.v14[data-page="projects"] .additional-project-grid,
+  body.v8.v13.v14[data-page="machines"] .archive-index-layout,
+  body.v8.v13.v14[data-page="gallery"] .gallery-project-group,
+  body.v8.v13.v14 .footer-grid,
+  body.v8.v13.v14 .footer-bottom{
+    width:var(--shell)!important;
+    max-width:none!important;
+  }
+
+  body.v8.v13.v14[data-page="projects"] .project-page-grid{gap:18px!important}
+  body.v8.v13.v14[data-page="projects"] .additional-project-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+
+  body.v8.v13.v14[data-page="machines"] .archive-index-layout{
+    grid-template-columns:minmax(0,1.62fr) minmax(370px,.48fr)!important;
+    gap:42px!important;
+  }
+
+  /* A five-image machine group should use the desktop width instead of leaving half a row empty. */
+  body.v8.v13.v14[data-page="gallery"] .gallery-project-media{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
+    gap:14px!important;
+  }
+  body.v8.v13.v14[data-page="gallery"] .gallery-tile{
+    min-width:0!important;
+    width:100%!important;
+  }
+}
+
+/* Desktop section rhythm: enough separation, but no oversized dead zones. */
+@media (min-width:1181px){
+  body.v8.v13.v14 .section-intro{
+    padding-top:clamp(72px,4.8vw,90px)!important;
+    margin-bottom:clamp(34px,2.8vw,44px)!important;
+  }
+  body.v8.v13.v14 .capabilities{padding-bottom:clamp(76px,5vw,94px)!important}
+  body.v8.v13.v14 .engineering-depth{padding-top:clamp(74px,5vw,94px)!important;padding-bottom:clamp(80px,5vw,98px)!important}
+  body.v8.v13.v14 .process{padding-bottom:clamp(66px,4.5vw,84px)!important}
+  body.v8.v13.v14 .about{padding-top:clamp(70px,4.6vw,90px)!important;padding-bottom:clamp(70px,4.6vw,90px)!important}
+  body.v8.v13.v14 .contact{padding-top:clamp(68px,4.6vw,88px)!important;padding-bottom:clamp(68px,4.6vw,88px)!important}
+}
+
+/* Preserve the existing responsive structures below desktop. */
+@media (max-width:1180px){
+  body.v8.v13.v14 .header-cta{min-width:184px!important;height:48px!important}
+  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-rows:260px!important;
+  }
+  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){
+    grid-column:auto!important;
+  }
+}
+
+@media (max-width:760px){
+  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
+    grid-template-columns:1fr!important;
+    grid-auto-rows:280px!important;
+    gap:12px!important;
+  }
+  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){grid-column:1/-1!important}
+}
