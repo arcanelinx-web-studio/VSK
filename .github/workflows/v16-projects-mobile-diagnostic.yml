@@ -1,0 +1,53 @@
+name: Diagnose V16 Projects Mobile Overflow
+on:
+  push:
+    branches:
+      - client-review-v16-site-audit
+    paths:
+      - .github/workflows/v16-projects-mobile-diagnostic.yml
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-site-audit
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /projects.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step3.css
+            /v16-step4.css
+            /v16-step5.css
+            /v16-step6.css
+            /v16-subpages.css
+            /v16-blue-refinement.css
+            /v16-light-restore.css
+            /v16-original-recovery.css
+            /v16-desktop-balance.css
+            /v16-desktop-100.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - run: |
+          python3 -m http.server 4173 >/tmp/vsk-mobile.log 2>&1 &
+          sleep 2
+          cat > diagnose.cjs <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:390,height:844}});await p.goto('http://127.0.0.1:4173/projects.html',{waitUntil:'networkidle'});await p.waitForTimeout(700);const out=await p.evaluate(()=>{const vw=document.documentElement.clientWidth;return {vw,scrollWidth:document.documentElement.scrollWidth,body:document.body.scrollWidth,offenders:[...document.querySelectorAll('body *')].map((e,i)=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);return{i,tag:e.tagName,cls:e.className?.toString?.()||'',text:(e.textContent||'').trim().slice(0,70),left:+r.left.toFixed(1),right:+r.right.toFixed(1),width:+r.width.toFixed(1),position:s.position,display:s.display,overflowX:s.overflowX,minWidth:s.minWidth,maxWidth:s.maxWidth}}).filter(x=>x.width>0&&(x.right>vw+.5||x.left<-.5)).sort((a,b)=>Math.max(b.right-vw,-b.left)-Math.max(a.right-vw,-a.left)).slice(0,40)}});console.log(JSON.stringify(out,null,2));await p.screenshot({path:'projects-mobile-diagnostic.png',fullPage:true});await b.close()})().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node diagnose.cjs | tee diagnostic.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v16-projects-mobile-diagnostic
+          path: |
+            diagnostic.json
+            projects-mobile-diagnostic.png
