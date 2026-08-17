@@ -1,0 +1,30 @@
+name: Apply V16 Blue Survivors Cleanup
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-blue-survivors-apply.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 0
+      - name: Apply last computed-color cleanup
+        run: python3 .github/scripts/v16_blue_survivors.py
+      - name: Commit and push
+        shell: bash
+        run: |
+          git config user.name "Asmita G V"
+          git config user.email "gujjarasmita@gmail.com"
+          git add v16-blue-refinement.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Remove final legacy green computed styles"
+          git pull --rebase origin client-review-v16-blue-refinement
+          git push origin HEAD:client-review-v16-blue-refinement
