@@ -1,0 +1,302 @@
+name: V16 Final Subpages QA
+
+on:
+  push:
+    branches: [client-review-v16-final-subpages-working]
+    paths:
+      - '.github/workflows/v16-final-subpages-qa.yml'
+      - 'projects.html'
+      - 'machines.html'
+      - 'gallery.html'
+      - 'v16-subpages.css'
+      - 'v16-final.css'
+      - 'v16-step6.css'
+      - 'styles.css'
+      - 'app.js'
+      - 'data.js'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-subpages-working
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /projects.html
+            /machines.html
+            /gallery.html
+            /styles.css
+            /v16-final.css
+            /v16-step6.css
+            /v16-subpages.css
+            /app.js
+            /data.js
+            /media/**
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start site
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-server.log 2>&1 &
+          sleep 2
+      - name: Validate Projects, Archive and Gallery
+        run: |
+          cat > subpages-qa.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+
+          (async()=>{
+            const browser = await chromium.launch({headless:true});
+            const failures = [];
+            const checks = [];
+            const pages = [
+              ['projects','projects.html'],
+              ['machines','machines.html'],
+              ['gallery','gallery.html']
+            ];
+            const viewports = [
+              ['desktop',1440,1000],
+              ['mobile',390,844]
+            ];
+
+            for (const [pageName,path] of pages) {
+              for (const [mode,width,height] of viewports) {
+                const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+                const pageErrors = [];
+                const badResponses = [];
+                page.on('pageerror', e => pageErrors.push(String(e)));
+                page.on('response', r => {
+                  if (r.status() >= 400 && r.url().startsWith('http://127.0.0.1:4173/')) {
+                    badResponses.push(`${r.status()} ${r.url()}`);
+                  }
+                });
+
+                await page.goto(`http://127.0.0.1:4173/${path}`, {waitUntil:'networkidle'});
+                await wait(450);
+
+                const initial = await page.evaluate(()=>{
+                  const root = document.documentElement;
+                  const header = document.querySelector('.site-header');
+                  const footer = document.querySelector('.site-footer');
+                  const sheets = [...document.styleSheets].map(s => s.href || '');
+                  return {
+                    scrollWidth: root.scrollWidth,
+                    headerBg: getComputedStyle(header).backgroundColor,
+                    footerBg: getComputedStyle(footer).backgroundColor,
+                    footerLabel: getComputedStyle(footer.querySelector('.footer-col>span')).color,
+                    sheets: {
+                      final: sheets.some(x=>x.includes('v16-final.css')),
+                      step6: sheets.some(x=>x.includes('v16-step6.css')),
+                      subpages: sheets.some(x=>x.includes('v16-subpages.css'))
+                    }
+                  };
+                });
+
+                if(initial.scrollWidth > width + 2) failures.push(`${pageName}/${mode}: initial overflow ${initial.scrollWidth}>${width}`);
+                if(Object.values(initial.sheets).some(v=>!v)) failures.push(`${pageName}/${mode}: Final stylesheet layer missing ${JSON.stringify(initial.sheets)}`);
+                if(mode==='desktop' && !initial.headerBg.includes('244, 243, 238')) failures.push(`${pageName}: header is not ivory ${initial.headerBg}`);
+                if(!initial.footerBg.includes('17, 24, 20')) failures.push(`${pageName}/${mode}: footer is not Final charcoal ${initial.footerBg}`);
+                if(!initial.footerLabel.includes('159, 194, 181')) failures.push(`${pageName}/${mode}: footer label is not pale green ${initial.footerLabel}`);
+
+                if(mode==='desktop'){
+                  const quoteOpen = page.locator('[data-quote-open]:visible').first();
+                  if(await quoteOpen.count()){
+                    await quoteOpen.click();
+                    await wait(120);
+                    const quote = await page.evaluate(()=>{
+                      const dialog=document.querySelector('[data-quote-panel]');
+                      const active=dialog?.querySelector('.quote-progress i.is-active');
+                      return {
+                        hidden:dialog?.hidden,
+                        title:dialog?.querySelector('.quote-head h2')?.textContent?.trim()||'',
+                        panelBg:dialog?getComputedStyle(dialog.querySelector('.quote-panel')).backgroundColor:'',
+                        progressBg:active?getComputedStyle(active).backgroundColor:''
+                      };
+                    });
+                    if(quote.hidden!==false || !quote.title.includes('Tell VSK what needs to be solved')) failures.push(`${pageName}: requirement dialog did not open`);
+                    if(!quote.panelBg.includes('244, 243, 238')) failures.push(`${pageName}: requirement panel not warm ivory ${quote.panelBg}`);
+                    if(!quote.progressBg.includes('40, 95, 80')) failures.push(`${pageName}: requirement progress not VSK green ${quote.progressBg}`);
+                    await page.locator('.quote-close[data-quote-close]').click();
+                    await wait(80);
+                  }
+                } else {
+                  await page.locator('[data-menu-toggle]').click();
+                  await wait(100);
+                  const mobileMenu=await page.evaluate(()=>{
+                    const menu=document.querySelector('[data-mobile-menu]');
+                    const panel=document.querySelector('.mobile-menu-panel');
+                    const num=document.querySelector('.mobile-menu nav span');
+                    return {
+                      hidden:menu.hidden,
+                      bg:getComputedStyle(panel).backgroundColor,
+                      number:getComputedStyle(num).color
+                    };
+                  });
+                  if(mobileMenu.hidden!==false) failures.push(`${pageName}/mobile: menu did not open`);
+                  if(!mobileMenu.bg.includes('23, 32, 28')) failures.push(`${pageName}/mobile: menu palette not Final ${mobileMenu.bg}`);
+                  if(!mobileMenu.number.includes('159, 194, 181')) failures.push(`${pageName}/mobile: menu numbering not green ${mobileMenu.number}`);
+                  await page.locator('.mobile-menu-head [data-menu-close]').click();
+                  await wait(80);
+                }
+
+                let pageSpecific={};
+                if(pageName==='projects'){
+                  await page.locator('.project-index').scrollIntoViewIfNeeded();
+                  await wait(450);
+                  pageSpecific = await page.evaluate(()=>{
+                    const cards=[...document.querySelectorAll('.project-page-card')];
+                    const heroEm=document.querySelector('.page-hero h1 em');
+                    const label=cards[0]?.querySelector('.project-page-copy>span');
+                    return {
+                      cards:cards.length,
+                      heroAccent:heroEm?getComputedStyle(heroEm).color:'',
+                      labelColor:label?getComputedStyle(label).color:'',
+                      widths:cards.slice(0,3).map(c=>Math.round(c.getBoundingClientRect().width))
+                    };
+                  });
+                  if(pageSpecific.cards < 5) failures.push(`projects/${mode}: too few project cases ${pageSpecific.cards}`);
+                  if(!pageSpecific.heroAccent.includes('185, 213, 202')) failures.push(`projects/${mode}: hero accent not pale green ${pageSpecific.heroAccent}`);
+                  if(pageSpecific.labelColor && !pageSpecific.labelColor.includes('40, 95, 80')) failures.push(`projects/${mode}: project label not VSK green ${pageSpecific.labelColor}`);
+                  if(mode==='mobile' && pageSpecific.widths.some(w=>w>width-20)) failures.push(`projects/mobile: card too wide ${JSON.stringify(pageSpecific.widths)}`);
+                  if(pageSpecific.cards){
+                    await page.locator('.project-page-card').first().click();
+                    await wait(120);
+                    const dossier=await page.locator('[data-dossier]').evaluate(el=>({hidden:el.hidden,title:el.querySelector('[data-dossier-title]')?.textContent?.trim()||''}));
+                    if(dossier.hidden!==false || !dossier.title) failures.push(`projects/${mode}: project dossier did not open`);
+                    await page.locator('[data-dossier] [data-dossier-close]').last().click();
+                  }
+                  await page.locator('.project-index').screenshot({path:`subpages-projects-${mode}.png`});
+                }
+
+                if(pageName==='machines'){
+                  await page.locator('.archive-browser').scrollIntoViewIfNeeded();
+                  await wait(550);
+                  pageSpecific = await page.evaluate(()=>{
+                    const rows=[...document.querySelectorAll('.archive-row')];
+                    const number=document.querySelector('.archive-hero-number span');
+                    const active=document.querySelector('.archive-mode .is-active');
+                    return {
+                      number:number?.textContent.trim()||'',
+                      numberColor:number?getComputedStyle(number).color:'',
+                      rows:rows.length,
+                      result:document.querySelector('[data-result-count]')?.textContent.trim()||'',
+                      activeBg:active?getComputedStyle(active).backgroundColor:''
+                    };
+                  });
+                  if(pageSpecific.number!=='54') failures.push(`machines/${mode}: archive count changed ${pageSpecific.number}`);
+                  if(!pageSpecific.numberColor.includes('185, 213, 202')) failures.push(`machines/${mode}: archive 54 not pale green ${pageSpecific.numberColor}`);
+                  if(pageSpecific.rows < 50) failures.push(`machines/${mode}: archive index rendered only ${pageSpecific.rows} rows`);
+                  if(!pageSpecific.result.startsWith('54')) failures.push(`machines/${mode}: initial result count ${pageSpecific.result}`);
+                  if(!pageSpecific.activeBg.includes('40, 95, 80')) failures.push(`machines/${mode}: active archive mode not green ${pageSpecific.activeBg}`);
+
+                  await page.locator('[data-archive-search]').fill('Kellenberg');
+                  await wait(180);
+                  const filtered=await page.locator('[data-result-count]').textContent();
+                  if(!filtered || /^0\b/.test(filtered.trim())) failures.push(`machines/${mode}: Kellenberg search returned ${filtered}`);
+                  await page.locator('[data-archive-search]').fill('');
+                  await wait(160);
+
+                  await page.locator('[data-archive-mode="visual"]').click();
+                  await wait(220);
+                  const visual=await page.evaluate(()=>({
+                    hidden:document.querySelector('[data-archive-visual-view]').hidden,
+                    cards:document.querySelectorAll('.archive-visual-card').length
+                  }));
+                  if(visual.hidden!==false || visual.cards<1) failures.push(`machines/${mode}: Visual Archive did not render (${visual.cards})`);
+                  await page.locator('[data-archive-mode="index"]').click();
+                  await wait(180);
+
+                  const firstRow=page.locator('.archive-row').first();
+                  if(await firstRow.count()){
+                    await firstRow.click();
+                    await wait(100);
+                    const openButton=page.locator('[data-archive-preview-open]');
+                    if(await openButton.isVisible()){
+                      await openButton.click();
+                      await wait(120);
+                      const dossier=await page.locator('[data-dossier]').evaluate(el=>({hidden:el.hidden,title:el.querySelector('[data-dossier-title]')?.textContent?.trim()||''}));
+                      if(dossier.hidden!==false || !dossier.title) failures.push(`machines/${mode}: archive dossier did not open`);
+                      await page.locator('[data-dossier] [data-dossier-close]').last().click();
+                    }
+                  }
+                  await page.locator('.archive-browser').screenshot({path:`subpages-machines-${mode}.png`});
+                }
+
+                if(pageName==='gallery'){
+                  await page.locator('.gallery-browser').scrollIntoViewIfNeeded();
+                  await wait(650);
+                  pageSpecific=await page.evaluate(()=>{
+                    const heroEm=document.querySelector('.gallery-hero h1 em');
+                    const active=document.querySelector('.gallery-filter.is-active');
+                    return {
+                      heroAccent:heroEm?getComputedStyle(heroEm).color:'',
+                      groups:document.querySelectorAll('.gallery-project-group').length,
+                      tiles:document.querySelectorAll('.gallery-tile').length,
+                      status:document.querySelector('[data-gallery-status]')?.textContent.trim()||'',
+                      activeBg:active?getComputedStyle(active).backgroundColor:'',
+                      summary:[...document.querySelectorAll('.gallery-summary span')].map(x=>x.textContent.trim())
+                    };
+                  });
+                  if(!pageSpecific.heroAccent.includes('185, 213, 202')) failures.push(`gallery/${mode}: hero accent not pale green ${pageSpecific.heroAccent}`);
+                  if(pageSpecific.groups<1 || pageSpecific.tiles<1) failures.push(`gallery/${mode}: gallery content did not render groups=${pageSpecific.groups} tiles=${pageSpecific.tiles}`);
+                  if(!pageSpecific.activeBg.includes('40, 95, 80')) failures.push(`gallery/${mode}: active gallery filter not green ${pageSpecific.activeBg}`);
+                  if(pageSpecific.summary.length!==3) failures.push(`gallery/${mode}: gallery summary missing ${JSON.stringify(pageSpecific.summary)}`);
+                  if(pageSpecific.tiles){
+                    await page.locator('.gallery-tile').first().click();
+                    await wait(120);
+                    const lightbox=await page.locator('[data-lightbox]').evaluate(el=>({hidden:el.hidden,title:el.querySelector('[data-lightbox-title]')?.textContent?.trim()||''}));
+                    if(lightbox.hidden!==false || !lightbox.title) failures.push(`gallery/${mode}: lightbox did not open`);
+                    await page.locator('[data-lightbox] [data-lightbox-close]').last().click();
+                  }
+                  await page.locator('.gallery-browser').screenshot({path:`subpages-gallery-${mode}.png`});
+                }
+
+                await page.evaluate(async()=>{
+                  const root=document.documentElement;
+                  const step=Math.max(450,Math.floor(innerHeight*.7));
+                  for(let y=0;y<root.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,60));}
+                  scrollTo(0,root.scrollHeight);
+                });
+                await wait(650);
+
+                const finalState=await page.evaluate(()=>{
+                  const imgs=[...document.images].filter(i=>i.offsetParent!==null);
+                  return {
+                    scrollWidth:document.documentElement.scrollWidth,
+                    broken:imgs.filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src),
+                    pending:imgs.filter(i=>!i.complete).map(i=>i.src)
+                  };
+                });
+                const uniqueBad=[...new Set(badResponses)];
+                if(finalState.scrollWidth > width + 2) failures.push(`${pageName}/${mode}: final overflow ${finalState.scrollWidth}>${width}`);
+                if(finalState.broken.length) failures.push(`${pageName}/${mode}: broken visible images ${finalState.broken.join(', ')}`);
+                if(finalState.pending.length) failures.push(`${pageName}/${mode}: pending visible images ${finalState.pending.join(', ')}`);
+                if(pageErrors.length) failures.push(`${pageName}/${mode}: page errors ${pageErrors.join(' | ')}`);
+                if(uniqueBad.length) failures.push(`${pageName}/${mode}: failed local requests ${uniqueBad.join(' | ')}`);
+
+                checks.push({page:pageName,mode,width,initial,pageSpecific,finalState,pageErrors,badResponses:uniqueBad});
+                await page.close();
+              }
+            }
+
+            fs.writeFileSync('subpages-report.json',JSON.stringify({checks,failures},null,2));
+            console.log(fs.readFileSync('subpages-report.json','utf8'));
+            await browser.close();
+            if(failures.length) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node subpages-qa.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-final-subpages-preview
+          path: |
+            subpages-*.png
+            subpages-report.json
+          retention-days: 14
