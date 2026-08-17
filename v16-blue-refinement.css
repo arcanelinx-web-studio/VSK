@@ -720,3 +720,20 @@ body.v8.v13.v14 .lightbox-caption span{color:#45A9E8!important}
     background:linear-gradient(0deg,rgba(6,18,29,.98) 0%,rgba(6,18,29,.88) 43%,rgba(6,18,29,.36) 73%,rgba(6,18,29,.2) 100%),linear-gradient(90deg,rgba(6,18,29,.58),rgba(6,18,29,.08))!important;
   }
 }
+
+
+/* V16 MOBILE STICKY CTA REVEAL */
+@media (max-width:700px){
+  body.v8.v13.v14 .mobile-sticky-cta{
+    display:flex!important;
+    opacity:0!important;
+    transform:translateY(calc(100% + 18px))!important;
+    pointer-events:none!important;
+    transition:opacity .24s ease,transform .3s cubic-bezier(.2,.65,.2,1),background .2s ease!important;
+  }
+  body.v8.v13.v14 .mobile-sticky-cta.is-ready{
+    opacity:1!important;
+    transform:translateY(0)!important;
+    pointer-events:auto!important;
+  }
+}

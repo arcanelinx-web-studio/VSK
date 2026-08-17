@@ -298,6 +298,20 @@
     }).catch(()=>{});
   }
 
+  // V16 mobile sticky CTA — stay clear of the hero, appear after it.
+  const mobileSticky=$('.mobile-sticky-cta'); const heroSection=$('#hero');
+  if(mobileSticky&&heroSection){
+    const syncSticky=()=>{
+      const ready=heroSection.getBoundingClientRect().bottom<=Math.max(110,innerHeight*.12);
+      mobileSticky.classList.toggle('is-ready',ready);
+      mobileSticky.setAttribute('aria-hidden',ready?'false':'true');
+      mobileSticky.tabIndex=ready?0:-1;
+    };
+    addEventListener('scroll',syncSticky,{passive:true});
+    addEventListener('resize',syncSticky,{passive:true});
+    syncSticky();
+  }
+
   // Quote workflow
   const quote=$('[data-quote-panel]');let qStep=1,qType='';
   function showQStep(n){qStep=n;$$('[data-step]',quote).forEach(s=>s.classList.toggle('is-active',Number(s.dataset.step)===n));$$('.quote-progress i',quote).forEach((d,i)=>d.classList.toggle('is-active',i<n));$('[data-quote-count]',quote).textContent=`0${n} / 04`}
