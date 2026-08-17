@@ -1,0 +1,41 @@
+name: Fix Final V16 Projects Responsive Grid
+on:
+  push:
+    branches:
+      - client-review-v16-site-audit
+    paths:
+      - .github/workflows/v16-site-audit-fix3.yml
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-site-audit
+          fetch-depth: 0
+      - name: Restore tablet and mobile project grids
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('v16-desktop-100.css')
+          s=p.read_text()
+          tablet='''  body.v8.v13.v14[data-page="projects"] .project-page-grid{grid-template-columns:1fr!important}\n'''
+          tablet_new=tablet+'''  body.v8.v13.v14[data-page="projects"] .additional-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}\n'''
+          if tablet not in s: raise SystemExit('tablet marker missing')
+          s=s.replace(tablet,tablet_new,1)
+          mobile='''  body.v8.v13.v14[data-page="projects"] .page-hero-copy h1,\n  body.v8.v13.v14[data-page="projects"] .project-page-copy h3,\n  body.v8.v13.v14[data-page="projects"] .big-link strong{overflow-wrap:anywhere!important}\n}'''
+          mobile_new='''  body.v8.v13.v14[data-page="projects"] .additional-project-grid{grid-template-columns:1fr!important}\n  body.v8.v13.v14[data-page="projects"] .additional-project-card span{\n    display:block!important;\n    white-space:normal!important;\n    overflow-wrap:anywhere!important;\n  }\n  body.v8.v13.v14[data-page="projects"] .page-hero-copy h1,\n  body.v8.v13.v14[data-page="projects"] .project-page-copy h3,\n  body.v8.v13.v14[data-page="projects"] .big-link strong{overflow-wrap:anywhere!important}\n}'''
+          if mobile not in s: raise SystemExit('mobile marker missing')
+          s=s.replace(mobile,mobile_new,1)
+          p.write_text(s.rstrip()+'\n')
+          PY
+          git diff --check
+      - name: Commit
+        run: |
+          git config user.name "VSK Site Audit"
+          git config user.email "actions@users.noreply.github.com"
+          git add v16-desktop-100.css
+          git commit -m "Fix V16 Projects mobile media grid"
+          git push origin HEAD:client-review-v16-site-audit
