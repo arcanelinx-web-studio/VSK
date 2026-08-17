@@ -1,0 +1,25 @@
+name: Generate Valid Media Index
+on:
+  push:
+    branches: [client-review-v16-blue-refinement]
+    paths: ['.github/workflows/generate-valid-media-index.yml']
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Generate media path index
+        run: |
+          find media -type f -print | sort | python3 -c 'import sys,json; print(json.dumps([x.strip() for x in sys.stdin if x.strip()], indent=2))' > media/valid-paths.json
+      - name: Commit media index
+        run: |
+          git config user.name 'VSK Media Index'
+          git config user.email 'actions@users.noreply.github.com'
+          git add media/valid-paths.json
+          git commit -m 'Generate index of valid media files'
+          git push origin HEAD:client-review-v16-blue-refinement
