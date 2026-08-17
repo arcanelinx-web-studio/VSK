@@ -1,0 +1,52 @@
+name: Apply V16 Original Recovery
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-original-recovery-apply.yml
+      - .github/scripts/apply_v16_original_recovery.py
+      - .github/scripts/v16_original_recovery_qa.cjs
+      - v16-original-recovery.css
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 0
+      - name: Apply historical V14/V16 recovery layer
+        run: python3 .github/scripts/apply_v16_original_recovery.py
+      - name: Install browser QA
+        shell: bash
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Run responsive cross-page QA
+        shell: bash
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-recovery-server.log 2>&1 &
+          sleep 2
+          node .github/scripts/v16_original_recovery_qa.cjs
+      - name: Upload QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v16-original-recovery-qa
+          path: artifacts/v16-recovery
+          if-no-files-found: ignore
+      - name: Commit and safely push
+        shell: bash
+        run: |
+          git config user.name "Asmita G V"
+          git config user.email "gujjarasmita@gmail.com"
+          git add index.html projects.html machines.html gallery.html v16-original-recovery.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore original V16 layout rhythm and palette"
+          git pull --rebase origin client-review-v16-blue-refinement
+          git push origin HEAD:client-review-v16-blue-refinement
