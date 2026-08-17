@@ -1,15 +1,5 @@
 name: Apply V16 Original Recovery
 on:
-  push:
-    branches:
-      - client-review-v16-blue-refinement
-    paths:
-      - .github/workflows/v16-original-recovery-apply.yml
-      - .github/scripts/apply_v16_original_recovery.py
-      - .github/scripts/v16_original_recovery_qa.cjs
-      - v16-original-recovery.css
-      - v16-desktop-balance.css
-      - v16-desktop-100.css
   workflow_dispatch:
 permissions:
   contents: write
