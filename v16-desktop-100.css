@@ -124,7 +124,7 @@ body.v8.v13.v14 .header-cta:hover span{transform:translate(3px,-3px)!important}
 body.v8.v13.v14 .hero.hero-blue{
   margin-top:var(--audit-header)!important;
   height:calc(100svh - var(--audit-header))!important;
-  min-height:690px!important;
+  min-height:0!important;
   max-height:none!important;
   overflow:hidden!important;
   background:linear-gradient(115deg,#FAFAF7 0%,#F7F8F8 58%,#EEF3F6 100%)!important;
@@ -527,10 +527,10 @@ body.v8.v13.v14[data-page="gallery"] .gallery-project-media{
   align-items:start!important;
 }
 body.v8.v13.v14[data-page="gallery"] .gallery-project-media:has(> :only-child){
-  grid-template-columns:minmax(0,720px)!important;
+  grid-template-columns:minmax(0,600px)!important;
   justify-content:start!important;
 }
-body.v8.v13.v14[data-page="gallery"] .gallery-project-media:has(> :nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,520px))!important}
+body.v8.v13.v14[data-page="gallery"] .gallery-project-media:has(> :nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,480px))!important}
 body.v8.v13.v14[data-page="gallery"] .gallery-tile{
   width:100%!important;
   min-width:0!important;
@@ -674,4 +674,25 @@ body.v8.v13.v14 .footer-bottom{
   body.v8.v13.v14[data-page="gallery"] .gallery-project-media:has(> :nth-child(2):last-child){grid-template-columns:1fr!important}
   body.v8.v13.v14[data-page="gallery"] .gallery-tile{aspect-ratio:4/3!important}
   body.v8.v13.v14 .footer-grid{grid-template-columns:1fr!important;gap:28px!important}
+
+  /* Projects: no legacy card, CTA or hero can establish a width wider than the phone. */
+  body.v8.v13.v14[data-page="projects"] .subpage-main,
+  body.v8.v13.v14[data-page="projects"] .page-hero,
+  body.v8.v13.v14[data-page="projects"] .page-hero-copy,
+  body.v8.v13.v14[data-page="projects"] .project-index,
+  body.v8.v13.v14[data-page="projects"] .project-page-grid,
+  body.v8.v13.v14[data-page="projects"] .project-page-card,
+  body.v8.v13.v14[data-page="projects"] .project-page-media,
+  body.v8.v13.v14[data-page="projects"] .additional-media,
+  body.v8.v13.v14[data-page="projects"] .additional-project-grid,
+  body.v8.v13.v14[data-page="projects"] .additional-project-card,
+  body.v8.v13.v14[data-page="projects"] .projects-cta,
+  body.v8.v13.v14[data-page="projects"] .projects-cta-grid,
+  body.v8.v13.v14[data-page="projects"] .big-link{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  body.v8.v13.v14[data-page="projects"] .page-hero-copy h1,
+  body.v8.v13.v14[data-page="projects"] .project-page-copy h3,
+  body.v8.v13.v14[data-page="projects"] .big-link strong{overflow-wrap:anywhere!important}
 }
