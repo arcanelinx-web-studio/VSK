@@ -34,123 +34,283 @@ jobs:
             /app-v14.js
             /data.js
             /media/**
-      - run: |
+      - name: Install Playwright
+        run: |
           npm init -y >/dev/null 2>&1
           npm install playwright@1.55.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
-      - run: |
+      - name: Start local site
+        run: |
           python3 -m http.server 4173 >/tmp/vsk-master.log 2>&1 &
           sleep 2
-      - name: Run master QA
+      - name: Run corrected master QA
         run: |
           cat > master.cjs <<'JS'
-          const {chromium}=require('playwright');
-          const fs=require('fs');
-          const wait=ms=>new Promise(r=>setTimeout(r,ms));
-          const base='http://127.0.0.1:4173/';
-          (async()=>{
-            const browser=await chromium.launch({headless:true});
-            const fail=[],rows=[];
-            const pages=['index.html','projects.html','machines.html','gallery.html','404.html'];
-            const viewports=[['1440',1440,1000],['1366',1366,900],['tablet',1024,900],['mobile',390,844]];
-            for(const file of pages){
-              for(const [mode,w,h] of viewports){
-                if(file!=='index.html' && !['1440','mobile'].includes(mode)) continue;
-                const p=await browser.newPage({viewport:{width:w,height:h}});
-                const errors=[],bad=[];
-                p.on('pageerror',e=>errors.push(String(e)));
-                p.on('response',r=>{if(r.status()>=400&&r.url().startsWith(base))bad.push(`${r.status()} ${r.url()}`)});
-                await p.goto(base+file,{waitUntil:'networkidle'});await wait(450);
-                const state=await p.evaluate(()=>{
-                  const badGreen=[];
-                  for(const el of [...document.querySelectorAll('body *')].filter(x=>x.offsetParent!==null)){
-                    const s=getComputedStyle(el),vals=[s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];
-                    if(vals.some(v=>v.includes('40, 95, 80')||v.includes('159, 194, 181'))){badGreen.push({el:el.tagName+'.'+String(el.className||''),vals});if(badGreen.length>=30)break;}
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+          const base = 'http://127.0.0.1:4173/';
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const failures = [];
+            const rows = [];
+            const pages = ['index.html','projects.html','machines.html','gallery.html','404.html'];
+            const viewports = [
+              ['1440',1440,1000],
+              ['1366',1366,900],
+              ['tablet',1024,900],
+              ['mobile',390,844]
+            ];
+
+            function checkGreen(label, items) {
+              if (items.length) failures.push(`${label}: legacy green visible ${JSON.stringify(items.slice(0,8))}`);
+            }
+
+            for (const file of pages) {
+              for (const [mode,width,height] of viewports) {
+                if (file !== 'index.html' && !['1440','mobile'].includes(mode)) continue;
+
+                const page = await browser.newPage({ viewport: { width, height } });
+                const pageErrors = [];
+                const badRequests = [];
+                page.on('pageerror', e => pageErrors.push(String(e)));
+                page.on('response', r => {
+                  if (r.status() >= 400 && r.url().startsWith(base)) badRequests.push(`${r.status()} ${r.url()}`);
+                });
+
+                await page.goto(base + file, { waitUntil: 'networkidle' });
+                await wait(500);
+
+                const initial = await page.evaluate(() => {
+                  const green = [];
+                  const visible = [...document.querySelectorAll('body *')].filter(el => el.offsetParent !== null);
+                  for (const el of visible) {
+                    const s = getComputedStyle(el);
+                    const values = [s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];
+                    if (values.some(v => v.includes('40, 95, 80') || v.includes('159, 194, 181'))) {
+                      green.push({ el: el.tagName + '.' + String(el.className || ''), values });
+                      if (green.length >= 20) break;
+                    }
                   }
-                  const header=document.querySelector('.site-header'),logo=document.querySelector('.brand img'),brand=document.querySelector('.brand-copy strong'),nav=document.querySelector('.desktop-nav a'),cta=document.querySelector('.header-cta'),menu=document.querySelector('.menu-toggle');
+
+                  const header = document.querySelector('.site-header');
+                  const logo = document.querySelector('.brand img');
+                  const brand = document.querySelector('.brand-copy strong');
+                  const descriptor = document.querySelector('.brand-copy small');
+                  const nav = document.querySelector('.desktop-nav');
+                  const navLink = document.querySelector('.desktop-nav a');
+                  const cta = document.querySelector('.header-cta');
+                  const menu = document.querySelector('.menu-toggle');
+                  const sticky = document.querySelector('.mobile-sticky-cta');
+
                   return {
-                    width:document.documentElement.scrollWidth,
-                    theme:document.querySelector('meta[name="theme-color"]')?.content||'',robots:document.querySelector('meta[name="robots"]')?.content||'',
-                    green:badGreen,
-                    header:header?Math.round(header.getBoundingClientRect().height):0,
-                    logo:logo?Math.round(logo.getBoundingClientRect().width):0,
-                    brandFont:brand?getComputedStyle(brand).fontFamily:'',brandSize:brand?getComputedStyle(brand).fontSize:'',
-                    navFont:nav?getComputedStyle(nav).fontFamily:'',navDisplay:nav?getComputedStyle(document.querySelector('.desktop-nav')).display:'',
-                    ctaFont:cta?getComputedStyle(cta).fontFamily:'',ctaDisplay:cta?getComputedStyle(cta).display:'',
-                    menuDisplay:menu?getComputedStyle(menu).display:''
+                    pageWidth: document.documentElement.scrollWidth,
+                    theme: document.querySelector('meta[name="theme-color"]')?.content || '',
+                    robots: document.querySelector('meta[name="robots"]')?.content || '',
+                    green,
+                    hasHeader: !!header,
+                    headerHeight: header ? Math.round(header.getBoundingClientRect().height) : null,
+                    headerSolid: header ? header.classList.contains('is-solid') : false,
+                    logoWidth: logo ? Math.round(logo.getBoundingClientRect().width) : null,
+                    brandFont: brand ? getComputedStyle(brand).fontFamily : '',
+                    descriptorFont: descriptor ? getComputedStyle(descriptor).fontFamily : '',
+                    navFont: navLink ? getComputedStyle(navLink).fontFamily : '',
+                    navDisplay: nav ? getComputedStyle(nav).display : '',
+                    ctaFont: cta ? getComputedStyle(cta).fontFamily : '',
+                    ctaDisplay: cta ? getComputedStyle(cta).display : '',
+                    menuDisplay: menu ? getComputedStyle(menu).display : '',
+                    stickyClass: sticky ? sticky.className : '',
+                    stickyOpacity: sticky ? getComputedStyle(sticky).opacity : null,
+                    stickyPointer: sticky ? getComputedStyle(sticky).pointerEvents : null
                   };
                 });
-                if(state.width>w+2)fail.push(`${file}/${mode}: overflow ${state.width}>${w}`);
-                if(state.theme.toUpperCase()!=='#0D1824')fail.push(`${file}/${mode}: theme ${state.theme}`);
-                if(!state.robots.includes('noindex'))fail.push(`${file}/${mode}: noindex missing`);
-                if(state.green.length)fail.push(`${file}/${mode}: green survivors ${JSON.stringify(state.green.slice(0,10))}`);
-                if(!state.brandFont.includes('Space Grotesk'))fail.push(`${file}/${mode}: brand font ${state.brandFont}`);
-                if(mode==='1440'){
-                  if(state.header!==104)fail.push(`${file}/1440: header ${state.header}, expected 104`);
-                  if(state.logo!==70)fail.push(`${file}/1440: logo ${state.logo}, expected 70`);
-                  if(!state.navFont.includes('Inter'))fail.push(`${file}/1440: nav font ${state.navFont}`);
-                  if(!state.ctaFont.includes('Inter'))fail.push(`${file}/1440: CTA font ${state.ctaFont}`);
+
+                if (initial.pageWidth > width + 2) failures.push(`${file}/${mode}: overflow ${initial.pageWidth}>${width}`);
+                if (initial.theme.toUpperCase() !== '#0D1824') failures.push(`${file}/${mode}: wrong theme ${initial.theme}`);
+                if (!initial.robots.includes('noindex')) failures.push(`${file}/${mode}: review indexing lock missing`);
+                checkGreen(`${file}/${mode}`, initial.green);
+
+                if (file !== '404.html') {
+                  if (!initial.hasHeader) failures.push(`${file}/${mode}: header missing`);
+                  if (!initial.brandFont.includes('Space Grotesk')) failures.push(`${file}/${mode}: brand font ${initial.brandFont}`);
+                  if (mode !== 'mobile' && !initial.descriptorFont.includes('IBM Plex Mono')) failures.push(`${file}/${mode}: descriptor font ${initial.descriptorFont}`);
+
+                  if (mode === '1440') {
+                    const expectedHeight = file === 'index.html' ? 104 : 88;
+                    const expectedLogo = file === 'index.html' ? 70 : 60;
+                    if (initial.headerHeight !== expectedHeight) failures.push(`${file}/1440: header ${initial.headerHeight}, expected ${expectedHeight}`);
+                    if (initial.logoWidth !== expectedLogo) failures.push(`${file}/1440: logo ${initial.logoWidth}, expected ${expectedLogo}`);
+                    if (!initial.navFont.includes('Inter')) failures.push(`${file}/1440: nav font ${initial.navFont}`);
+                    if (!initial.ctaFont.includes('Inter')) failures.push(`${file}/1440: CTA font ${initial.ctaFont}`);
+                  }
+
+                  if (file === 'index.html' && mode === '1366') {
+                    if (initial.headerHeight !== 98) failures.push(`home/1366: header ${initial.headerHeight}, expected 98`);
+                    if (initial.logoWidth !== 64) failures.push(`home/1366: logo ${initial.logoWidth}, expected 64`);
+                    if (initial.navDisplay === 'none') failures.push('home/1366: desktop nav hidden unexpectedly');
+                  }
+
+                  if (file === 'index.html' && mode === 'tablet') {
+                    if (initial.navDisplay !== 'none') failures.push('home/tablet: desktop nav should collapse');
+                    if (initial.menuDisplay === 'none') failures.push('home/tablet: menu toggle missing');
+                  }
+
+                  if (mode === 'mobile') {
+                    if (initial.headerHeight !== 82) failures.push(`${file}/mobile: header ${initial.headerHeight}, expected 82`);
+                    if (initial.logoWidth !== 52) failures.push(`${file}/mobile: logo ${initial.logoWidth}, expected 52`);
+                    if (initial.ctaDisplay !== 'none') failures.push(`${file}/mobile: desktop CTA still visible`);
+                  }
                 }
-                if(file==='index.html'&&mode==='1366'){
-                  if(state.header!==98)fail.push(`home/1366: header ${state.header}, expected 98`);
-                  if(state.logo!==64)fail.push(`home/1366: logo ${state.logo}, expected 64`);
-                  if(state.navDisplay==='none')fail.push('home/1366: desktop nav hidden unexpectedly');
-                }
-                if(file==='index.html'&&mode==='tablet'){
-                  if(state.navDisplay!=='none')fail.push('home/tablet: desktop nav should collapse');
-                  if(state.menuDisplay==='none')fail.push('home/tablet: menu toggle missing');
-                }
-                if(mode==='mobile'){
-                  if(state.header!==82)fail.push(`${file}/mobile: header ${state.header}, expected 82`);
-                  if(state.logo!==52)fail.push(`${file}/mobile: logo ${state.logo}, expected 52`);
-                  if(state.ctaDisplay!=='none')fail.push(`${file}/mobile: desktop CTA still visible`);
-                }
-                if(file==='index.html'){
-                  const hero=await p.evaluate(()=>{
-                    const a=document.querySelector('.hero-blue-copy h1 span'),b=document.querySelector('.hero-blue-copy h1 em'),main=document.querySelector('.hero-board-main img'),sec=document.querySelector('.hero-board-photo img'),board=document.querySelector('.hero-engineering-board'),copy=document.querySelector('.hero-blue-copy');
-                    const br=board?.getBoundingClientRect(),cr=copy?.getBoundingClientRect();
-                    return {text:(a?.textContent||'')+' '+(b?.textContent||''),white:a?getComputedStyle(a).color:'',blue:b?getComputedStyle(b).color:'',main:main?.getAttribute('src')||'',sec:sec?.getAttribute('src')||'',mainOK:!!main&&main.complete&&main.naturalWidth>0,secOK:!!sec&&sec.complete&&sec.naturalWidth>0,boardW:br?Math.round(br.width):0,overlap:br&&cr?!(cr.right<=br.left||br.right<=cr.left||cr.bottom<=br.top||br.bottom<=cr.top):false};
+
+                if (file === 'index.html') {
+                  const hero = await page.evaluate(() => {
+                    const first = document.querySelector('.hero-blue-copy h1 span');
+                    const second = document.querySelector('.hero-blue-copy h1 em');
+                    const main = document.querySelector('.hero-board-main img');
+                    const secondary = document.querySelector('.hero-board-photo img');
+                    const board = document.querySelector('.hero-engineering-board');
+                    const copy = document.querySelector('.hero-blue-copy');
+                    const boardRect = board?.getBoundingClientRect();
+                    const copyRect = copy?.getBoundingClientRect();
+                    return {
+                      text: (first?.textContent || '') + ' ' + (second?.textContent || ''),
+                      white: first ? getComputedStyle(first).color : '',
+                      blue: second ? getComputedStyle(second).color : '',
+                      mainSrc: main?.getAttribute('src') || '',
+                      secondarySrc: secondary?.getAttribute('src') || '',
+                      mainLoaded: !!main && main.complete && main.naturalWidth > 0,
+                      secondaryLoaded: !!secondary && secondary.complete && secondary.naturalWidth > 0,
+                      boardWidth: boardRect ? Math.round(boardRect.width) : 0,
+                      overlap: boardRect && copyRect ? !(copyRect.right <= boardRect.left || boardRect.right <= copyRect.left || copyRect.bottom <= boardRect.top || boardRect.bottom <= copyRect.top) : false,
+                      tag: document.querySelector('.hero-board-tag')?.textContent.trim() || '',
+                      proof: document.querySelector('.hero-proof-chip')?.textContent.trim() || ''
+                    };
                   });
-                  if(!hero.text.includes('Engineered around your production.'))fail.push(`home/${mode}: hero text ${hero.text}`);
-                  if(!hero.white.includes('255, 255, 255')||!hero.blue.includes('69, 169, 232'))fail.push(`home/${mode}: headline colors ${hero.white}/${hero.blue}`);
-                  if(!hero.main.includes('slotting-mc-1.webp')||!hero.sec.includes('slotting-detail.webp')||!hero.mainOK||!hero.secOK)fail.push(`home/${mode}: hero media ${JSON.stringify(hero)}`);
-                  if(['1440','1366'].includes(mode)&&hero.overlap)fail.push(`home/${mode}: hero copy/board overlap`);
-                  if(mode==='1440'){
-                    await p.locator('.site-header').screenshot({path:'master-header-1440.png'});
-                    await p.locator('.hero').screenshot({path:'master-hero-1440.png'});
-                    await p.locator('.projects-showcase').scrollIntoViewIfNeeded();await wait(200);await p.locator('.featured-case').screenshot({path:'master-featured.png'});
-                    await p.locator('.retrofit').scrollIntoViewIfNeeded();await wait(200);await p.locator('.retrofit').screenshot({path:'master-retrofit.png'});
-                    await p.locator('.about').scrollIntoViewIfNeeded();await wait(200);await p.locator('.about').screenshot({path:'master-about.png'});
+
+                  if (!hero.text.includes('Engineered around your production.')) failures.push(`home/${mode}: hero headline ${hero.text}`);
+                  if (!hero.white.includes('255, 255, 255') || !hero.blue.includes('69, 169, 232')) failures.push(`home/${mode}: headline colors ${hero.white}/${hero.blue}`);
+                  if (!hero.mainSrc.includes('4-servo-seal-slotting-machine/slotting-mc-1.webp')) failures.push(`home/${mode}: wrong CAD visual ${hero.mainSrc}`);
+                  if (!hero.secondarySrc.includes('slotting-detail.webp')) failures.push(`home/${mode}: wrong secondary visual ${hero.secondarySrc}`);
+                  if (!hero.mainLoaded || !hero.secondaryLoaded) failures.push(`home/${mode}: hero media failed`);
+                  if (!hero.tag.includes('04 SERVO') || !hero.tag.includes('SPM')) failures.push(`home/${mode}: hero technical tag ${hero.tag}`);
+                  if (!hero.proof.includes('300+')) failures.push(`home/${mode}: proof chip missing`);
+                  if (['1440','1366'].includes(mode) && hero.overlap) failures.push(`home/${mode}: hero copy/board overlap`);
+                  if (mode === '1440' && hero.boardWidth < 480) failures.push(`home/1440: engineering board too small ${hero.boardWidth}`);
+
+                  if (mode === '1440') {
+                    await page.locator('.site-header').screenshot({ path: 'master-header-1440.png' });
+                    await page.locator('.hero').screenshot({ path: 'master-hero-1440.png' });
+                    await page.locator('.projects-showcase').scrollIntoViewIfNeeded();
+                    await wait(250);
+                    await page.locator('.featured-case').screenshot({ path: 'master-featured.png' });
+                    await page.locator('.retrofit').scrollIntoViewIfNeeded();
+                    await wait(250);
+                    await page.locator('.retrofit').screenshot({ path: 'master-retrofit.png' });
+                    await page.locator('.about').scrollIntoViewIfNeeded();
+                    await wait(250);
+                    await page.locator('.about').screenshot({ path: 'master-about.png' });
                   }
-                  if(mode==='mobile'){
-                    await p.locator('.site-header').screenshot({path:'master-header-mobile.png'});
-                    await p.locator('.hero').screenshot({path:'master-hero-mobile.png'});
-                    await p.locator('[data-menu-toggle]').click();await wait(100);
-                    if(await p.locator('[data-mobile-menu]').getAttribute('hidden')!==null)fail.push('home/mobile: menu failed to open');
-                    await p.locator('[data-menu-close]').last().click();
+
+                  if (mode === 'mobile') {
+                    if (initial.stickyClass.includes('is-ready') || initial.stickyOpacity !== '0' || initial.stickyPointer !== 'none') {
+                      failures.push(`home/mobile: sticky CTA visible over hero ${JSON.stringify({class:initial.stickyClass,opacity:initial.stickyOpacity,pointer:initial.stickyPointer})}`);
+                    }
+                    await page.locator('.site-header').screenshot({ path: 'master-header-mobile.png' });
+                    await page.locator('.hero').screenshot({ path: 'master-hero-mobile.png' });
+
+                    await page.locator('[data-menu-toggle]').click();
+                    await wait(100);
+                    if (await page.locator('[data-mobile-menu]').getAttribute('hidden') !== null) failures.push('home/mobile: menu failed to open');
+                    await page.locator('[data-menu-close]').last().click();
+
+                    const heroHeight = await page.locator('#hero').evaluate(el => el.getBoundingClientRect().height);
+                    await page.evaluate(y => scrollTo(0, y), heroHeight + 180);
+                    await wait(180);
+                    const stickyAfter = await page.evaluate(() => {
+                      const sticky = document.querySelector('.mobile-sticky-cta');
+                      return sticky ? {
+                        ready: sticky.classList.contains('is-ready'),
+                        opacity: getComputedStyle(sticky).opacity,
+                        pointer: getComputedStyle(sticky).pointerEvents
+                      } : null;
+                    });
+                    if (!stickyAfter?.ready || stickyAfter.opacity !== '1' || stickyAfter.pointer === 'none') failures.push(`home/mobile: sticky CTA did not appear after hero ${JSON.stringify(stickyAfter)}`);
+                    await page.locator('.mobile-sticky-cta').screenshot({ path: 'master-mobile-sticky-after-hero.png' });
+                    await page.evaluate(() => scrollTo(0,0));
+                    await wait(100);
                   }
-                  const q=p.locator('[data-quote-open]:visible').first();if(await q.count()){await q.click();await wait(100);if(await p.locator('[data-quote-panel]').getAttribute('hidden')!==null)fail.push(`home/${mode}: quote failed to open`);const close=p.locator('.quote-close[data-quote-close]');if(await close.isVisible())await close.click();}
+
+                  const quoteTrigger = page.locator('[data-quote-open]:visible').first();
+                  if (await quoteTrigger.count()) {
+                    await quoteTrigger.click();
+                    await wait(100);
+                    if (await page.locator('[data-quote-panel]').getAttribute('hidden') !== null) failures.push(`home/${mode}: requirement dialog failed to open`);
+                    const close = page.locator('.quote-close[data-quote-close]');
+                    if (await close.isVisible()) await close.click();
+                  }
                 }
-                await p.evaluate(async()=>{const d=document.documentElement,step=Math.max(500,Math.floor(innerHeight*.7));for(let y=0;y<d.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,55));}scrollTo(0,d.scrollHeight)});await wait(file==='gallery.html'?1400:550);
-                const end=await p.evaluate(()=>({width:document.documentElement.scrollWidth,broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src),pending:[...document.images].filter(i=>i.offsetParent!==null&&!i.complete).map(i=>i.src)}));
-                if(end.width>w+2)fail.push(`${file}/${mode}: final overflow ${end.width}>${w}`);
-                if(end.broken.length)fail.push(`${file}/${mode}: broken ${end.broken.join(',')}`);
-                if(end.pending.length)fail.push(`${file}/${mode}: pending ${end.pending.join(',')}`);
-                if(errors.length)fail.push(`${file}/${mode}: JS ${errors.join(' | ')}`);
-                const ub=[...new Set(bad)];if(ub.length)fail.push(`${file}/${mode}: requests ${ub.join(' | ')}`);
-                rows.push({file,mode,state,end,errors,bad:ub});
-                await p.close();
+
+                await page.evaluate(async () => {
+                  const root = document.documentElement;
+                  const step = Math.max(500, Math.floor(innerHeight * .7));
+                  for (let y = 0; y < root.scrollHeight; y += step) {
+                    scrollTo(0,y);
+                    await new Promise(r => setTimeout(r,55));
+                  }
+                  scrollTo(0,root.scrollHeight);
+                });
+                await wait(file === 'gallery.html' ? 1500 : 600);
+
+                const finalState = await page.evaluate(() => {
+                  const imgs = [...document.images].filter(i => i.offsetParent !== null);
+                  const green = [];
+                  for (const el of [...document.querySelectorAll('body *')].filter(x => x.offsetParent !== null)) {
+                    const s = getComputedStyle(el);
+                    const values = [s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];
+                    if (values.some(v => v.includes('40, 95, 80') || v.includes('159, 194, 181'))) {
+                      green.push({ el: el.tagName + '.' + String(el.className || ''), values });
+                      if (green.length >= 20) break;
+                    }
+                  }
+                  return {
+                    width: document.documentElement.scrollWidth,
+                    broken: imgs.filter(i => i.complete && i.naturalWidth === 0).map(i => i.src),
+                    pending: imgs.filter(i => !i.complete).map(i => i.src),
+                    green
+                  };
+                });
+
+                if (finalState.width > width + 2) failures.push(`${file}/${mode}: final overflow ${finalState.width}>${width}`);
+                if (finalState.broken.length) failures.push(`${file}/${mode}: broken media ${finalState.broken.join(',')}`);
+                if (finalState.pending.length) failures.push(`${file}/${mode}: pending media ${finalState.pending.join(',')}`);
+                checkGreen(`${file}/${mode} after full scroll`, finalState.green);
+                if (pageErrors.length) failures.push(`${file}/${mode}: JS errors ${pageErrors.join(' | ')}`);
+                const uniqueBad = [...new Set(badRequests)];
+                if (uniqueBad.length) failures.push(`${file}/${mode}: failed local requests ${uniqueBad.join(' | ')}`);
+
+                rows.push({ file, mode, initial, finalState, pageErrors, badRequests: uniqueBad });
+                await page.close();
               }
             }
-            const home=fs.readFileSync('index.html','utf8');
-            if(!home.includes('slotting-mc-1.webp" rel="preload"'))fail.push('home: hero preload not aligned');
-            for(const phrase of ['giving buyers a practical way','Use the index for technical depth','Browse each project as a complete visual chapter','Explore selected machines and retrofits through the application']){
-              const all=['index.html','projects.html','machines.html','gallery.html'].map(f=>fs.readFileSync(f,'utf8')).join('\n');if(all.includes(phrase))fail.push('copy audit: '+phrase);
+
+            const home = fs.readFileSync('index.html','utf8');
+            if (!home.includes('4-servo-seal-slotting-machine/slotting-mc-1.webp" rel="preload"')) failures.push('home: hero preload is not aligned to the CAD visual');
+            const allCopy = ['index.html','projects.html','machines.html','gallery.html'].map(f => fs.readFileSync(f,'utf8')).join('\n');
+            for (const phrase of [
+              'giving buyers a practical way',
+              'Use the index for technical depth',
+              'Browse each project as a complete visual chapter',
+              'Explore selected machines and retrofits through the application'
+            ]) {
+              if (allCopy.includes(phrase)) failures.push(`copy audit: stale site-facing phrase remains: ${phrase}`);
             }
-            fs.writeFileSync('master-report.json',JSON.stringify({fail,rows},null,2));
-            console.log(JSON.stringify({fail},null,2));
-            await browser.close();if(fail.length)process.exit(1);
-          })().catch(e=>{console.error(e);process.exit(1)});
+
+            fs.writeFileSync('master-report.json', JSON.stringify({ failures, rows }, null, 2));
+            console.log(JSON.stringify({ failures }, null, 2));
+            await browser.close();
+            if (failures.length) process.exit(1);
+          })().catch(e => { console.error(e); process.exit(1); });
           JS
           node master.cjs
       - uses: actions/upload-artifact@v4
