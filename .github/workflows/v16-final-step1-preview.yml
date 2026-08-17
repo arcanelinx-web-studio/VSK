@@ -1,4 +1,4 @@
-# Step 1 visual QA + mobile overflow source tracing
+# V16 Final Step 1 visual QA
 name: V16 Final Step 1 Visual QA
 
 on:
@@ -82,8 +82,8 @@ jobs:
               });
               const uniqueBad=[...new Set(badResponses)];
               checks.push({name,...result,pageErrors,badResponses:uniqueBad});
-              if(name!=='mobile' && result.scrollWidth>width+2) failures.push(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
-              if(name==='mobile' && result.step1Overflow) failures.push('mobile: header/hero overflow');
+              if(result.scrollWidth>width+2) failures.push(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
+              if(result.step1Overflow) failures.push(`${name}: header/hero overflow`);
               if(!result.title?.includes('ENGINEERED') || !result.title?.includes('PRECISION')) failures.push(`${name}: hero title missing`);
               if(name!=='mobile' && result.cta!=='DISCUSS A MACHINE ↗') failures.push(`${name}: header CTA mismatch ${result.cta}`);
               if(name!=='mobile' && !result.headerBg.includes('244, 243, 238')) failures.push(`${name}: header not ivory ${result.headerBg}`);
