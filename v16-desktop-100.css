@@ -80,9 +80,22 @@
   }
 }
 
+/* 1920-class desktops: use the available half-screen properly and make the
+   hero board the vertical anchor. On a 1920×1080 viewport this resolves to
+   ~120px above and ~120px below the board. */
 @media (min-width:1680px){
-  body.v8.v13.v14 .hero-blue-layout.shell{width:var(--shell)!important}
-  body.v8.v13.v14 .hero-engineering-board{width:min(100%,710px)!important;min-height:590px!important}
+  body.v8.v13.v14 .hero-blue-layout.shell{
+    width:var(--shell)!important;
+    padding-top:120px!important;
+    grid-template-columns:minmax(0,1fr) 780px!important;
+    gap:72px!important;
+  }
+  body.v8.v13.v14 .hero-engineering-board{
+    width:780px!important;
+    height:736px!important;
+    min-height:736px!important;
+    aspect-ratio:auto!important;
+  }
 }
 
 @media (min-width:1181px) and (max-width:1439px){
