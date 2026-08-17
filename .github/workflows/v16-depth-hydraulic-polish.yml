@@ -1,0 +1,86 @@
+name: Apply V16 Depth and Hydraulic Polish
+on:
+  push:
+    branches: [client-review-v16-blue-refinement]
+    paths: ['.github/workflows/v16-depth-hydraulic-polish.yml']
+permissions:
+  contents: write
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Apply targeted polish
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          app = Path('app.js')
+          s = app.read_text()
+          old = "media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp"
+          new = "media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp"
+          if old not in s:
+              raise SystemExit('Current hydraulics image reference not found')
+          app.write_text(s.replace(old, new, 1))
+
+          css = Path('v16-desktop-100.css')
+          c = css.read_text().rstrip() + '''
+
+/* ==========================================================================\n   USER POLISH — Engineering Depth cohesion\n   Keep original V16 square geometry and palette; pair the evidence stack and\n   archive panel with a measured stone gutter instead of a hard white/navy seam.\n   ========================================================================== */
+@media (min-width:1181px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    grid-template-columns:minmax(0,1.44fr) minmax(410px,.76fr)!important;
+    gap:14px!important;
+    padding:14px!important;
+    background:var(--audit-stone)!important;
+    border:1px solid var(--audit-line)!important;
+    align-items:stretch!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-stack{
+    height:100%!important;
+    grid-template-rows:repeat(3,1fr)!important;
+    background:transparent!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-card{
+    min-height:0!important;
+    height:auto!important;
+    background:#fff!important;
+    border-color:#D3D9DE!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    min-height:100%!important;
+    height:100%!important;
+    box-sizing:border-box!important;
+    padding:40px 42px!important;
+    justify-content:center!important;
+    border:1px solid #263A4E!important;
+    box-shadow:none!important;
+  }
+}
+@media (min-width:1181px) and (max-width:1439px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{gap:12px!important;padding:12px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout{padding:34px!important}
+}
+@media (max-width:1180px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    padding:10px!important;
+    gap:10px!important;
+    background:var(--audit-stone)!important;
+    border:1px solid var(--audit-line)!important;
+  }
+}
+'''
+          css.write_text(c + '\n')
+          PY
+          git diff --check
+      - name: Commit polish
+        run: |
+          git config user.name 'VSK Depth Polish'
+          git config user.email 'actions@users.noreply.github.com'
+          git add app.js v16-desktop-100.css
+          git commit -m 'Smooth engineering depth and refresh hydraulics image'
+          git push origin HEAD:client-review-v16-blue-refinement
