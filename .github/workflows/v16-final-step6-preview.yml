@@ -62,7 +62,6 @@ jobs:
               page.on('response',r=>{if(r.status()>=400 && r.url().startsWith('http://127.0.0.1:4173/')) badResponses.push(`${r.status()} ${r.url()}`)});
               await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
 
-              // Exercise lazy-loading and scroll-triggered counters across the whole homepage.
               await page.evaluate(async()=>{
                 const root=document.documentElement;
                 const step=Math.max(450,Math.floor(innerHeight*.7));
@@ -72,20 +71,19 @@ jobs:
               await wait(1500);
 
               await page.locator('#about').scrollIntoViewIfNeeded();
-              await wait(200);
+              await wait(180);
               await page.evaluate(()=>document.activeElement?.blur());
               await page.locator('#about').screenshot({path:`final-about-${name}.png`});
 
               await page.locator('#contact').scrollIntoViewIfNeeded();
-              await wait(200);
+              await wait(180);
               await page.evaluate(()=>document.activeElement?.blur());
               await page.locator('#contact').screenshot({path:`final-contact-${name}.png`});
 
-              // Primary conversion path: contact CTA -> requirement dialog.
               await page.locator('#contact .contact-main').click();
-              await wait(160);
+              await wait(150);
               const quote=await page.evaluate(()=>{
-                const dialog=document.querySelector('[data-quote-dialog]');
+                const dialog=document.querySelector('[data-quote-panel]');
                 const panel=dialog?.querySelector('.quote-panel');
                 const active=dialog?.querySelector('.quote-progress i.is-active');
                 return {
@@ -95,9 +93,9 @@ jobs:
                   progressBg:active?getComputedStyle(active).backgroundColor:''
                 };
               });
-              if(quote.hidden!==false || !quote.heading.includes('Your requirement')) failures.push(`${name}: contact CTA did not open requirement dialog`);
-              await page.locator('[data-quote-close]').click();
-              await wait(100);
+              if(quote.hidden!==false || !quote.heading.includes('Tell VSK what needs to be solved')) failures.push(`${name}: contact CTA did not open the VSK requirement dialog`);
+              await page.locator('.quote-close[data-quote-close]').click();
+              await wait(80);
 
               let mobileUi=null;
               if(name==='mobile'){
@@ -106,7 +104,7 @@ jobs:
                   stickyBg:getComputedStyle(document.querySelector('.mobile-sticky-cta')).backgroundColor
                 }));
                 await page.locator('[data-menu-toggle]').click();
-                await wait(120);
+                await wait(100);
                 mobileUi.menuHidden=await page.locator('[data-mobile-menu]').evaluate(el=>el.hidden);
                 mobileUi.menuBg=await page.locator('.mobile-menu-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
                 mobileUi.menuNumberColor=await page.locator('.mobile-menu nav span').first().evaluate(el=>getComputedStyle(el).color);
@@ -115,7 +113,7 @@ jobs:
 
               if(name==='1440'){
                 await page.evaluate(()=>scrollTo(0,0));
-                await wait(180);
+                await wait(150);
                 await page.screenshot({path:'final-homepage-1440.png',fullPage:true});
               }
 
@@ -123,15 +121,12 @@ jobs:
                 const root=document.documentElement;
                 const sheets=[...document.styleSheets].map(s=>s.href||'');
                 const imgs=[...document.images].filter(i=>i.offsetParent!==null);
-                const broken=imgs.filter(i=>i.complete && i.naturalWidth===0).map(i=>i.src);
-                const pending=imgs.filter(i=>!i.complete).map(i=>i.src);
                 const proof=[...document.querySelectorAll('.credibility-band .proof-grid strong')].map(x=>x.textContent.trim());
                 const depth=[...document.querySelectorAll('.engineering-depth .metric-number')].map(x=>x.innerText.replace(/\s+/g,' ').trim());
                 const aboutStats=[...document.querySelectorAll('.about-mini-stats strong')].map(x=>x.textContent.trim());
                 const contact=document.querySelector('#contact');
                 const about=document.querySelector('#about');
                 const footer=document.querySelector('.site-footer');
-                const blockquote=about.querySelector('blockquote');
                 return {
                   viewport:innerWidth,
                   scrollWidth:root.scrollWidth,
@@ -148,33 +143,34 @@ jobs:
                   processStages:document.querySelectorAll('.process-line article').length,
                   aboutStats,
                   aboutBg:getComputedStyle(about).backgroundColor,
-                  blockquoteBorder:getComputedStyle(blockquote).borderLeftColor,
+                  blockquoteBorder:getComputedStyle(about.querySelector('blockquote')).borderLeftColor,
                   contactBg:getComputedStyle(contact).backgroundColor,
                   footerBg:getComputedStyle(footer).backgroundColor,
                   footerLabel:getComputedStyle(footer.querySelector('.footer-col>span')).color,
                   email:contact.querySelector('a[href^="mailto:"]')?.getAttribute('href')||'',
                   phone:contact.querySelector('a[href^="tel:"]')?.getAttribute('href')||'',
                   pageProgress:getComputedStyle(document.querySelector('.page-progress i')).backgroundColor,
-                  broken,pending
+                  broken:imgs.filter(i=>i.complete && i.naturalWidth===0).map(i=>i.src),
+                  pending:imgs.filter(i=>!i.complete).map(i=>i.src)
                 };
               });
               const uniqueBad=[...new Set(badResponses)];
               checks.push({name,...result,quote,mobileUi,pageErrors,badResponses:uniqueBad});
 
               if(result.scrollWidth>width+2) failures.push(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
-              if(Object.values(result.links).some(v=>!v)) failures.push(`${name}: one or more V16 Final stylesheet layers are missing ${JSON.stringify(result.links)}`);
+              if(Object.values(result.links).some(v=>!v)) failures.push(`${name}: V16 Final stylesheet layer missing ${JSON.stringify(result.links)}`);
               if(result.proof.join('|')!=='2011|300+|54|6') failures.push(`${name}: credibility proof changed ${result.proof.join('|')}`);
               if(result.selectedProjects!==5) failures.push(`${name}: selected project count changed ${result.selectedProjects}`);
               if(result.depth.join('|')!=='0.02 mm|20 μm|12 sec') failures.push(`${name}: engineering metrics changed ${result.depth.join('|')}`);
               if(result.processStages!==6) failures.push(`${name}: process stage count changed ${result.processStages}`);
-              if(result.aboutStats.join('|')!=='2011|300+|54') failures.push(`${name}: about proof changed ${result.aboutStats.join('|')}`);
+              if(result.aboutStats.join('|')!=='300+|54|6') failures.push(`${name}: about proof changed ${result.aboutStats.join('|')}`);
               if(!result.aboutBg.includes('244, 243, 238')) failures.push(`${name}: about warm palette not applied ${result.aboutBg}`);
               if(!result.blockquoteBorder.includes('40, 95, 80')) failures.push(`${name}: about quote accent is not VSK green ${result.blockquoteBorder}`);
               if(!result.contactBg.includes('32, 41, 37')) failures.push(`${name}: contact palette not applied ${result.contactBg}`);
               if(!result.footerBg.includes('17, 24, 20')) failures.push(`${name}: footer palette not applied ${result.footerBg}`);
               if(!result.footerLabel.includes('159, 194, 181')) failures.push(`${name}: footer label accent not green ${result.footerLabel}`);
-              if(result.email!=='mailto:sivakumarmtc@gmail.com') failures.push(`${name}: contact email changed ${result.email}`);
-              if(result.phone!=='tel:+919790010957') failures.push(`${name}: contact phone changed ${result.phone}`);
+              if(result.email!=='mailto:vsk.electromech@gmail.com') failures.push(`${name}: contact email changed ${result.email}`);
+              if(result.phone!=='tel:+919880336714') failures.push(`${name}: primary contact phone changed ${result.phone}`);
               if(!result.pageProgress.includes('40, 95, 80')) failures.push(`${name}: page progress is not VSK green ${result.pageProgress}`);
               if(!quote.panelBg.includes('244, 243, 238')) failures.push(`${name}: quote panel warm palette not applied ${quote.panelBg}`);
               if(!quote.progressBg.includes('40, 95, 80')) failures.push(`${name}: quote progress is not VSK green ${quote.progressBg}`);
