@@ -8,6 +8,8 @@ on:
       - .github/scripts/apply_v16_original_recovery.py
       - .github/scripts/v16_original_recovery_qa.cjs
       - v16-original-recovery.css
+      - v16-desktop-balance.css
+      - v16-desktop-100.css
   workflow_dispatch:
 permissions:
   contents: write
@@ -45,8 +47,10 @@ jobs:
         run: |
           git config user.name "Asmita G V"
           git config user.email "gujjarasmita@gmail.com"
-          git add index.html projects.html machines.html gallery.html v16-original-recovery.css
+          git add index.html projects.html machines.html gallery.html \
+            v16-original-recovery.css v16-desktop-balance.css v16-desktop-100.css \
+            .github/scripts/v16_original_recovery_qa.cjs
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Restore original V16 layout rhythm and palette"
+          git commit -m "Finalize V16 100 percent desktop calibration"
           git pull --rebase origin client-review-v16-blue-refinement
           git push origin HEAD:client-review-v16-blue-refinement
