@@ -56,15 +56,13 @@
 
   const page = document.body.dataset.page || 'home';
   const homeHref = (hash) => page === 'home' ? hash : `index.html${hash}`;
-  const currentExperience = ['gallery', 'archive', 'machines'].includes(page);
   const navItems = [
     ['Home', 'index.html', page === 'home'],
     ['Company', homeHref('#about'), false],
-    ['Services', homeHref('#expertise'), false],
-    ['Reconditioning', 'machines.html?type=retrofit', false],
+    ['Capabilities', homeHref('#expertise'), false],
     ['Retrofit & CNC', homeHref('#retrofit'), false],
     ['Projects', 'projects.html', page === 'projects'],
-    ['Experience', 'gallery.html', currentExperience]
+    ['Experience', 'machines.html', page === 'machines']
   ];
 
   const header = document.querySelector('[data-header]');
@@ -89,10 +87,81 @@
         <div class="mobile-menu-head"><span>Navigate</span><button data-menu-close type="button">Close ×</button></div>
         <nav aria-label="Mobile navigation">
           ${navItems.map(([label, href], index) => `<a href="${href}">${label} <span>${String(index + 1).padStart(2, '0')}</span></a>`).join('')}
-          <a href="machines.html">Engineering Archive <span>08</span></a>
+          <a href="gallery.html">Project Gallery <span>07</span></a>
         </nav>
         <button class="mobile-menu-cta" type="button" data-quote-open>Discuss a Machine ↗</button>
       </div>`;
+  }
+
+  // Every capability uses a visibly different, genuine VSK engineering reference.
+  // This prevents the capability index from feeling like one photograph repeated six times.
+  if (typeof capabilityData !== 'undefined') {
+    Object.assign(capabilityData.mechanical, {
+      image: 'media/legacy/spindle-interface.webp',
+      alt: 'Machine-tool spindle and workholding interface',
+      title: 'Machine architecture, workholding and mechanisms engineered around the component.',
+      copy: 'Machine structure, mechanisms, fixtures and workholding are developed from the operation, component and production target.'
+    });
+    Object.assign(capabilityData.controls, {
+      image: 'media/retrofit/jig-grinding.webp',
+      alt: 'Jig grinding machine CNC PLC and HMI retrofit',
+      title: 'Controls that make the complete machine behave as one production system.',
+      copy: 'CNC, PLC, HMI, servo and drive systems are integrated around machine sequence, safety, repeatability and operator use.'
+    });
+    Object.assign(capabilityData.fluid, {
+      image: 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp',
+      alt: 'VSK hydraulic pressing system',
+      title: 'Hydraulic and pneumatic systems designed for reliable machine action.',
+      copy: 'Clamping, pressing, testing and machine movement are engineered with the required force, sequence and serviceability in mind.'
+    });
+    Object.assign(capabilityData.electrical, {
+      image: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp',
+      alt: 'VSK machine control panel and electrical system',
+      title: 'Electrical systems built for dependable control, diagnostics and field service.',
+      copy: 'Panels, drives, field devices and machine wiring are integrated for clean commissioning and practical maintenance.'
+    });
+    Object.assign(capabilityData.automation, {
+      image: 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp',
+      alt: 'VSK four-servo automated slotting machine',
+      title: 'Automation built around part flow, repeatability and operator efficiency.',
+      copy: 'Servo motion, indexing, loading, handling and interlocks are engineered around the cycle rather than added after the machine is built.'
+    });
+    Object.assign(capabilityData.manufacturing, {
+      image: 'media/legacy/metal-facing-machine.webp',
+      alt: 'VSK precision metal facing machine',
+      title: 'Manufacturing knowledge that keeps machine design grounded in the process.',
+      copy: 'Turning, machining, grinding and finishing experience supports practical workholding, tooling and process decisions.'
+    });
+  }
+
+  // Replace internal/meta phrasing with language that helps a prospective customer
+  // understand what they can judge, find or achieve on each page.
+  const setText = (selector, text) => {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  };
+  const setHTML = (selector, html) => {
+    const el = document.querySelector(selector);
+    if (el) el.innerHTML = html;
+  };
+
+  if (page === 'home') {
+    setText('.engineering-depth .depth-head > p', 'Compare proven tolerance, alignment and cycle-time references with the demands of your own application — then explore 54 documented VSK machine and retrofit projects.');
+    setText('.archive-callout > p', 'Find VSK experience relevant to your process, machine type, customer application or control platform.');
+    setText('.process .section-intro > p', 'Follow the path from application study and machine architecture through controls, trials and commissioning — with one engineering team accountable for the result.');
+    setText('.about-copy > p', 'If you need a new machine, a difficult retrofit or a more reliable production process, VSK brings machine-building, controls and machine-tool experience together under one engineering team.');
+  }
+  if (page === 'projects') {
+    setText('.page-hero-copy > p', 'Review completed VSK machines and retrofit work by application, controls and machine configuration — and find the experience closest to your production requirement.');
+    setText('.project-index .section-intro > p', 'Compare real machine builds by application, control platform and configuration to find the strongest starting point for your requirement.');
+  }
+  if (page === 'machines') {
+    setText('.archive-hero p', 'Search 54 documented VSK machine-building and retrofit references by process, machine type, customer and control platform.');
+    setHTML('.archive-note h2', 'Find a proven starting point.<br><em>Then engineer from there.</em>');
+    setText('.archive-note p', 'Search by process, machine type, customer or control platform to reach the VSK references most relevant to your next requirement.');
+  }
+  if (page === 'gallery') {
+    setText('.gallery-policy p', 'Review the wider visual record of VSK machine builds, retrofits and process equipment to see the breadth of execution beyond the featured case studies.');
   }
 
   const mediaMap = {
