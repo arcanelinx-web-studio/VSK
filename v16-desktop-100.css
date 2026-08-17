@@ -8,16 +8,16 @@
 /* One desktop content rhythm instead of mixed 1500 / 1792 / section-specific widths. */
 @media (min-width:1440px){
   :root{--shell:min(1680px,calc(100vw - 96px))!important}
+  body.v8.v13.v14{--shell:min(1680px,calc(100vw - 96px))!important}
   body.v8.v13.v14 .shell{width:var(--shell)!important;max-width:none!important}
 
-  /* Header remains deliberately full-width rather than being pulled into the content shell. */
+  /* Header stays full-width and independent of the content shell. */
   body.v8.v13.v14 .site-header{
     padding-left:48px!important;
     padding-right:48px!important;
     gap:clamp(24px,2vw,34px)!important;
   }
 
-  /* Section headings use the wider desktop canvas without becoming oversized. */
   body.v8.v13.v14 .section-intro.split,
   body.v8.v13.v14 .depth-head,
   body.v8.v13.v14 .contact-grid,
@@ -28,99 +28,99 @@
 }
 
 /* --------------------------------------------------------------------------
-   HERO — true viewport centering below the fixed header
+   HERO — fill only the visible area below the 104px header, then balance the
+   complete copy + engineering board as one composition.
    -------------------------------------------------------------------------- */
 @media (min-width:1181px){
   body.v8.v13.v14 .hero.hero-blue{
-    height:100svh!important;
-    min-height:760px!important;
+    height:calc(100svh - 104px)!important;
+    min-height:720px!important;
     max-height:none!important;
   }
   body.v8.v13.v14 .hero-blue-layout{
     height:100%!important;
     box-sizing:border-box!important;
-    padding-top:104px!important;
+    padding-top:clamp(126px,17svh,184px)!important;
     padding-bottom:0!important;
-    align-items:center!important;
-    grid-template-columns:minmax(0,1.03fr) minmax(520px,.97fr)!important;
+    align-items:start!important;
+    grid-template-columns:minmax(0,1.03fr) minmax(540px,.97fr)!important;
     gap:clamp(44px,4vw,72px)!important;
   }
   body.v8.v13.v14 .hero-blue-copy,
   body.v8.v13.v14 .hero-engineering-board{
-    align-self:center!important;
+    align-self:start!important;
   }
   body.v8.v13.v14 .hero-blue-copy{
-    max-width:710px!important;
+    max-width:720px!important;
   }
   body.v8.v13.v14 .hero-blue-copy h1{
-    max-width:710px!important;
-    font-size:clamp(4.35rem,4.75vw,5.65rem)!important;
+    max-width:720px!important;
+    font-size:clamp(4.55rem,5vw,6rem)!important;
+    line-height:.90!important;
   }
   body.v8.v13.v14 .hero-blue-copy>p{
     width:min(100%,640px)!important;
     max-width:640px!important;
-    margin-top:26px!important;
+    margin-top:25px!important;
+    font-size:16px!important;
+    line-height:1.68!important;
   }
-  /* Center both CTAs under the paragraph, not under the wider headline column. */
+  /* CTAs and chips are centered under the paragraph width. */
   body.v8.v13.v14 .hero-blue-copy .hero-actions{
     width:min(100%,640px)!important;
     max-width:640px!important;
     justify-content:center!important;
     justify-self:start!important;
-    margin:28px 0 0!important;
+    margin:27px 0 0!important;
   }
   body.v8.v13.v14 .hero-blue-copy .hero-chips{
     width:min(100%,640px)!important;
     max-width:640px!important;
     justify-content:center!important;
-    margin-top:22px!important;
+    margin-top:21px!important;
   }
   body.v8.v13.v14 .hero-engineering-board{
     justify-self:end!important;
-    width:min(100%,630px)!important;
-    min-height:500px!important;
+    width:min(100%,690px)!important;
+    min-height:570px!important;
   }
 }
 
 @media (min-width:1680px){
-  body.v8.v13.v14 .hero-blue-layout.shell{
-    width:var(--shell)!important;
-  }
-  body.v8.v13.v14 .hero-engineering-board{
-    width:min(100%,650px)!important;
-  }
+  body.v8.v13.v14 .hero-blue-layout.shell{width:var(--shell)!important}
+  body.v8.v13.v14 .hero-engineering-board{width:min(100%,710px)!important;min-height:590px!important}
 }
 
 @media (min-width:1181px) and (max-width:1439px){
   body.v8.v13.v14 .hero-blue-layout{
-    padding-top:98px!important;
+    padding-top:clamp(104px,15svh,126px)!important;
     grid-template-columns:minmax(0,1fr) minmax(470px,.92fr)!important;
     gap:30px!important;
   }
-  body.v8.v13.v14 .hero-blue-copy h1{font-size:clamp(3.8rem,5.15vw,5rem)!important}
-  body.v8.v13.v14 .hero-engineering-board{width:min(100%,570px)!important;min-height:455px!important}
+  body.v8.v13.v14 .hero-blue-copy h1{font-size:clamp(3.9rem,5.2vw,5.05rem)!important}
+  body.v8.v13.v14 .hero-engineering-board{width:min(100%,585px)!important;min-height:470px!important}
 }
 
 /* --------------------------------------------------------------------------
-   HEADER CTA — cleaner original-V16 action, no gradient/shimmer treatment
+   HEADER CTA — clean original-V16 action, no gradient/shimmer treatment
    -------------------------------------------------------------------------- */
 body.v8.v13.v14 .header-cta{
-  min-width:202px!important;
-  height:52px!important;
-  padding:0 12px 0 20px!important;
-  gap:18px!important;
+  min-width:196px!important;
+  height:50px!important;
+  padding:0 11px 0 19px!important;
+  gap:17px!important;
   justify-content:space-between!important;
   background:#164A9C!important;
   border:1px solid #164A9C!important;
-  box-shadow:0 8px 20px rgba(22,74,156,.14)!important;
+  box-shadow:0 7px 18px rgba(22,74,156,.13)!important;
   transform:none!important;
   filter:none!important;
   overflow:visible!important;
 }
 body.v8.v13.v14 .header-cta::before{display:none!important}
 body.v8.v13.v14 .header-cta span{
-  width:28px!important;
-  height:28px!important;
+  width:27px!important;
+  height:27px!important;
   display:grid!important;
   place-items:center!important;
   border:1px solid rgba(255,255,255,.38)!important;
@@ -130,17 +130,15 @@ body.v8.v13.v14 .header-cta span{
 body.v8.v13.v14 .header-cta:hover{
   background:#0D1824!important;
   border-color:#0D1824!important;
-  box-shadow:0 10px 24px rgba(13,24,36,.16)!important;
+  box-shadow:0 9px 22px rgba(13,24,36,.15)!important;
   transform:none!important;
 }
 body.v8.v13.v14 .header-cta:hover span{background:#167BC4!important;transform:translate(2px,-2px)!important}
 
 /* --------------------------------------------------------------------------
-   FEATURED ENGINEERING — restore the strong image-led original-V16 proportion
+   FEATURED ENGINEERING — strong image-led original-V16 proportion
    -------------------------------------------------------------------------- */
-body.v8.v13.v14 .projects-showcase{
-  padding-bottom:clamp(76px,5vw,94px)!important;
-}
+body.v8.v13.v14 .projects-showcase{padding-bottom:clamp(76px,5vw,94px)!important}
 body.v8.v13.v14 .projects-showcase .section-intro{
   padding-top:clamp(76px,5vw,92px)!important;
   margin-bottom:40px!important;
@@ -148,34 +146,37 @@ body.v8.v13.v14 .projects-showcase .section-intro{
   gap:clamp(54px,5vw,84px)!important;
 }
 body.v8.v13.v14 .featured-case{
-  grid-template-columns:minmax(0,1.32fr) minmax(390px,.68fr)!important;
-  min-height:520px!important;
+  grid-template-columns:minmax(0,1.30fr) minmax(390px,.70fr)!important;
+  height:540px!important;
+  min-height:540px!important;
   width:var(--shell)!important;
   max-width:none!important;
 }
 body.v8.v13.v14 .featured-case-media{
-  min-height:520px!important;
+  height:540px!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
 }
 body.v8.v13.v14 .featured-case-copy{
-  padding:38px 38px 36px!important;
+  height:540px!important;
+  min-height:0!important;
+  padding:36px 38px 34px!important;
   background:#0D1824!important;
   border-left:2px solid #164A9C!important;
 }
 body.v8.v13.v14 .featured-case-copy h3{
-  font-size:clamp(2.9rem,3.25vw,4.15rem)!important;
+  font-size:clamp(2.85rem,3.15vw,4.05rem)!important;
   line-height:.91!important;
 }
 body.v8.v13.v14 .featured-case-copy>p{font-size:13px!important;line-height:1.68!important}
-body.v8.v13.v14 .featured-facts{margin:24px 0 22px!important}
+body.v8.v13.v14 .featured-facts{margin:23px 0 21px!important}
 
 /* --------------------------------------------------------------------------
    SELECTED PROJECTS — original editorial 2 + 3 composition
    -------------------------------------------------------------------------- */
-body.v8.v13.v14 .selected-projects-strip{
-  padding:0 0 clamp(76px,5vw,96px)!important;
-}
+body.v8.v13.v14 .selected-projects-strip{padding:0 0 clamp(76px,5vw,96px)!important}
 body.v8.v13.v14 .selected-projects-strip .project-collection-head{
-  min-height:66px!important;
+  min-height:64px!important;
   margin:0 auto 16px!important;
 }
 body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
@@ -183,7 +184,7 @@ body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
   width:var(--shell)!important;
   max-width:none!important;
   grid-template-columns:repeat(6,minmax(0,1fr))!important;
-  grid-auto-rows:clamp(225px,14vw,280px)!important;
+  grid-auto-rows:clamp(225px,14vw,275px)!important;
   gap:16px!important;
 }
 body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card,
@@ -194,20 +195,12 @@ body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:n
   grid-row:auto!important;
 }
 body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-0,
-body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-1{
-  grid-column:span 3!important;
-}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-1{grid-column:span 3!important}
 body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-2,
 body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-3,
-body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-4{
-  grid-column:span 2!important;
-}
-body.v8.v13.v14 .selected-projects-strip .project-card .project-copy{
-  inset:auto 18px 17px!important;
-}
-body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{
-  font-size:clamp(21px,1.6vw,28px)!important;
-}
+body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card.project-layout-4{grid-column:span 2!important}
+body.v8.v13.v14 .selected-projects-strip .project-card .project-copy{inset:auto 18px 17px!important}
+body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{font-size:clamp(21px,1.6vw,28px)!important}
 
 /* --------------------------------------------------------------------------
    WIDE DESKTOP PAGE CONTENT — Projects / Experience / Gallery / footer
@@ -234,7 +227,7 @@ body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{
     gap:42px!important;
   }
 
-  /* A five-image machine group should use the desktop width instead of leaving half a row empty. */
+  /* Five-media machine groups use the actual desktop width rather than a sparse 3-column row. */
   body.v8.v13.v14[data-page="gallery"] .gallery-project-media{
     display:grid!important;
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
@@ -259,16 +252,17 @@ body.v8.v13.v14 .selected-projects-strip .project-card .project-copy strong{
   body.v8.v13.v14 .contact{padding-top:clamp(68px,4.6vw,88px)!important;padding-bottom:clamp(68px,4.6vw,88px)!important}
 }
 
-/* Preserve the existing responsive structures below desktop. */
+/* Preserve the established tablet/mobile structures. */
 @media (max-width:1180px){
   body.v8.v13.v14 .header-cta{min-width:184px!important;height:48px!important}
+  body.v8.v13.v14 .featured-case,
+  body.v8.v13.v14 .featured-case-media,
+  body.v8.v13.v14 .featured-case-copy{height:auto!important;min-height:0!important}
   body.v8.v13.v14 .selected-projects-strip .project-grid-editorial{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     grid-auto-rows:260px!important;
   }
-  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){
-    grid-column:auto!important;
-  }
+  body.v8.v13.v14 .selected-projects-strip .project-grid-editorial .project-card:nth-child(n){grid-column:auto!important}
 }
 
 @media (max-width:760px){
