@@ -1,0 +1,56 @@
+name: V16 User Visual Verification
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-user-visual-capture.yml
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Install browser
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Capture marked areas
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-verify.log 2>&1 &
+          sleep 2
+          cat > verify.cjs <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const b=await chromium.launch({headless:true});
+            for(const [name,w,h] of [['1660',1660,900],['1920',1920,1080]]){
+              const p=await b.newPage({viewport:{width:w,height:h}});
+              await p.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+              await p.waitForTimeout(700);
+              await p.locator('.hero').screenshot({path:`verify-hero-${name}.png`});
+              await p.locator('.selected-projects-strip').screenshot({path:`verify-selected-${name}.png`});
+              await p.close();
+              const q=await b.newPage({viewport:{width:w,height:h}});
+              await q.goto('http://127.0.0.1:4173/projects.html',{waitUntil:'networkidle'});
+              await q.waitForTimeout(700);
+              await q.screenshot({path:`verify-projects-${name}.png`,fullPage:true});
+              const metrics=await q.evaluate(()=>({
+                viewport:innerWidth,
+                scrollWidth:document.documentElement.scrollWidth,
+                cards:[...document.querySelectorAll('.project-page-card')].map(e=>{const r=e.getBoundingClientRect();return{cls:e.className,w:Math.round(r.width),h:Math.round(r.height),top:Math.round(r.top)}})
+              }));
+              console.log(name,JSON.stringify(metrics));
+              await q.close();
+            }
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node verify.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v16-user-visual-verification
+          path: verify-*.png
+          retention-days: 7
