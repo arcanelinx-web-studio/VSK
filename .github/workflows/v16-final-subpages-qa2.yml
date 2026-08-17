@@ -1,0 +1,204 @@
+name: V16 Final Subpages QA 2
+
+on:
+  push:
+    branches: [client-review-v16-final-subpages-working]
+    paths:
+      - '.github/workflows/v16-final-subpages-qa2.yml'
+      - 'projects.html'
+      - 'machines.html'
+      - 'gallery.html'
+      - 'v16-subpages.css'
+      - 'v16-final.css'
+      - 'v16-step6.css'
+      - 'styles.css'
+      - 'app.js'
+      - 'app-v14.js'
+      - 'data.js'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-final-subpages-working
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /projects.html
+            /machines.html
+            /gallery.html
+            /styles.css
+            /v16.css
+            /v16-final.css
+            /v16-step6.css
+            /v16-subpages.css
+            /app.js
+            /app-v14.js
+            /data.js
+            /media/**
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start site
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-server.log 2>&1 &
+          sleep 2
+      - name: Validate final subpages
+        run: |
+          cat > qa2.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs=require('fs');
+          const wait=ms=>new Promise(r=>setTimeout(r,ms));
+          const green=s=>String(s||'').includes('40, 95, 80');
+          const pale=s=>String(s||'').includes('185, 213, 202');
+          const footerGreen=s=>String(s||'').includes('159, 194, 181');
+
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const failures=[],checks=[];
+            for(const [pageName,file] of [['projects','projects.html'],['machines','machines.html'],['gallery','gallery.html']]){
+              for(const [mode,width,height] of [['desktop',1440,1000],['mobile',390,844]]){
+                const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+                const pageErrors=[],bad=[];
+                page.on('pageerror',e=>pageErrors.push(String(e)));
+                page.on('response',r=>{if(r.status()>=400&&r.url().startsWith('http://127.0.0.1:4173/'))bad.push(`${r.status()} ${r.url()}`)});
+                await page.goto(`http://127.0.0.1:4173/${file}`,{waitUntil:'networkidle'});
+                await wait(900);
+
+                const common=await page.evaluate(()=>{
+                  const sheets=[...document.styleSheets].map(s=>s.href||'');
+                  const h=document.querySelector('.site-header'),f=document.querySelector('.site-footer');
+                  return {
+                    width:document.documentElement.scrollWidth,
+                    header:getComputedStyle(h).backgroundColor,
+                    footer:getComputedStyle(f).backgroundColor,
+                    footerLabel:getComputedStyle(f.querySelector('.footer-col>span')).color,
+                    final:sheets.some(x=>x.includes('v16-final.css')),
+                    step6:sheets.some(x=>x.includes('v16-step6.css')),
+                    sub:sheets.some(x=>x.includes('v16-subpages.css')),
+                    appV14:[...document.scripts].some(s=>(s.src||'').includes('app-v14.js'))
+                  };
+                });
+                if(common.width>width+2)failures.push(`${pageName}/${mode}: initial overflow ${common.width}>${width}`);
+                if(!common.final||!common.step6||!common.sub)failures.push(`${pageName}/${mode}: stylesheet layer missing`);
+                if(!common.appV14)failures.push(`${pageName}/${mode}: app-v14 runtime did not load`);
+                if(mode==='desktop'&&!common.header.includes('244, 243, 238'))failures.push(`${pageName}: header not ivory ${common.header}`);
+                if(!common.footer.includes('17, 24, 20'))failures.push(`${pageName}/${mode}: footer not Final charcoal ${common.footer}`);
+                if(!footerGreen(common.footerLabel))failures.push(`${pageName}/${mode}: footer label not pale green ${common.footerLabel}`);
+
+                if(mode==='desktop'){
+                  await page.locator('.header-cta').click();
+                  await wait(120);
+                  const quote=await page.evaluate(()=>{
+                    const d=document.querySelector('[data-quote-panel]');
+                    const active=d?.querySelector('.quote-progress i.is-active');
+                    return {hidden:d?.hidden,title:d?.querySelector('.quote-head h2')?.textContent?.trim()||'',bg:d?getComputedStyle(d.querySelector('.quote-panel')).backgroundColor:'',progress:active?getComputedStyle(active).backgroundColor:''};
+                  });
+                  if(quote.hidden!==false||!quote.title.includes('Tell VSK what needs to be solved'))failures.push(`${pageName}: requirement dialog did not open`);
+                  if(!quote.bg.includes('244, 243, 238'))failures.push(`${pageName}: quote panel not ivory ${quote.bg}`);
+                  if(!green(quote.progress))failures.push(`${pageName}: quote progress not green ${quote.progress}`);
+                  await page.evaluate(()=>document.querySelector('.quote-close[data-quote-close]')?.click());
+                  await wait(70);
+                }else{
+                  await page.locator('[data-menu-toggle]').click();await wait(100);
+                  const menu=await page.evaluate(()=>{const m=document.querySelector('[data-mobile-menu]'),p=document.querySelector('.mobile-menu-panel'),n=document.querySelector('.mobile-menu nav span');return{hidden:m.hidden,bg:getComputedStyle(p).backgroundColor,num:getComputedStyle(n).color}});
+                  if(menu.hidden!==false)failures.push(`${pageName}/mobile: menu did not open`);
+                  if(!menu.bg.includes('23, 32, 28'))failures.push(`${pageName}/mobile: menu bg ${menu.bg}`);
+                  if(!footerGreen(menu.num))failures.push(`${pageName}/mobile: menu numbering ${menu.num}`);
+                  await page.evaluate(()=>document.querySelector('.mobile-menu-head [data-menu-close]')?.click());
+                  await wait(70);
+                }
+
+                let specific={};
+                if(pageName==='projects'){
+                  await page.locator('.project-index').scrollIntoViewIfNeeded();await wait(450);
+                  specific=await page.evaluate(()=>{const cards=[...document.querySelectorAll('.project-page-card')],em=document.querySelector('.page-hero h1 em'),label=cards[0]?.querySelector('.project-page-copy>span');return{cards:cards.length,accent:em?getComputedStyle(em).color:'',label:label?getComputedStyle(label).color:'',widths:cards.slice(0,3).map(c=>Math.round(c.getBoundingClientRect().width))}});
+                  if(specific.cards<5)failures.push(`projects/${mode}: only ${specific.cards} selected cases rendered`);
+                  if(!pale(specific.accent))failures.push(`projects/${mode}: hero accent ${specific.accent}`);
+                  if(specific.label&&!green(specific.label))failures.push(`projects/${mode}: case label ${specific.label}`);
+                  if(mode==='mobile'&&specific.widths.some(w=>w>width-20))failures.push(`projects/mobile: card widths ${specific.widths}`);
+                  if(specific.cards){
+                    await page.locator('.project-page-card').first().click();await wait(100);
+                    const d=await page.evaluate(()=>{const x=document.querySelector('[data-dossier]');return{hidden:x.hidden,title:x.querySelector('[data-dossier-title]')?.textContent?.trim()||''}});
+                    if(d.hidden!==false||!d.title)failures.push(`projects/${mode}: dossier did not open`);
+                    await page.evaluate(()=>document.querySelector('[data-dossier] [data-dossier-close]')?.click());
+                  }
+                  await page.locator('.project-index').screenshot({path:`qa-projects-${mode}.png`});
+                }
+
+                if(pageName==='machines'){
+                  await page.locator('.archive-browser').scrollIntoViewIfNeeded();await wait(600);
+                  specific=await page.evaluate(()=>{const n=document.querySelector('.archive-hero-number span'),a=document.querySelector('.archive-mode .is-active');return{number:n?.textContent.trim()||'',numberColor:n?getComputedStyle(n).color:'',rows:document.querySelectorAll('.archive-row').length,result:document.querySelector('[data-result-count]')?.textContent.trim()||'',active:a?getComputedStyle(a).backgroundColor:''}});
+                  if(specific.number!=='54')failures.push(`machines/${mode}: hero count ${specific.number}`);
+                  if(!pale(specific.numberColor))failures.push(`machines/${mode}: hero number color ${specific.numberColor}`);
+                  if(specific.rows<50)failures.push(`machines/${mode}: only ${specific.rows} archive rows`);
+                  if(!specific.result.startsWith('54'))failures.push(`machines/${mode}: result count ${specific.result}`);
+                  if(!green(specific.active))failures.push(`machines/${mode}: active mode ${specific.active}`);
+                  await page.locator('[data-archive-search]').fill('Kellenberg');await wait(180);
+                  const result=(await page.locator('[data-result-count]').textContent()||'').trim();
+                  if(/^0\b/.test(result))failures.push(`machines/${mode}: Kellenberg search ${result}`);
+                  await page.locator('[data-archive-search]').fill('');await wait(140);
+                  await page.locator('[data-archive-mode="visual"]').click();await wait(180);
+                  const visual=await page.evaluate(()=>({hidden:document.querySelector('[data-archive-visual-view]').hidden,cards:document.querySelectorAll('.archive-visual-card').length}));
+                  if(visual.hidden!==false||visual.cards<1)failures.push(`machines/${mode}: visual archive cards ${visual.cards}`);
+                  await page.locator('[data-archive-mode="index"]').click();await wait(140);
+                  if(mode==='desktop'&&await page.locator('.archive-row').count()){
+                    await page.locator('.archive-row').first().click();await wait(100);
+                    if(await page.locator('[data-archive-preview-open]').isVisible()){
+                      await page.locator('[data-archive-preview-open]').click();await wait(100);
+                      const d=await page.evaluate(()=>{const x=document.querySelector('[data-dossier]');return{hidden:x.hidden,title:x.querySelector('[data-dossier-title]')?.textContent?.trim()||''}});
+                      if(d.hidden!==false||!d.title)failures.push('machines/desktop: dossier did not open');
+                      await page.evaluate(()=>document.querySelector('[data-dossier] [data-dossier-close]')?.click());
+                    }
+                  }
+                  await page.locator('.archive-browser').screenshot({path:`qa-machines-${mode}.png`});
+                }
+
+                if(pageName==='gallery'){
+                  await page.locator('.gallery-browser').scrollIntoViewIfNeeded();await wait(650);
+                  specific=await page.evaluate(()=>{const em=document.querySelector('.gallery-hero h1 em'),a=document.querySelector('.gallery-filter.is-active');return{accent:em?getComputedStyle(em).color:'',groups:document.querySelectorAll('.gallery-project-group').length,tiles:document.querySelectorAll('.gallery-tile').length,active:a?getComputedStyle(a).backgroundColor:'',summary:[...document.querySelectorAll('.gallery-summary span')].map(x=>x.textContent.trim())}});
+                  if(!pale(specific.accent))failures.push(`gallery/${mode}: hero accent ${specific.accent}`);
+                  if(specific.groups<1||specific.tiles<1)failures.push(`gallery/${mode}: groups=${specific.groups} tiles=${specific.tiles}`);
+                  if(!green(specific.active))failures.push(`gallery/${mode}: active filter ${specific.active}`);
+                  if(specific.summary.length!==3)failures.push(`gallery/${mode}: summary ${JSON.stringify(specific.summary)}`);
+                  if(specific.tiles){
+                    await page.locator('.gallery-tile').first().click();await wait(100);
+                    const l=await page.evaluate(()=>{const x=document.querySelector('[data-lightbox]');return{hidden:x.hidden,title:x.querySelector('[data-lightbox-title]')?.textContent?.trim()||''}});
+                    if(l.hidden!==false||!l.title)failures.push(`gallery/${mode}: lightbox did not open`);
+                    await page.evaluate(()=>document.querySelector('[data-lightbox] [data-lightbox-close]')?.click());
+                  }
+                  await page.locator('.gallery-browser').screenshot({path:`qa-gallery-${mode}.png`});
+                }
+
+                await page.evaluate(async()=>{const r=document.documentElement,step=Math.max(500,Math.floor(innerHeight*.75));for(let y=0;y<r.scrollHeight;y+=step){scrollTo(0,y);await new Promise(x=>setTimeout(x,50));}scrollTo(0,r.scrollHeight)});await wait(550);
+                const final=await page.evaluate(()=>{const imgs=[...document.images].filter(i=>i.offsetParent!==null);return{width:document.documentElement.scrollWidth,broken:imgs.filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.src),pending:imgs.filter(i=>!i.complete).map(i=>i.src)}});
+                const unique=[...new Set(bad)];
+                if(final.width>width+2)failures.push(`${pageName}/${mode}: final overflow ${final.width}>${width}`);
+                if(final.broken.length)failures.push(`${pageName}/${mode}: broken ${final.broken.join(',')}`);
+                if(final.pending.length)failures.push(`${pageName}/${mode}: pending ${final.pending.join(',')}`);
+                if(pageErrors.length)failures.push(`${pageName}/${mode}: JS ${pageErrors.join(' | ')}`);
+                if(unique.length)failures.push(`${pageName}/${mode}: requests ${unique.join(' | ')}`);
+                checks.push({page:pageName,mode,common,specific,final,pageErrors,badResponses:unique});
+                await page.close();
+              }
+            }
+            fs.writeFileSync('qa2-report.json',JSON.stringify({checks,failures},null,2));
+            console.log(fs.readFileSync('qa2-report.json','utf8'));
+            await browser.close();
+            if(failures.length)process.exit(1);
+          })().catch(e=>{try{fs.writeFileSync('qa2-crash.txt',String(e.stack||e))}catch{};console.error(e);process.exit(1)});
+          JS
+          node qa2.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-final-subpages-preview-2
+          path: |
+            qa-*.png
+            qa2-report.json
+            qa2-crash.txt
+          retention-days: 14
