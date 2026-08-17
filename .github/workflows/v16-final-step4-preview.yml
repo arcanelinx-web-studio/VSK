@@ -1,3 +1,4 @@
+# Rerun after the Step 4 stylesheet link is present on the branch.
 name: V16 Final Step 4 Visual QA
 
 on:
