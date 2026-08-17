@@ -2,7 +2,7 @@ from pathlib import Path
 
 # V16 final calibration runner: keep HTML linkage deterministic while the browser QA
 # validates 1920 / 1440 / 1366 desktop proportions plus tablet and mobile behavior.
-# Final visual polish recheck: single-line desktop header CTA and balanced laptop hero.
+# Final composition recheck: the 1920 engineering board now anchors equal top/bottom space.
 PAGES = [Path('index.html'), Path('projects.html'), Path('machines.html'), Path('gallery.html')]
 LINK = '<link href="v16-original-recovery.css" rel="stylesheet"/>'
 BALANCE_LINK = '<link href="v16-desktop-balance.css" rel="stylesheet"/>'
