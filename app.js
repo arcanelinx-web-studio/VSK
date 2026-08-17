@@ -9,6 +9,12 @@
     css.href = 'v16.css?v=16.2';
     document.head.appendChild(css);
   }
+  if (!document.querySelector('link[href^="v16-user-polish.css"]')) {
+    const polish = document.createElement('link');
+    polish.rel = 'stylesheet';
+    polish.href = 'v16-user-polish.css?v=16.1';
+    document.head.appendChild(polish);
+  }
 
   const isRenderableMedia = (item) => {
     if (!item || item.sourceOnly || item.displayable === false) return false;
@@ -33,8 +39,6 @@
     };
   };
 
-  // V14's gallery/archive runtime fetches archive-manifest.json itself. Intercept that
-  // one response so source-only HEIC/unsupported files never become broken browser tiles.
   const nativeFetch = window.fetch.bind(window);
   window.fetch = (input, init) => {
     const url = typeof input === 'string' ? input : (input && input.url) || '';
@@ -93,8 +97,6 @@
       </div>`;
   }
 
-  // Every capability uses a visibly different, genuine VSK engineering reference.
-  // This prevents the capability index from feeling like one photograph repeated six times.
   if (typeof capabilityData !== 'undefined') {
     Object.assign(capabilityData.mechanical, {
       image: 'media/legacy/spindle-interface.webp',
@@ -109,7 +111,7 @@
       copy: 'CNC, PLC, HMI, servo and drive systems are integrated around machine sequence, safety, repeatability and operator use.'
     });
     Object.assign(capabilityData.fluid, {
-      image: 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp',
+      image: 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp',
       alt: 'VSK hydraulic pressing system',
       title: 'Hydraulic and pneumatic systems designed for reliable machine action.',
       copy: 'Clamping, pressing, testing and machine movement are engineered with the required force, sequence and serviceability in mind.'
@@ -134,8 +136,6 @@
     });
   }
 
-  // Replace internal/meta phrasing with language that helps a prospective customer
-  // understand what they can judge, find or achieve on each page.
   const setText = (selector, text) => {
     const el = document.querySelector(selector);
     if (el) el.textContent = text;
