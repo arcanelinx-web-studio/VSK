@@ -1,0 +1,38 @@
+name: Apply V16 Light Restore
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+    paths:
+      - .github/workflows/v16-light-restore-apply.yml
+      - .github/scripts/v16_light_restore.py
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 0
+      - name: Apply only requested V16 changes
+        run: python3 .github/scripts/v16_light_restore.py
+      - name: Verify focused changes
+        shell: bash
+        run: |
+          grep -q '<h1><span>Engineered for</span><em>Precision</em></h1>' index.html
+          grep -q 'v16-light-restore.css' index.html
+          grep -q 'hero-blue-grid,.hero-board-grid{display:none' v16-light-restore.css
+          grep -q 'Space Grotesk' v16-blue-refinement.css
+      - name: Commit and safely push
+        shell: bash
+        run: |
+          git config user.name "Asmita G V"
+          git config user.email "gujjarasmita@gmail.com"
+          git add index.html projects.html machines.html gallery.html v16-light-restore.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore light V16 palette and precision hero"
+          git pull --rebase origin client-review-v16-blue-refinement
+          git push origin HEAD:client-review-v16-blue-refinement
