@@ -12,8 +12,8 @@ for page in PAGES:
         text = text.replace(anchor, anchor + '\n' + LINK, 1)
     page.write_text(text, encoding='utf-8')
 
-# Keep the exact requested hero structure, but use a real VSK project close-up
-# in the small lower-left card rather than a second CAD-style detail.
+# Keep the exact requested hero structure, but use a VSK project close-up
+# in the small lower-left card rather than the generic older detail reference.
 index = Path('index.html')
 text = index.read_text(encoding='utf-8')
 old = 'src="media/cases/slotting-detail.webp"'
@@ -26,6 +26,16 @@ if '<h1><span>Engineered for</span><em>Precision</em></h1>' not in text:
     raise SystemExit('index.html: Engineered for Precision headline missing')
 
 index.write_text(text, encoding='utf-8')
+
+# The historical hero CSS still contains full-viewport height and justify-self:end.
+# Reassert the original-V16 desktop rhythm after all legacy layers without touching
+# the layout structure: a controlled hero height and a centered CTA pair.
+css = Path('v16-original-recovery.css')
+css_text = css.read_text(encoding='utf-8')
+hero_fix_marker = '/* V16 RECOVERY QA — DESKTOP HERO FINAL OVERRIDE */'
+if hero_fix_marker not in css_text:
+    css_text += '''\n\n/* V16 RECOVERY QA — DESKTOP HERO FINAL OVERRIDE */\n@media (min-width:1181px){\n  body.v8.v13.v14 .hero.hero-blue{\n    height:clamp(700px,76svh,820px)!important;\n    min-height:700px!important;\n  }\n  body.v8.v13.v14 .hero-blue-copy .hero-actions{\n    justify-self:start!important;\n  }\n}\n'''
+css.write_text(css_text, encoding='utf-8')
 
 # Guardrails: do not regress the review indexing lock or remove core project/archive hooks.
 for page in PAGES:
