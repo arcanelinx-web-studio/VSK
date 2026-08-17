@@ -22,6 +22,42 @@ jobs:
         run: python3 .github/scripts/v16_header_refine.py
       - name: Keep mobile sticky CTA clear of hero
         run: python3 .github/scripts/v16_mobile_sticky_polish.py
+      - name: Verify header typography and mobile reveal
+        shell: bash
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+          python3 -m http.server 4173 >/tmp/vsk-header-check.log 2>&1 &
+          sleep 2
+          cat > /tmp/header-check.cjs <<'JS'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const desktop=await browser.newPage({viewport:{width:1440,height:1000}});
+            await desktop.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            const d=await desktop.evaluate(()=>{
+              const h=document.querySelector('.site-header'),logo=document.querySelector('.brand img'),brand=document.querySelector('.brand-copy strong'),desc=document.querySelector('.brand-copy small'),nav=document.querySelector('.desktop-nav a'),cta=document.querySelector('.header-cta');
+              return {h:Math.round(h.getBoundingClientRect().height),logo:Math.round(logo.getBoundingClientRect().width),brand:getComputedStyle(brand).fontFamily,desc:getComputedStyle(desc).fontFamily,nav:getComputedStyle(nav).fontFamily,cta:getComputedStyle(cta).fontFamily};
+            });
+            if(d.h!==104||d.logo!==70||!d.brand.includes('Space Grotesk')||!d.desc.includes('IBM Plex Mono')||!d.nav.includes('Inter')||!d.cta.includes('Inter'))throw new Error('Desktop header mismatch '+JSON.stringify(d));
+            await desktop.close();
+
+            const mobile=await browser.newPage({viewport:{width:390,height:844}});
+            await mobile.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            await mobile.waitForTimeout(300);
+            const before=await mobile.evaluate(()=>{const h=document.querySelector('.site-header'),logo=document.querySelector('.brand img'),brand=document.querySelector('.brand-copy strong'),s=document.querySelector('.mobile-sticky-cta');return{h:Math.round(h.getBoundingClientRect().height),logo:Math.round(logo.getBoundingClientRect().width),brand:getComputedStyle(brand).fontFamily,ready:s.classList.contains('is-ready'),opacity:getComputedStyle(s).opacity,pointer:getComputedStyle(s).pointerEvents}});
+            if(before.h!==82||before.logo!==52||!before.brand.includes('Space Grotesk')||before.ready||before.opacity!=='0'||before.pointer!=='none')throw new Error('Mobile initial state mismatch '+JSON.stringify(before));
+            const heroBottom=await mobile.evaluate(()=>{const hero=document.querySelector('#hero');return hero.offsetTop+hero.offsetHeight});
+            await mobile.evaluate(y=>window.scrollTo(0,y),heroBottom+180);
+            await mobile.waitForTimeout(350);
+            const after=await mobile.evaluate(()=>{const s=document.querySelector('.mobile-sticky-cta');return{scrollY,ready:s.classList.contains('is-ready'),opacity:getComputedStyle(s).opacity,pointer:getComputedStyle(s).pointerEvents}});
+            if(!after.ready||after.opacity!=='1'||after.pointer==='none')throw new Error('Mobile sticky did not reveal '+JSON.stringify(after));
+            console.log(JSON.stringify({desktop:d,mobileBefore:before,mobileAfter:after},null,2));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node /tmp/header-check.cjs
       - name: Commit and safely push
         shell: bash
         run: |
