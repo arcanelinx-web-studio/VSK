@@ -5,6 +5,7 @@ on:
       - client-review-v16-blue-refinement
     paths:
       - .github/workflows/v16-blue-refinement-apply.yml
+      - .github/scripts/v16_blue_apply.py
   workflow_dispatch:
 permissions:
   contents: write
