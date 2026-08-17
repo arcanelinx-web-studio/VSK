@@ -1,49 +1,107 @@
-name: Apply V16 Real Media Fallback
+name: V16 Final Polish Verification
 on:
   push:
     branches: [client-review-v16-blue-refinement]
     paths: ['.github/workflows/v16-polish-verification.yml']
 permissions:
-  contents: write
+  contents: read
 jobs:
-  apply:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: client-review-v16-blue-refinement
           fetch-depth: 1
-      - name: Patch media normalization
+      - name: Install browser
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('app.js')
-          s = p.read_text()
-          old = """    const groups = input.groups
-      .map(group => ({ ...group, items: (group.items || []).filter(isRenderableMedia) }))
-      .filter(group => group.items.length);"""
-          new = """    const groups = input.groups
-      .map(group => {
-        const items = (group.items || []).filter(isRenderableMedia);
-        const groupImage = items.find(item => item.type === 'image');
-        const groupPoster = groupImage?.src || groupImage?.web || groupImage?.thumb || '';
-        return {
-          ...group,
-          items: items.map(item => item.type === 'image'
-            ? { ...item, thumb: item.src || item.web || item.thumb }
-            : { ...item, thumb: groupPoster || item.thumb || item.poster, poster: groupPoster || item.poster || item.thumb })
-        };
-      })
-      .filter(group => group.items.length);"""
-          if old not in s:
-              raise SystemExit('cleanManifest target not found')
-          p.write_text(s.replace(old, new, 1))
-          PY
-          git diff --check
-      - name: Commit and push
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Verify responsive polish
         run: |
-          git config user.name 'VSK Media Fix'
-          git config user.email 'actions@users.noreply.github.com'
-          git add app.js
-          git commit -m 'Use real project media when thumbnail derivatives are unavailable'
-          git push origin HEAD:client-review-v16-blue-refinement
+          python3 -m http.server 4173 >/tmp/vsk-polish.log 2>&1 &
+          sleep 2
+          cat > polish-verify.cjs <<'JS'
+          const {chromium}=require('playwright');
+          const sizes=[
+            ['desktop-xl',1920,1080],['desktop',1660,900],['laptop',1440,900],['laptop-sm',1366,768],
+            ['tablet-landscape',1024,768],['tablet',768,1024],['mobile',390,844]
+          ];
+          const pages=[
+            ['index.html','Bring VSK the part'],
+            ['projects.html','If your requirement is unusual'],
+            ['machines.html','Search 54 documented'],
+            ['gallery.html','Inspect VSK workmanship']
+          ];
+          async function forceLazyMedia(page){
+            await page.evaluate(async()=>{
+              const step=Math.max(320,Math.floor(innerHeight*.75));
+              for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,45));}
+              scrollTo(0,document.documentElement.scrollHeight);await new Promise(r=>setTimeout(r,250));
+              scrollTo(0,0);await new Promise(r=>setTimeout(r,120));
+            });
+          }
+          (async()=>{
+            const b=await chromium.launch({headless:true});
+            const failures=[];
+            for(const [size,w,h] of sizes){
+              const p=await b.newPage({viewport:{width:w,height:h}});
+              p.on('pageerror',e=>failures.push(`${size}: JS error ${e.message}`));
+              for(const [file,needle] of pages){
+                await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});
+                await p.waitForTimeout(550);
+                if(file==='index.html'){
+                  if(w>=1181){
+                    const home=await p.evaluate(()=>{
+                      const btn=document.querySelector('.header-cta'), arrow=btn.querySelector('span').getBoundingClientRect(), br=btn.getBoundingClientRect();
+                      const stack=document.querySelector('.metric-stack').getBoundingClientRect(), archive=document.querySelector('.archive-callout').getBoundingClientRect();
+                      const hero=document.querySelector('.hero-blue-layout').getBoundingClientRect();
+                      const actions=document.querySelector('.hero-actions').getBoundingClientRect();
+                      const para=document.querySelector('.hero-blue-copy>p').getBoundingClientRect();
+                      return {arrowRight:br.right-arrow.right,stackH:stack.height,archiveH:archive.height,heroLeft:hero.left,heroRight:innerWidth-hero.right,actionsCenter:actions.left+actions.width/2,paraCenter:para.left+para.width/2};
+                    });
+                    if(home.arrowRight<12||home.arrowRight>30) failures.push(`${size}/home: header arrow spacing ${home.arrowRight}`);
+                    if(Math.abs(home.stackH-home.archiveH)>4) failures.push(`${size}/home: Engineering Depth heights ${home.stackH}/${home.archiveH}`);
+                    if(Math.abs(home.actionsCenter-home.paraCenter)>3) failures.push(`${size}/home: hero CTAs not centered under paragraph`);
+                    if(Math.abs(home.heroLeft-home.heroRight)>3) failures.push(`${size}/home: hero shell not centered`);
+                  }
+                  await p.locator('[data-capability="fluid"]').click();
+                  await p.waitForTimeout(220);
+                  const fluid=await p.locator('[data-capability-image]').getAttribute('src');
+                  if(!fluid?.includes('20230216-094120.webp')) failures.push(`${size}/home: alternate hydraulics image not active (${fluid})`);
+                }
+                await forceLazyMedia(p);
+                const basic=await p.evaluate(()=>({
+                  vw:innerWidth,
+                  docW:document.documentElement.scrollWidth,
+                  progress:getComputedStyle(document.querySelector('.page-progress')).display,
+                  text:document.body.innerText,
+                  imgs:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth}))
+                }));
+                if(basic.docW>basic.vw+1) failures.push(`${size}/${file}: horizontal overflow ${basic.docW}>${basic.vw}`);
+                if(basic.progress!=='none') failures.push(`${size}/${file}: obsolete progress strip visible`);
+                if(!basic.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
+                const broken=basic.imgs.filter(i=>!i.complete||i.nw===0);
+                if(broken.length) failures.push(`${size}/${file}: ${broken.length} broken rendered images (${broken.slice(0,3).map(x=>x.src).join(', ')})`);
+              }
+              await p.close();
+            }
+            const shot=await b.newPage({viewport:{width:1660,height:900}});
+            await shot.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'}); await shot.waitForTimeout(700);
+            await shot.locator('.site-header').screenshot({path:'polish-header.png'});
+            await shot.locator('.engineering-depth').screenshot({path:'polish-depth.png'});
+            await shot.locator('[data-capability="fluid"]').click(); await shot.waitForTimeout(220);
+            await shot.locator('.capability-layout').screenshot({path:'polish-hydraulics.png'});
+            await b.close();
+            if(failures.length){console.error(failures.join('\n'));process.exit(1)}
+            console.log(`PASS: ${sizes.length*pages.length} responsive page/viewport combinations`);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node polish-verify.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-polish-verification
+          path: polish-*.png
+          retention-days: 7
