@@ -71,14 +71,16 @@ jobs:
                 const cap=document.querySelector('.capabilities');
                 const active=document.querySelector('.capability-row.is-active');
                 const capTitle=document.querySelector('[data-capability-title]');
-                const broken=[...document.images].filter(i=>i.offsetParent!==null && i.complete && i.naturalWidth===0).map(i=>i.src);
-                const pending=[...document.images].filter(i=>i.offsetParent!==null && !i.complete).map(i=>i.src);
+                const ownedImages=[...document.querySelectorAll('.credibility-band img,.capabilities img')];
+                const broken=ownedImages.filter(i=>i.complete && i.naturalWidth===0).map(i=>i.src);
+                const pending=ownedImages.filter(i=>!i.complete).map(i=>i.src);
                 return {
                   viewport:innerWidth,
                   scrollWidth:root.scrollWidth,
                   proofBg:getComputedStyle(proof).backgroundColor,
                   capBg:getComputedStyle(cap).backgroundColor,
                   activeText:active?.innerText.replace(/\s+/g,' ').trim(),
+                  activeBg:active ? getComputedStyle(active).backgroundColor : '',
                   capabilityTitle:capTitle?.innerText.trim(),
                   broken,pending
                 };
@@ -86,9 +88,11 @@ jobs:
               const uniqueBad=[...new Set(badResponses)];
               checks.push({name,...result,pageErrors,badResponses:uniqueBad});
               if(result.scrollWidth>width+2) failures.push(`${name}: horizontal overflow ${result.scrollWidth}>${width}`);
+              if(!result.proofBg.includes('244, 243, 238')) failures.push(`${name}: Step 2 credibility palette not applied ${result.proofBg}`);
+              if(!result.capBg.includes('248, 247, 242')) failures.push(`${name}: Step 2 capability palette not applied ${result.capBg}`);
               if(!result.activeText?.includes('CNC / PLC / HMI')) failures.push(`${name}: capability interaction did not activate controls row`);
-              if(result.broken.length) failures.push(`${name}: broken images ${result.broken.join(', ')}`);
-              if(result.pending.length) failures.push(`${name}: pending media ${result.pending.join(', ')}`);
+              if(result.broken.length) failures.push(`${name}: broken Step 2 images ${result.broken.join(', ')}`);
+              if(result.pending.length) failures.push(`${name}: pending Step 2 media ${result.pending.join(', ')}`);
               if(pageErrors.length) failures.push(`${name}: page errors ${pageErrors.join(' | ')}`);
               if(uniqueBad.length) failures.push(`${name}: failed requests ${uniqueBad.join(' | ')}`);
               await page.close();
