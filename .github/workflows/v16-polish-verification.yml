@@ -34,27 +34,23 @@ jobs:
             ['machines.html','Search 54 documented'],
             ['gallery.html','Inspect VSK workmanship']
           ];
+          async function forceLazyMedia(page){
+            await page.evaluate(async()=>{
+              const step=Math.max(320,Math.floor(innerHeight*.75));
+              for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,45));}
+              scrollTo(0,document.documentElement.scrollHeight);await new Promise(r=>setTimeout(r,250));
+              scrollTo(0,0);await new Promise(r=>setTimeout(r,120));
+            });
+          }
           (async()=>{
             const b=await chromium.launch({headless:true});
             const failures=[];
             for(const [size,w,h] of sizes){
               const p=await b.newPage({viewport:{width:w,height:h}});
+              p.on('pageerror',e=>failures.push(`${size}: JS error ${e.message}`));
               for(const [file,needle] of pages){
                 await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});
-                await p.waitForTimeout(650);
-                const basic=await p.evaluate(()=>({
-                  vw:innerWidth,
-                  docW:document.documentElement.scrollWidth,
-                  progress:getComputedStyle(document.querySelector('.page-progress')).display,
-                  text:document.body.innerText,
-                  imgs:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth,rect:i.getBoundingClientRect().toJSON()}))
-                }));
-                if(basic.docW>basic.vw+1) failures.push(`${size}/${file}: horizontal overflow ${basic.docW}>${basic.vw}`);
-                if(basic.progress!=='none') failures.push(`${size}/${file}: obsolete progress strip visible`);
-                if(!basic.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
-                const broken=basic.imgs.filter(i=>!i.complete||i.nw===0);
-                if(broken.length) failures.push(`${size}/${file}: ${broken.length} broken visible images`);
-
+                await p.waitForTimeout(550);
                 if(file==='index.html'){
                   if(w>=1181){
                     const home=await p.evaluate(()=>{
@@ -75,6 +71,19 @@ jobs:
                   const fluid=await p.locator('[data-capability-image]').getAttribute('src');
                   if(!fluid?.includes('20230216-094120.webp')) failures.push(`${size}/home: alternate hydraulics image not active (${fluid})`);
                 }
+                await forceLazyMedia(p);
+                const basic=await p.evaluate(()=>({
+                  vw:innerWidth,
+                  docW:document.documentElement.scrollWidth,
+                  progress:getComputedStyle(document.querySelector('.page-progress')).display,
+                  text:document.body.innerText,
+                  imgs:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth,loading:i.loading}))
+                }));
+                if(basic.docW>basic.vw+1) failures.push(`${size}/${file}: horizontal overflow ${basic.docW}>${basic.vw}`);
+                if(basic.progress!=='none') failures.push(`${size}/${file}: obsolete progress strip visible`);
+                if(!basic.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
+                const broken=basic.imgs.filter(i=>!i.complete||i.nw===0);
+                if(broken.length) failures.push(`${size}/${file}: ${broken.length} genuinely broken rendered images (${broken.slice(0,3).map(x=>x.src).join(', ')})`);
               }
               await p.close();
             }
