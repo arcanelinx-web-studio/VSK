@@ -23,10 +23,10 @@ jobs:
           from pathlib import Path
           files=['projects.html','machines.html','gallery.html']
           target='<link href="styles.css" rel="stylesheet"/>'
-          addition='''<link href="styles.css" rel="stylesheet"/>
-<link href="v16-final.css" rel="stylesheet"/>
-<link href="v16-step6.css" rel="stylesheet"/>
-<link href="v16-subpages.css" rel="stylesheet"/>'''
+          addition=(target
+                    + '\n<link href="v16-final.css" rel="stylesheet"/>'
+                    + '\n<link href="v16-step6.css" rel="stylesheet"/>'
+                    + '\n<link href="v16-subpages.css" rel="stylesheet"/>')
           for name in files:
               p=Path(name)
               s=p.read_text()
