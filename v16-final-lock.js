@@ -5,7 +5,55 @@
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
-  /* Tiny final spacing adjustment for the Engineering Depth Experience CTA. */
+  const galleryCapabilityCategories = [
+    ['New Projects', 'new-project'],
+    ['SPM / CNC Machines', 'spm-cnc-machines'],
+    ['SPM · PLC / HMI / Servo', 'spm-machines-plc-hmi-and-servo-controlled'],
+    ['Hydraulics & Pressing', 'hydraulic-systems-and-pressing-units'],
+    ['Retrofit & Service', 'retrofitting-and-service']
+  ];
+
+  const alignCapabilitiesToGallery = () => {
+    if (page !== 'home') return;
+    const list = document.querySelector('[data-capability-list]');
+    if (!list || list.dataset.galleryLinked === 'true') return;
+
+    list.innerHTML = galleryCapabilityCategories.map(([label, key], index) => `
+      <a class="capability-row${index === 0 ? ' is-active' : ''}" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
+        <span>${String(index + 1).padStart(2, '0')}</span><strong>${label}</strong><i>→</i>
+      </a>`).join('');
+    list.dataset.galleryLinked = 'true';
+
+    const introCopy = document.querySelector('.capabilities .section-intro > p');
+    if (introCopy) introCopy.textContent = 'Choose the engineering category closest to your requirement, then open the corresponding VSK project groups, machine photos and engineering detail in Gallery.';
+
+    const capIndex = document.querySelector('[data-capability-index]');
+    const capTitle = document.querySelector('[data-capability-title]');
+    const capCopy = document.querySelector('[data-capability-copy]');
+    const capTags = document.querySelector('[data-capability-tags]');
+    if (capIndex) capIndex.textContent = 'PROJECT CATEGORIES';
+    if (capTitle) capTitle.textContent = 'Explore real VSK work by engineering category.';
+    if (capCopy) capCopy.textContent = 'Each category opens Gallery already filtered to the relevant project groups, so you can move directly from capability to actual machine and project evidence.';
+    if (capTags) capTags.innerHTML = '<b>PROJECT GROUPS</b><b>PHOTOS</b><b>VIDEOS</b>';
+
+    if (!document.getElementById('v16-gallery-capability-links')) {
+      const style = document.createElement('style');
+      style.id = 'v16-gallery-capability-links';
+      style.textContent = `
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{
+          text-decoration:none!important;
+          color:inherit!important;
+          cursor:pointer!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible{
+          outline:2px solid #1e56aa!important;
+          outline-offset:3px!important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  };
+
   if (page === 'home' && !document.getElementById('v16-experience-cta-breathing')) {
     const breathing = document.createElement('style');
     breathing.id = 'v16-experience-cta-breathing';
@@ -17,9 +65,6 @@
     document.head.appendChild(breathing);
   }
 
-  /* The three polish layers are already imported synchronously by v16-final-lock.css.
-     Register matching link elements before app.js runs so it does not append older
-     stylesheet versions after first paint. */
   [
     ['v16-user-polish.css', 'v16-user-polish.css?v=16.33'],
     ['v16-release-polish.css', 'v16-release-polish.css?v=16.33'],
@@ -33,7 +78,6 @@
     document.head.appendChild(link);
   });
 
-  /* Fallback only for older pages that do not already link the current review CSS. */
   if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
@@ -51,8 +95,6 @@
     });
   }
 
-  /* Gallery only hides its local filter strip while the five category controls are built.
-     This prevents the legacy 34-project control list from flashing; it is not a page loader. */
   if (page === 'gallery') {
     if (!document.getElementById('v16-gallery-first-paint-guard')) {
       const guard = document.createElement('style');
@@ -116,6 +158,7 @@
   };
 
   const apply = () => {
+    alignCapabilitiesToGallery();
     applyMechanicalImage();
     ensureContactNumber();
     ensureRetrofitRoute();
