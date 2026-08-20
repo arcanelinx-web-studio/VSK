@@ -49,6 +49,27 @@
   function visualFor(m){const exact=exactMedia(m),firstImage=exact.items.find(i=>i.type==='image');if(firstImage)return{src:firstImage.src,exact:true,media:exact};const firstVideo=exact.items.find(i=>i.type==='video'&&i.poster);if(firstVideo)return{src:firstVideo.poster,exact:true,media:exact};return{src:referenceCard(m),exact:false,media:exact};}
   const matches=m=>{const text=[m.title,m.customer,m.control,m.note,label(m)].filter(Boolean).join(' ').toLowerCase(),techText=[m.title,m.control,m.note].filter(Boolean).join(' ').toLowerCase();return(state.type==='all'||m.type===state.type)&&(!state.query||text.includes(state.query.toLowerCase()))&&(!state.category||m.category===state.category)&&(!state.tech||techText.includes(state.tech));};
 
+  function renderMediaShowcase(){
+    if(!manifestGroups.length)return;
+    let section=$('[data-experience-media-section]');
+    if(!section){
+      section=document.createElement('section');
+      section.className='experience-media-showcase section-light';
+      section.dataset.experienceMediaSection='';
+      section.innerHTML=`<div class="shell"><div class="experience-media-head"><div><span class="kicker">ACTUAL VSK MACHINE WORK</span><h2>See the machines behind<br><em>the experience.</em></h2></div><p>These examples use project-specific VSK photos or video frames. Open one to compare the machine, application and controls with what your production needs.</p></div><div class="experience-media-grid" data-experience-media></div></div>`;
+      const browser=$('.archive-browser');
+      browser?.parentNode?.insertBefore(section,browser);
+    }
+    const candidates=archive.filter(matches).map(m=>({m,media:exactMedia(m)})).filter(x=>x.media.items.length).map(x=>{
+      const image=x.media.items.find(i=>i.type==='image')||x.media.items.find(i=>i.poster);
+      return image?{...x,src:image.src||image.poster}:null;
+    }).filter(Boolean).slice(0,6);
+    const grid=$('[data-experience-media]',section);
+    if(!grid)return;
+    grid.innerHTML=candidates.map(({m,src})=>`<button type="button" class="experience-media-card" data-machine-id="${m.id}"><img src="${src}" alt="${m.title}" loading="lazy"><div><span>${code(m)} · ${label(m).toUpperCase()}</span><strong>${m.title}</strong><small>${m.customer||m.control||'VSK machine engineering'}</small></div></button>`).join('');
+    section.hidden=!candidates.length;
+  }
+
   function updatePreview(m){
     if(!m)return;
     state.activeId=m.id;
@@ -65,12 +86,14 @@
   function render(){
     state.current=archive.filter(matches);
     const index=$('[data-archive-index]');if(!index)return;
-    index.innerHTML=state.current.map((m,i)=>`<button class="archive-row${i===0?' is-active':''}" type="button" data-machine-id="${m.id}"><span>${code(m)}</span><strong>${m.title}</strong><small>${m.customer||m.control||label(m)}</small><i>→</i></button>`).join('');
+    index.innerHTML=state.current.map((m,i)=>`<button class="archive-row${m.id===state.activeId||(!state.activeId&&i===0)?' is-active':''}" type="button" data-machine-id="${m.id}"><span>${code(m)}</span><strong>${m.title}</strong><small>${m.customer||m.control||label(m)}</small><i>→</i></button>`).join('');
     const count=$('[data-result-count]');if(count)count.textContent=`${state.current.length} result${state.current.length===1?'':'s'}`;
     const active=[];if(state.type!=='all')active.push(state.type==='spm'?'Custom / SPM':'Retrofit');if(state.category)active.push(categoryLabels[state.category]||state.category);if(state.tech)active.push(state.tech.toUpperCase());if(state.query)active.push(`“${state.query}”`);
     const activeText=$('[data-active-filters]');if(activeText)activeText.textContent=active.length?active.join(' · '):'All applications · All technologies';
     const empty=$('[data-archive-empty]');if(empty)empty.hidden=state.current.length>0;
-    if(state.current[0])updatePreview(state.current.find(m=>m.id===state.activeId)||state.current[0]);
+    const activeMachine=state.current.find(m=>m.id===state.activeId)||state.current[0];
+    if(activeMachine)updatePreview(activeMachine);
+    renderMediaShowcase();
   }
 
   function renderDrawer(id){
@@ -92,11 +115,20 @@
   function moveDrawer(dir){const list=state.current.length?state.current:archive;let i=list.findIndex(x=>x.id===state.activeId);i=(Math.max(0,i)+dir+list.length)%list.length;renderDrawer(list[i].id);updatePreview(list[i]);}
   function initialise(){const categories=$('[data-category-filters]');if(categories&&!categories.dataset.v16Ready){categories.dataset.v16Ready='1';categories.innerHTML=Object.entries(categoryLabels).map(([key,value])=>`<button type="button" data-category-filter="${key}">${value}</button>`).join('');}const search=$('[data-archive-search]');if(search){if(state.query&&!search.value)search.value=state.query;}$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.typeFilter===state.type));render();}
 
-  document.addEventListener('click',e=>{const row=e.target.closest('[data-machine-id]');if(row){e.preventDefault();e.stopImmediatePropagation();const m=archive.find(x=>x.id===row.dataset.machineId);if(m){updatePreview(m);renderDrawer(m.id);}return;}const preview=e.target.closest('[data-archive-preview-open]');if(preview){e.preventDefault();e.stopImmediatePropagation();renderDrawer(state.activeId||state.current[0]?.id||archive[0].id);return;}const filterToggle=e.target.closest('[data-filter-toggle]');if(filterToggle){e.preventDefault();e.stopImmediatePropagation();const panel=$('[data-filter-panel]');if(panel)panel.hidden=!panel.hidden;return;}const type=e.target.closest('[data-type-filter]');if(type){e.preventDefault();e.stopImmediatePropagation();state.type=type.dataset.typeFilter||'all';$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x===type));render();return;}const cat=e.target.closest('[data-category-filter]');if(cat){e.preventDefault();e.stopImmediatePropagation();state.category=state.category===cat.dataset.categoryFilter?'':cat.dataset.categoryFilter;$$('[data-category-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.categoryFilter===state.category));render();return;}const tech=e.target.closest('[data-tech-filter]');if(tech){e.preventDefault();e.stopImmediatePropagation();state.tech=state.tech===tech.dataset.techFilter?'':tech.dataset.techFilter;$$('[data-tech-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.techFilter===state.tech));render();return;}const clear=e.target.closest('[data-clear-filters]');if(clear){e.preventDefault();e.stopImmediatePropagation();state.type='all';state.query=state.category=state.tech='';const search=$('[data-archive-search]');if(search)search.value='';$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.typeFilter==='all'));$$('[data-category-filter],[data-tech-filter]').forEach(x=>x.classList.remove('is-active'));render();return;}if(e.target.closest('[data-dossier-close]')){e.preventDefault();e.stopImmediatePropagation();closeDrawer();return;}if(e.target.closest('[data-dossier-prev]')){e.preventDefault();e.stopImmediatePropagation();moveDrawer(-1);return;}if(e.target.closest('[data-dossier-next]')){e.preventDefault();e.stopImmediatePropagation();moveDrawer(1);return;}},true);
+  document.addEventListener('click',e=>{const row=e.target.closest('[data-machine-id]');if(row){e.preventDefault();e.stopImmediatePropagation();const m=archive.find(x=>x.id===row.dataset.machineId);if(m){updatePreview(m);renderDrawer(m.id);}return;}const preview=e.target.closest('[data-archive-preview-open]');if(preview){e.preventDefault();e.stopImmediatePropagation();renderDrawer(state.activeId||state.current[0]?.id||archive[0].id);return;}const filterToggle=e.target.closest('[data-filter-toggle]');if(filterToggle){e.preventDefault();e.stopImmediatePropagation();const panel=$('[data-filter-panel]');if(panel)panel.hidden=!panel.hidden;return;}const type=e.target.closest('[data-type-filter]');if(type){e.preventDefault();e.stopImmediatePropagation();state.type=type.dataset.typeFilter||'all';state.activeId='';$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x===type));render();return;}const cat=e.target.closest('[data-category-filter]');if(cat){e.preventDefault();e.stopImmediatePropagation();state.category=state.category===cat.dataset.categoryFilter?'':cat.dataset.categoryFilter;state.activeId='';$$('[data-category-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.categoryFilter===state.category));render();return;}const tech=e.target.closest('[data-tech-filter]');if(tech){e.preventDefault();e.stopImmediatePropagation();state.tech=state.tech===tech.dataset.techFilter?'':tech.dataset.techFilter;state.activeId='';$$('[data-tech-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.techFilter===state.tech));render();return;}const clear=e.target.closest('[data-clear-filters]');if(clear){e.preventDefault();e.stopImmediatePropagation();state.type='all';state.query=state.category=state.tech=state.activeId='';const search=$('[data-archive-search]');if(search)search.value='';$$('[data-type-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.typeFilter==='all'));$$('[data-category-filter],[data-tech-filter]').forEach(x=>x.classList.remove('is-active'));render();return;}if(e.target.closest('[data-dossier-close]')){e.preventDefault();e.stopImmediatePropagation();closeDrawer();return;}if(e.target.closest('[data-dossier-prev]')){e.preventDefault();e.stopImmediatePropagation();moveDrawer(-1);return;}if(e.target.closest('[data-dossier-next]')){e.preventDefault();e.stopImmediatePropagation();moveDrawer(1);return;}},true);
   document.addEventListener('mouseover',e=>{const row=e.target.closest?.('[data-machine-id]');if(!row)return;const m=archive.find(x=>x.id===row.dataset.machineId);if(m)updatePreview(m);},true);
   document.addEventListener('focusin',e=>{const row=e.target.closest?.('[data-machine-id]');if(!row)return;const m=archive.find(x=>x.id===row.dataset.machineId);if(m)updatePreview(m);},true);
-  document.addEventListener('input',e=>{if(!e.target.matches?.('[data-archive-search]'))return;state.query=e.target.value.trim();render();},true);
+  document.addEventListener('input',e=>{if(!e.target.matches?.('[data-archive-search]'))return;state.query=e.target.value.trim();state.activeId='';render();},true);
 
   initialise();
-  Promise.all([fetch('media/v16/manifest.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),fetch('media/valid-paths.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([manifest,paths])=>{manifestGroups=Array.isArray(manifest?.groups)?manifest.groups:[];validPaths=Array.isArray(paths)?new Set(paths.map(cleanPath)):null;initialise();}).finally(()=>{setTimeout(initialise,500);setTimeout(initialise,1400);});
+  Promise.all([
+    fetch('media/v16/manifest.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('media/valid-paths.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
+  ]).then(([manifest,paths])=>{
+    manifestGroups=Array.isArray(manifest?.groups)?manifest.groups:[];
+    validPaths=Array.isArray(paths)?new Set(paths.map(cleanPath)):null;
+    const firstWithMedia=archive.filter(matches).find(m=>exactMedia(m).items.length);
+    if(firstWithMedia)state.activeId=firstWithMedia.id;
+    initialise();
+  }).finally(()=>{setTimeout(initialise,500);setTimeout(initialise,1400);});
 })();
