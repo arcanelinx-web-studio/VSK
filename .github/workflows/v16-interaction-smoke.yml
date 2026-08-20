@@ -1,0 +1,108 @@
+name: V16 Interaction Smoke
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+  workflow_dispatch:
+
+jobs:
+  interactions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Start preview
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-interaction.log 2>&1 &
+          sleep 2
+      - name: Check customer interactions
+        run: |
+          cat > interaction-smoke.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const base='http://127.0.0.1:4173/';
+          const fail=[];
+          const timeout=2500;
+          const within=async(label,fn)=>{
+            const started=Date.now();
+            try{await Promise.race([fn(),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),timeout))]);}
+            catch(e){fail.push(`${label}: ${e.message}`);}
+            if(Date.now()-started>timeout)fail.push(`${label}: interaction exceeded ${timeout}ms`);
+          };
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+
+            const home=await browser.newPage({viewport:{width:1440,height:900}});
+            const homeErrors=[]; home.on('pageerror',e=>homeErrors.push(String(e)));
+            await home.goto(base+'index.html',{waitUntil:'networkidle'}); await home.waitForTimeout(1200);
+            await within('capability switch',async()=>{
+              await home.locator('[data-capability="automation"]').click();
+              await home.waitForTimeout(180);
+              const active=await home.locator('[data-capability="automation"]').evaluate(el=>el.classList.contains('is-active'));
+              if(!active)throw new Error('automation capability did not activate');
+            });
+            await within('quote modal',async()=>{
+              await home.locator('[data-quote-open]').first().click();
+              await home.waitForTimeout(120);
+              const visible=await home.locator('[data-quote-panel]').evaluate(el=>!el.hidden);
+              if(!visible)throw new Error('quote modal did not open');
+              await home.locator('[data-quote-close]').first().click();
+            });
+            if(homeErrors.length)fail.push(`home JS: ${homeErrors.join(' | ')}`);
+            await home.close();
+
+            const mobile=await browser.newPage({viewport:{width:390,height:844}});
+            await mobile.goto(base+'index.html',{waitUntil:'networkidle'}); await mobile.waitForTimeout(800);
+            await within('mobile menu',async()=>{
+              await mobile.locator('[data-menu-toggle]').click();
+              const open=await mobile.locator('[data-mobile-menu]').evaluate(el=>!el.hidden);
+              if(!open)throw new Error('mobile menu did not open');
+              await mobile.locator('[data-menu-close]').first().click();
+            });
+            await mobile.close();
+
+            const exp=await browser.newPage({viewport:{width:1440,height:900}});
+            const expErrors=[]; exp.on('pageerror',e=>expErrors.push(String(e)));
+            await exp.goto(base+'machines.html',{waitUntil:'networkidle'}); await exp.waitForTimeout(1600);
+            await within('experience filter',async()=>{
+              await exp.locator('[data-type-filter="retrofit"]').click();
+              await exp.waitForTimeout(120);
+              const rows=await exp.locator('.archive-row[data-machine-id]').count();
+              if(rows!==15)throw new Error(`expected 15 retrofit rows, got ${rows}`);
+            });
+            await within('experience preview CTA',async()=>{
+              const btn=exp.locator('[data-archive-preview-open]');
+              if(!(await btn.isVisible()))throw new Error('preview CTA not visible');
+              await btn.click();
+              await exp.waitForTimeout(100);
+              const open=await exp.locator('[data-dossier]').evaluate(el=>!el.hidden);
+              if(!open)throw new Error('experience dossier did not open');
+              await exp.locator('[data-dossier-close]').first().click();
+            });
+            if(expErrors.length)fail.push(`experience JS: ${expErrors.join(' | ')}`);
+            await exp.close();
+
+            const gallery=await browser.newPage({viewport:{width:1440,height:900}});
+            const galleryErrors=[]; gallery.on('pageerror',e=>galleryErrors.push(String(e)));
+            await gallery.goto(base+'gallery.html',{waitUntil:'networkidle'}); await gallery.waitForTimeout(1600);
+            await within('gallery filter',async()=>{
+              const filters=gallery.locator('.gallery-filter');
+              if(await filters.count()>1)await filters.nth(1).click();
+              else await filters.first().click();
+              await gallery.waitForTimeout(120);
+            });
+            if(galleryErrors.length)fail.push(`gallery JS: ${galleryErrors.join(' | ')}`);
+            await gallery.close();
+
+            await browser.close();
+            console.log(JSON.stringify({fail},null,2));
+            if(fail.length)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node interaction-smoke.cjs
