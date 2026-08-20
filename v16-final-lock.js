@@ -6,8 +6,10 @@
   const requestedType = params.get('type');
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
+  const galleryPreviewImage = 'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp';
 
   const galleryCapabilityCategories = [
+    ['New Projects', 'new-project'],
     ['SPM / CNC Machines', 'spm-cnc-machines'],
     ['SPM · PLC / HMI / Servo', 'spm-machines-plc-hmi-and-servo-controlled'],
     ['Hydraulics & Pressing', 'hydraulic-systems-and-pressing-units'],
@@ -48,63 +50,35 @@
         body.v8.v13.v14 .desktop-nav a{font-size:9.2px!important}
         body.v8.v13.v14 .header-cta{padding-inline:11px!important;font-size:9.7px!important}
       }
-      body.v8.v13.v14[data-page="home"] .capability-layout{grid-template-columns:minmax(0,1fr)!important}
-      body.v8.v13.v14[data-page="home"] .capability-media{display:none!important}
-      body.v8.v13.v14[data-page="home"] .capability-list{
-        display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
-        border-top:1px solid #c8d3dd!important;border-left:1px solid #c8d3dd!important
-      }
       body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{
-        min-height:88px!important;padding:0 22px!important;margin:0!important;
-        display:grid!important;grid-template-columns:42px minmax(0,1fr) 28px!important;align-items:center!important;
-        border:0!important;border-right:1px solid #c8d3dd!important;border-bottom:1px solid #c8d3dd!important;
-        background:#fff!important;text-decoration:none!important;color:#102333!important;cursor:pointer!important;
-        transition:background .18s ease,color .18s ease,border-color .18s ease!important
+        text-decoration:none!important;color:inherit!important;cursor:pointer!important
       }
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row span{
-        color:#6c8194!important;font:500 10px/1 "IBM Plex Mono",monospace!important;letter-spacing:.08em!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row strong{
-        color:inherit!important;font-family:"Space Grotesk",sans-serif!important;font-size:18px!important;font-weight:600!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row i{
-        justify-self:end!important;color:#1e56aa!important;font-style:normal!important;font-size:17px!important;transition:transform .18s ease!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:hover{
-        background:#f1f5f8!important;color:#174f9f!important;border-color:#9fb5c9!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:hover i{transform:translateX(4px)!important}
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row strong{color:inherit!important}
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row i{font-style:normal!important;transition:transform .18s ease!important}
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:hover i{transform:translateX(5px)!important}
       body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible,
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:focus-visible{
-        outline:2px solid #1e56aa!important;outline-offset:3px!important
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:focus-visible{outline:2px solid #1e56aa!important;outline-offset:3px!important}
+      body.v8.v13.v14[data-page="home"] .capability-media{display:grid!important}
+      body.v8.v13.v14[data-page="home"] .capability-media figcaption{position:relative!important}
+      body.v8.v13.v14[data-page="home"] .capability-media figcaption::after{
+        content:"GALLERY-LINKED"!important;position:absolute!important;right:0!important;top:0!important;
+        color:#1e56aa!important;font:500 8px/1 "IBM Plex Mono",monospace!important;letter-spacing:.13em!important
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
-        width:100%!important;box-sizing:border-box!important;margin:26px 0 0!important;
-        min-height:78px!important;padding:0 24px!important;border:1px solid #20394e!important;
-        background:#0d1b29!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;
-        color:#f7f8f8!important;text-decoration:none!important;
-        font:600 11px/1.35 "IBM Plex Mono",monospace!important;letter-spacing:.075em!important;text-transform:uppercase!important;
+        width:100%!important;box-sizing:border-box!important;margin:20px 0 0!important;min-height:72px!important;padding:0 20px!important;
+        border:1px solid #20394e!important;background:#0d1b29!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;
+        color:#f7f8f8!important;text-decoration:none!important;font:600 10.5px/1.35 "IBM Plex Mono",monospace!important;letter-spacing:.075em!important;text-transform:uppercase!important;
         transition:background .18s ease,border-color .18s ease,color .18s ease!important
       }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta::before{
-        content:"PROJECT EVIDENCE"!important;color:#7591a8!important;font-size:8px!important;letter-spacing:.14em!important;margin-right:auto!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{margin-left:22px!important}
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{
-        font-style:normal!important;color:#8fb8e8!important;font-size:17px!important;transition:transform .18s ease!important
-      }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{
-        background:#10263a!important;border-color:#356ead!important;color:#fff!important
-      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{display:flex!important;align-items:center!important;gap:14px!important}
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span::before{content:"PROJECT EVIDENCE"!important;color:#7591a8!important;font-size:8px!important;letter-spacing:.14em!important}
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{font-style:normal!important;color:#8fb8e8!important;font-size:17px!important;transition:transform .18s ease!important}
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{background:#10263a!important;border-color:#356ead!important;color:#fff!important}
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(5px)!important}
       body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout .btn{margin-bottom:30px!important}
       @media (max-width:760px){
-        body.v8.v13.v14[data-page="home"] .capability-list{grid-template-columns:1fr!important}
-        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{min-height:74px!important;padding:0 17px!important;grid-template-columns:36px minmax(0,1fr) 24px!important}
-        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row strong{font-size:15px!important}
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{min-height:70px!important;padding:0 17px!important;font-size:9.8px!important}
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta::before{display:none!important}
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{margin-left:0!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{min-height:66px!important;padding:0 15px!important;font-size:9.6px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta span::before{display:none!important}
       }
     `;
     document.head.appendChild(style);
@@ -157,18 +131,30 @@
 
     const intro = document.querySelector('.capabilities .section-intro > p');
     if (intro) intro.textContent = 'Choose the engineering category closest to your requirement, then inspect the corresponding VSK project groups, machine photographs and engineering detail in the Gallery.';
+
+    const media = document.querySelector('.capability-media');
+    const image = media?.querySelector('[data-capability-image]');
+    const index = media?.querySelector('[data-capability-index]');
+    const title = media?.querySelector('[data-capability-title]');
+    const copy = media?.querySelector('[data-capability-copy]');
+    const tags = media?.querySelector('[data-capability-tags]');
+    if (image) { image.src = galleryPreviewImage; image.alt = 'VSK custom machine project — engineering gallery reference'; }
+    if (index) index.textContent = '05 ENGINEERING CATEGORIES / PROJECT GALLERY';
+    if (title) title.textContent = 'Move from capability to actual VSK project evidence.';
+    if (copy) copy.textContent = 'Each category opens Gallery already filtered to real project groups, so the customer can inspect machine views, controls, mechanisms and process detail instead of reading generic capability claims.';
+    if (tags) tags.innerHTML = '<b>PROJECT GROUPS</b><b>PHOTOS</b><b>VIDEOS</b>';
   };
 
   const normalizeHomeTaxonomy = () => {
     if (page !== 'home') return;
     const referenceSmall = document.querySelector('.proof-grid article:nth-child(3) small');
-    if (referenceSmall) referenceSmall.textContent = '39 Custom / SPM · 15 Retrofit & CNC';
+    if (referenceSmall) referenceSmall.textContent = '39 Custom & SPM · 15 Retrofit & CNC';
 
     const split = document.querySelectorAll('.archive-callout-split span');
-    if (split[0]) split[0].innerHTML = '<b>39</b> CUSTOM / SPM';
+    if (split[0]) split[0].innerHTML = '<b>39</b> CUSTOM &amp; SPM';
     if (split[1]) split[1].innerHTML = '<b>15</b> RETROFIT &amp; CNC';
     const archiveCopy = document.querySelector('.archive-callout p');
-    if (archiveCopy) archiveCopy.textContent = 'Search 39 Custom / SPM and 15 Retrofit & CNC references by process, machine type, customer need or control platform before you start the discussion.';
+    if (archiveCopy) archiveCopy.textContent = 'Search 39 Custom & SPM and 15 Retrofit & CNC references by process, machine type, customer need or control platform before you start the discussion.';
 
     const heroChips = [...document.querySelectorAll('.hero-chips span')];
     const retrofitChip = heroChips.find(el => /cnc.*retrofit|retrofit.*cnc/i.test(el.textContent));
@@ -202,11 +188,11 @@
       if (heroKicker) heroKicker.textContent = 'VSK ENGINEERING EXPERIENCE';
       if (heroNumberLabel) heroNumberLabel.textContent = '54 SEARCHABLE REFERENCES';
       if (heroTitle) heroTitle.innerHTML = 'Find experience<br><em>close to your requirement.</em>';
-      if (heroCopy) heroCopy.textContent = 'Search VSK’s 39 Custom / SPM and 15 Retrofit & CNC references by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
+      if (heroCopy) heroCopy.textContent = 'Search VSK’s 39 Custom & SPM and 15 Retrofit & CNC references by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
     }
 
     const facts = document.querySelectorAll('.archive-hero-facts span');
-    if (facts[0]) facts[0].innerHTML = '<strong>39</strong> CUSTOM / SPM';
+    if (facts[0]) facts[0].innerHTML = '<strong>39</strong> CUSTOM &amp; SPM';
     if (facts[1]) facts[1].innerHTML = '<strong>15</strong> RETROFIT &amp; CNC';
     if (facts[2]) facts[2].innerHTML = '<strong>54</strong> DOCUMENTED REFERENCES';
 
@@ -219,7 +205,7 @@
     if (active) {
       const text = active.textContent.trim();
       if (/^retrofit$/i.test(text)) active.textContent = 'Retrofit & CNC';
-      if (/^custom \/ spm$/i.test(text)) active.textContent = 'Custom & SPM';
+      if (/^custom \/ spm$/i.test(text) || /^custom & spm$/i.test(text)) active.textContent = 'Custom & SPM';
     }
 
     const dossierKicker = document.querySelector('[data-dossier-kicker]');
