@@ -39,6 +39,28 @@
   }
 }
 
+/* Engineering Depth: give the proof row enough room for all content. */
+@media (min-width:1181px){
+  body.v8.v13.v14 .engineering-depth .metric-card,
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:304px!important;
+    min-height:304px!important;
+    max-height:304px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    overflow:hidden!important;
+  }
+}
+
+@media (max-width:1180px){
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:auto!important;
+    min-height:276px!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
+
 /* Hero board: one strong engineering visual instead of a repeated inset render. */
 body.v8.v13.v14 .hero-board-photo{
   display:none!important;
