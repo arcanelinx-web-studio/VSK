@@ -5,7 +5,7 @@
   if (!document.querySelector('link[data-v16-wide-final]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'v16-wide-final.css?v=16.16';
+    link.href = 'v16-wide-final.css?v=16.17';
     link.dataset.v16WideFinal = '';
     document.head.appendChild(link);
   }
