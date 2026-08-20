@@ -5,6 +5,18 @@
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
+  /* Tiny final spacing adjustment for the Engineering Depth Experience CTA. */
+  if (page === 'home' && !document.getElementById('v16-experience-cta-breathing')) {
+    const breathing = document.createElement('style');
+    breathing.id = 'v16-experience-cta-breathing';
+    breathing.textContent = `
+      body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout .btn{
+        margin-bottom:14px!important;
+      }
+    `;
+    document.head.appendChild(breathing);
+  }
+
   /* The three polish layers are already imported synchronously by v16-final-lock.css.
      Register matching link elements before app.js runs so it does not append older
      stylesheet versions after first paint. */
