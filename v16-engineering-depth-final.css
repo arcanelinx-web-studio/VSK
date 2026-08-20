@@ -1,50 +1,49 @@
-/* V16 Engineering Depth — stable structural authority.
-   Real nested grids: proof cards grouped left, Experience card right. */
+/* V16 Engineering Depth — final homepage authority.
+   Light section, connected three-cell proof board, plain Experience-navy callout. */
 
 html body.v8.v13.v14 .engineering-depth{
-  position:relative!important;
-  padding:108px 0 120px!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding:96px 28px 108px!important;
   background:#fafaf7!important;
-  overflow:hidden!important;
+  color:#0d1824!important;
+  border-top:1px solid #e1e6ea!important;
+  overflow:visible!important;
 }
-html body.v8.v13.v14 .engineering-depth::before{
-  content:""!important;
-  position:absolute!important;
-  inset:0 0 auto 0!important;
-  height:1px!important;
-  background:#dce3e8!important;
-}
+html body.v8.v13.v14 .engineering-depth::before,
+html body.v8.v13.v14 .engineering-depth::after{content:none!important;display:none!important}
+
 html body.v8.v13.v14 .engineering-depth .depth-head,
 html body.v8.v13.v14 .engineering-depth .depth-grid{
-  width:calc(100vw - 64px)!important;
-  max-width:none!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
   box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
 }
 
-/* Heading row */
 html body.v8.v13.v14 .engineering-depth .depth-head{
   display:grid!important;
-  grid-template-columns:minmax(0,1.15fr) minmax(420px,.85fr)!important;
-  gap:64px!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr)!important;
+  gap:clamp(54px,7vw,130px)!important;
   align-items:end!important;
-  margin-bottom:44px!important;
-  padding:0!important;
+  margin-bottom:42px!important;
 }
 html body.v8.v13.v14 .engineering-depth .depth-head>div{max-width:860px!important}
 html body.v8.v13.v14 .engineering-depth .depth-head .kicker{
   display:block!important;
-  margin:0 0 20px!important;
+  margin:0 0 18px!important;
   color:#174f9f!important;
   font:500 10px/1 "IBM Plex Mono",monospace!important;
   letter-spacing:.18em!important;
 }
 html body.v8.v13.v14 .engineering-depth .depth-head h2{
-  margin:0!important;
   max-width:860px!important;
+  margin:0!important;
   color:#0d1824!important;
-  font-size:clamp(60px,4.2vw,80px)!important;
+  font-size:clamp(58px,4vw,78px)!important;
   line-height:.94!important;
   letter-spacing:-.047em!important;
 }
@@ -54,135 +53,129 @@ html body.v8.v13.v14 .engineering-depth .depth-head h2 em{
 }
 html body.v8.v13.v14 .engineering-depth .depth-head>p{
   position:relative!important;
-  max-width:650px!important;
-  margin:0 0 8px!important;
-  padding:26px 0 0!important;
-  color:#647689!important;
+  max-width:690px!important;
+  margin:0 0 6px!important;
+  padding:27px 0 0!important;
+  color:#657789!important;
   font-size:18px!important;
   line-height:1.58!important;
 }
 html body.v8.v13.v14 .engineering-depth .depth-head>p::before{
   content:"MEASURED ENGINEERING PROOF"!important;
   position:absolute!important;
-  left:0!important;
   top:0!important;
+  left:0!important;
   color:#1e56aa!important;
   font:500 8.5px/1 "IBM Plex Mono",monospace!important;
-  letter-spacing:.13em!important;
+  letter-spacing:.14em!important;
 }
 
-/* Stable two-column proof band. */
+/* One connected proof board + one plain Experience panel. */
 html body.v8.v13.v14 .engineering-depth .depth-grid{
   display:grid!important;
-  grid-template-columns:minmax(0,3fr) minmax(390px,1.04fr)!important;
-  gap:20px!important;
+  grid-template-columns:minmax(0,3fr) minmax(390px,.96fr)!important;
+  gap:18px!important;
   align-items:stretch!important;
-  padding:0!important;
-  border:0!important;
   background:transparent!important;
+  border:0!important;
 }
 html body.v8.v13.v14 .engineering-depth .metric-stack{
+  position:relative!important;
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:20px!important;
-  width:100%!important;
+  gap:0!important;
   min-width:0!important;
+  min-height:388px!important;
   margin:0!important;
+  padding:0!important;
+  background:#fff!important;
+  border:1px solid #d4dde4!important;
+  border-top:4px solid #1e56aa!important;
+  box-shadow:0 18px 44px rgba(13,24,36,.055)!important;
+  overflow:hidden!important;
 }
-html body.v8.v13.v14 .engineering-depth .metric-card,
-html body.v8.v13.v14 .engineering-depth .archive-callout{
-  width:100%!important;
-  height:400px!important;
-  min-height:400px!important;
-  max-height:400px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-}
-
-/* White measured-proof cards */
 html body.v8.v13.v14 .engineering-depth .metric-card{
   position:relative!important;
   display:grid!important;
   grid-template-rows:auto 1fr auto!important;
-  gap:0!important;
   min-width:0!important;
-  padding:30px 29px 28px!important;
-  background:linear-gradient(180deg,#fff 0%,#fbfcfd 100%)!important;
-  border:1px solid #d5dde4!important;
-  box-shadow:0 17px 42px rgba(13,24,36,.05)!important;
+  min-height:384px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:34px 36px 32px!important;
+  background:#fff!important;
+  border:0!important;
+  border-right:1px solid #dbe3e9!important;
+  box-shadow:none!important;
   color:#0d1824!important;
   text-align:left!important;
   overflow:hidden!important;
-  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+  transition:background .18s ease!important;
 }
-html body.v8.v13.v14 .engineering-depth .metric-card::before{
-  content:""!important;
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  height:4px!important;
-  background:linear-gradient(90deg,#174f9f 0 40%,#2b91d3 40% 58%,transparent 58%)!important;
-}
+html body.v8.v13.v14 .engineering-depth .metric-card:last-child{border-right:0!important}
 html body.v8.v13.v14 .engineering-depth .metric-card:hover{
-  transform:translateY(-3px)!important;
-  border-color:#b7c7d3!important;
-  box-shadow:0 23px 52px rgba(13,24,36,.085)!important;
+  transform:none!important;
+  background:#fbfcfd!important;
+  box-shadow:none!important;
 }
+html body.v8.v13.v14 .engineering-depth .metric-card::before,
+html body.v8.v13.v14 .engineering-depth .metric-card::after{content:none!important;display:none!important}
 html body.v8.v13.v14 .engineering-depth .metric-card .metric-machine{
   grid-row:1!important;
   display:block!important;
   max-width:220px!important;
   margin:0!important;
+  padding:0 34px 0 0!important;
   color:#174f9f!important;
   font:500 9px/1.35 "IBM Plex Mono",monospace!important;
   letter-spacing:.13em!important;
   text-transform:uppercase!important;
+  text-align:left!important;
 }
 html body.v8.v13.v14 .engineering-depth .metric-card>i{
   position:absolute!important;
-  top:28px!important;
-  right:28px!important;
+  top:31px!important;
+  right:31px!important;
   color:#2088ca!important;
   font-style:normal!important;
-  font-size:19px!important;
+  font-size:18px!important;
   line-height:1!important;
 }
 html body.v8.v13.v14 .engineering-depth .metric-number{
   grid-row:2!important;
   align-self:center!important;
+  justify-self:start!important;
   display:flex!important;
   align-items:baseline!important;
-  min-width:0!important;
-  margin:8px 0 14px!important;
+  justify-content:flex-start!important;
+  margin:10px 0 16px!important;
   color:#0d1824!important;
   font-family:"Space Grotesk",Inter,sans-serif!important;
   font-size:clamp(82px,5vw,108px)!important;
   font-weight:500!important;
   line-height:.82!important;
-  letter-spacing:-.07em!important;
+  letter-spacing:-.065em!important;
   white-space:nowrap!important;
 }
 html body.v8.v13.v14 .engineering-depth .metric-number span{
-  flex:0 0 auto!important;
   margin-left:11px!important;
   color:#174f9f!important;
   font:500 11px/1 "IBM Plex Mono",monospace!important;
   letter-spacing:0!important;
 }
-html body.v8.v13.v14 .engineering-depth .metric-card>.metric-proof,
+html body.v8.v13.v14 .engineering-depth .metric-proof,
 html body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{
   grid-row:3!important;
   display:block!important;
+  align-self:end!important;
   width:100%!important;
   margin:0!important;
-  padding:19px 0 0!important;
+  padding:20px 0 0!important;
   border-top:1px solid #dce4e9!important;
-  align-self:end!important;
+  text-align:left!important;
 }
 html body.v8.v13.v14 .engineering-depth .metric-proof strong{
   display:block!important;
-  max-width:none!important;
   margin:0 0 8px!important;
   padding:0!important;
   border:0!important;
@@ -192,12 +185,11 @@ html body.v8.v13.v14 .engineering-depth .metric-proof strong{
 }
 html body.v8.v13.v14 .engineering-depth .metric-proof p{
   display:block!important;
-  max-width:320px!important;
+  max-width:300px!important;
   margin:0!important;
-  color:#647689!important;
+  color:#657789!important;
   font:400 13px/1.5 Inter,sans-serif!important;
 }
-/* Never allow historical generated proof text to return. */
 html body.v8.v13.v14 .engineering-depth .metric-proof strong::before,
 html body.v8.v13.v14 .engineering-depth .metric-proof strong::after,
 html body.v8.v13.v14 .engineering-depth .metric-card strong::before,
@@ -206,84 +198,61 @@ html body.v8.v13.v14 .engineering-depth .metric-card strong::after{
   display:none!important;
 }
 
-/* 54-reference panel */
+/* Plain navy panel — same tone as Experience hero, no decorative graphics. */
 html body.v8.v13.v14 .engineering-depth .archive-callout{
   position:relative!important;
   display:flex!important;
   flex-direction:column!important;
+  box-sizing:border-box!important;
   min-width:0!important;
-  padding:30px 31px 28px!important;
-  background:linear-gradient(145deg,#0b1723 0%,#10273b 100%)!important;
-  border:1px solid #274156!important;
-  box-shadow:0 20px 50px rgba(13,24,36,.15)!important;
-  overflow:hidden!important;
+  min-height:388px!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:32px 32px 30px!important;
+  background:#0d1824!important;
+  border:1px solid #26394b!important;
+  box-shadow:0 18px 44px rgba(13,24,36,.11)!important;
+  overflow:visible!important;
 }
-html body.v8.v13.v14 .engineering-depth .archive-callout::before{
-  content:""!important;
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  height:4px!important;
-  background:linear-gradient(90deg,#2b91d3 0 52%,transparent 52%)!important;
-}
-html body.v8.v13.v14 .engineering-depth .archive-callout::after{
-  content:""!important;
-  position:absolute!important;
-  width:230px!important;
-  height:230px!important;
-  right:-105px!important;
-  top:-108px!important;
-  border:1px solid rgba(52,155,220,.2)!important;
-  border-radius:50%!important;
-  pointer-events:none!important;
-}
+html body.v8.v13.v14 .engineering-depth .archive-callout::before,
+html body.v8.v13.v14 .engineering-depth .archive-callout::after{content:none!important;display:none!important}
 html body.v8.v13.v14 .engineering-depth .archive-callout .kicker{
-  position:relative!important;
-  z-index:1!important;
   margin:0!important;
   color:#4aa9e2!important;
   font:500 9px/1 "IBM Plex Mono",monospace!important;
   letter-spacing:.13em!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout-number{
-  position:relative!important;
-  z-index:1!important;
   display:block!important;
-  margin:16px 0 9px!important;
+  margin:16px 0 8px!important;
   color:#238bd5!important;
   font-family:"Space Grotesk",Inter,sans-serif!important;
-  font-size:88px!important;
+  font-size:82px!important;
   font-weight:600!important;
   line-height:.8!important;
-  letter-spacing:-.055em!important;
+  letter-spacing:-.05em!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout h3{
-  position:relative!important;
-  z-index:1!important;
   max-width:390px!important;
   margin:0!important;
   color:#fff!important;
-  font-size:25px!important;
+  font-size:23px!important;
   line-height:1.08!important;
   letter-spacing:-.025em!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout>p{
-  position:relative!important;
-  z-index:1!important;
   max-width:410px!important;
-  margin:13px 0 16px!important;
+  margin:13px 0 17px!important;
   color:#bfccd7!important;
   font-size:12.5px!important;
   line-height:1.5!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout-split{
-  position:relative!important;
-  z-index:1!important;
   display:grid!important;
   grid-template-columns:1fr 1fr!important;
   gap:10px!important;
-  margin:0 0 15px!important;
+  margin:0 0 16px!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout-split span{
   min-height:50px!important;
@@ -291,8 +260,8 @@ html body.v8.v13.v14 .engineering-depth .archive-callout-split span{
   align-items:center!important;
   gap:10px!important;
   padding:9px 12px!important;
-  border:1px solid #334e64!important;
-  background:rgba(20,38,58,.92)!important;
+  border:1px solid #33495b!important;
+  background:#122538!important;
   color:#e2ebf2!important;
   font:500 7.5px/1.15 "IBM Plex Mono",monospace!important;
   letter-spacing:.045em!important;
@@ -302,8 +271,6 @@ html body.v8.v13.v14 .engineering-depth .archive-callout-split b{
   font:600 21px/1 "Space Grotesk",sans-serif!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout .btn{
-  position:relative!important;
-  z-index:1!important;
   width:100%!important;
   min-height:50px!important;
   height:50px!important;
@@ -312,74 +279,60 @@ html body.v8.v13.v14 .engineering-depth .archive-callout .btn{
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
-  border:1px solid rgba(255,255,255,.5)!important;
-  background:rgba(255,255,255,.025)!important;
+  border:1px solid #526779!important;
+  background:transparent!important;
   color:#fff!important;
   font-size:8.5px!important;
   letter-spacing:.08em!important;
 }
 html body.v8.v13.v14 .engineering-depth .archive-callout .btn:hover{
-  background:#1e7fc1!important;
-  border-color:#1e7fc1!important;
+  background:#fff!important;
+  border-color:#fff!important;
+  color:#0d1824!important;
 }
 
 @media (max-width:1599px){
-  html body.v8.v13.v14 .engineering-depth{padding:90px 0 100px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head,
-  html body.v8.v13.v14 .engineering-depth .depth-grid{width:calc(100vw - 56px)!important}
+  html body.v8.v13.v14 .engineering-depth{padding:86px 28px 96px!important}
   html body.v8.v13.v14 .engineering-depth .depth-head{
-    grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr)!important;
+    grid-template-columns:minmax(0,1.04fr) minmax(360px,.96fr)!important;
     gap:46px!important;
     margin-bottom:36px!important;
   }
-  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(52px,4.15vw,68px)!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(52px,4vw,68px)!important}
   html body.v8.v13.v14 .engineering-depth .depth-head>p{font-size:16px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:minmax(0,3fr) minmax(350px,1.06fr)!important;gap:16px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-stack{gap:16px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-card,
-  html body.v8.v13.v14 .engineering-depth .archive-callout{height:350px!important;min-height:350px!important;max-height:350px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-card{padding:26px 24px 25px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:clamp(68px,5vw,88px)!important}
-  html body.v8.v13.v14 .engineering-depth .metric-proof strong{font-size:16px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-proof p{font-size:12px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout{padding:26px 26px 25px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:minmax(0,3fr) minmax(350px,1fr)!important;gap:16px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack,
+  html body.v8.v13.v14 .engineering-depth .archive-callout{min-height:360px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{min-height:356px!important;padding:30px 30px 28px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:clamp(72px,5vw,92px)!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{padding:29px 28px 27px!important}
   html body.v8.v13.v14 .engineering-depth .archive-callout-number{font-size:70px!important}
   html body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:21px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout>p{font-size:11.5px!important}
 }
 
 @media (max-width:1180px){
-  html body.v8.v13.v14 .engineering-depth{padding:72px 0 82px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head,
-  html body.v8.v13.v14 .engineering-depth .depth-grid{width:calc(100% - 44px)!important}
+  html body.v8.v13.v14 .engineering-depth{padding:72px 22px 82px!important}
   html body.v8.v13.v14 .engineering-depth .depth-head{grid-template-columns:1fr!important;gap:20px!important;margin-bottom:30px!important}
   html body.v8.v13.v14 .engineering-depth .depth-head>p{max-width:760px!important;font-size:15px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:14px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-card{height:292px!important;min-height:292px!important;max-height:292px!important;padding:23px 21px 22px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout{height:auto!important;min-height:300px!important;max-height:none!important}
-  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:clamp(62px,7vw,82px)!important}
+  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:16px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:repeat(3,minmax(0,1fr))!important;min-height:330px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{min-height:326px!important;padding:27px 25px 25px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{min-height:330px!important}
 }
 
-@media (max-width:820px){
-  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:1fr!important;gap:12px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-card{height:250px!important;min-height:250px!important;max-height:250px!important}
-}
-
-@media (max-width:640px){
-  html body.v8.v13.v14 .engineering-depth{padding:56px 0 64px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head,
-  html body.v8.v13.v14 .engineering-depth .depth-grid{width:calc(100% - 30px)!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head{margin-bottom:24px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head .kicker{margin-bottom:14px!important;font-size:8.5px!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(40px,12vw,54px)!important}
-  html body.v8.v13.v14 .engineering-depth .depth-head>p{padding-top:22px!important;font-size:14px!important;line-height:1.52!important}
-  html body.v8.v13.v14 .engineering-depth .metric-card{height:236px!important;min-height:236px!important;max-height:236px!important;padding:21px 19px 20px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:60px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-proof strong{font-size:15px!important}
-  html body.v8.v13.v14 .engineering-depth .metric-proof p{font-size:11.5px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout{min-height:300px!important;padding:23px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout-number{font-size:64px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:20px!important}
-  html body.v8.v13.v14 .engineering-depth .archive-callout-split{grid-template-columns:1fr!important}
+@media (max-width:760px){
+  html body.v8.v13.v14 .engineering-depth{padding:58px 16px 66px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(44px,12vw,58px)!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head>p{font-size:14px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:1fr!important;min-height:0!important;border-top-width:3px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{
+    min-height:250px!important;
+    padding:24px 22px!important;
+    border-right:0!important;
+    border-bottom:1px solid #dbe3e9!important;
+  }
+  html body.v8.v13.v14 .engineering-depth .metric-card:last-child{border-bottom:0!important}
+  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:70px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof{padding-top:15px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{min-height:350px!important;padding:26px 22px!important}
 }
