@@ -1,0 +1,459 @@
+/* V16 REVIEW AUTHORITY — final geometry for client review.
+   Loaded after the historical V16 layers so these sections have one clear owner. */
+
+/* =========================================================
+   SELECTED ENGINEERING EXPERIENCE
+   Equal viewport gutters. Five true peer cards.
+   ========================================================= */
+html body.v8.v13.v14 .selected-projects-strip{
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding:36px 28px 72px!important;
+  background:#0d1824!important;
+  border-top:1px solid #26384a!important;
+  overflow:hidden!important;
+}
+html body.v8.v13.v14 .selected-projects-strip .project-collection-head,
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+html body.v8.v13.v14 .selected-projects-strip .project-collection-head{
+  min-height:38px!important;
+  margin-top:0!important;
+  margin-bottom:22px!important;
+  padding:0 2px!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-auto-rows:272px!important;
+  gap:18px!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  height:272px!important;
+  min-height:272px!important;
+  max-height:272px!important;
+  margin:0!important;
+  aspect-ratio:auto!important;
+  overflow:hidden!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image,
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
+  width:100%!important;
+  height:100%!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
+  object-fit:cover!important;
+  padding:0!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy{
+  inset:auto 18px 17px!important;
+}
+html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy strong{
+  font-size:19px!important;
+  line-height:1.08!important;
+}
+
+/* =========================================================
+   ENGINEERING DEPTH
+   Full desktop proof band: one framed 3-cell proof board +
+   one matched Experience card. No floating-card look.
+   ========================================================= */
+html body.v8.v13.v14 .engineering-depth{
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding:112px 28px 124px!important;
+  background:#fafaf7!important;
+  overflow:visible!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head,
+html body.v8.v13.v14 .engineering-depth .depth-grid{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(460px,.92fr)!important;
+  gap:clamp(64px,7vw,132px)!important;
+  align-items:end!important;
+  margin-top:0!important;
+  margin-bottom:50px!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head>div{
+  max-width:900px!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head .kicker{
+  display:block!important;
+  margin:0 0 22px!important;
+  color:#174f9f!important;
+  font:500 10px/1 "IBM Plex Mono",monospace!important;
+  letter-spacing:.18em!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head h2{
+  margin:0!important;
+  max-width:900px!important;
+  color:#0d1824!important;
+  font-size:clamp(62px,4.4vw,84px)!important;
+  line-height:.94!important;
+  letter-spacing:-.05em!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head h2 em{
+  color:#1e56aa!important;
+  font-style:normal!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head>p{
+  position:relative!important;
+  max-width:700px!important;
+  margin:0 0 7px!important;
+  padding:27px 0 0!important;
+  color:#647689!important;
+  font-size:18px!important;
+  line-height:1.58!important;
+}
+html body.v8.v13.v14 .engineering-depth .depth-head>p::before{
+  content:"MEASURED ENGINEERING PROOF"!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  color:#1e56aa!important;
+  font:500 8.5px/1 "IBM Plex Mono",monospace!important;
+  letter-spacing:.14em!important;
+}
+
+html body.v8.v13.v14 .engineering-depth .depth-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,3fr) minmax(430px,1.06fr)!important;
+  gap:18px!important;
+  align-items:stretch!important;
+  border:0!important;
+  background:transparent!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-stack{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  width:100%!important;
+  min-width:0!important;
+  height:400px!important;
+  margin:0!important;
+  border:1px solid #cfd9e0!important;
+  background:#fff!important;
+  box-shadow:0 20px 48px rgba(13,24,36,.055)!important;
+  overflow:hidden!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card{
+  position:relative!important;
+  display:grid!important;
+  grid-template-rows:auto 1fr auto!important;
+  width:100%!important;
+  min-width:0!important;
+  height:398px!important;
+  min-height:398px!important;
+  max-height:398px!important;
+  margin:0!important;
+  padding:31px 30px 30px!important;
+  border:0!important;
+  border-right:1px solid #d7e0e6!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfcfd 100%)!important;
+  box-shadow:none!important;
+  color:#0d1824!important;
+  text-align:left!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card:last-child{
+  border-right:0!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:100%!important;
+  height:4px!important;
+  background:linear-gradient(90deg,#174f9f 0 42%,#2b91d3 42% 58%,transparent 58%)!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card:hover{
+  background:#f8fbfd!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-machine{
+  grid-row:1!important;
+  display:block!important;
+  max-width:220px!important;
+  margin:0!important;
+  color:#174f9f!important;
+  font:500 9px/1.35 "IBM Plex Mono",monospace!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card>i{
+  position:absolute!important;
+  top:29px!important;
+  right:28px!important;
+  color:#2088ca!important;
+  font-style:normal!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-number{
+  grid-row:2!important;
+  align-self:center!important;
+  display:flex!important;
+  align-items:baseline!important;
+  min-width:0!important;
+  margin:8px 0 16px!important;
+  color:#0d1824!important;
+  font-family:"Space Grotesk",Inter,sans-serif!important;
+  font-size:clamp(88px,5.4vw,112px)!important;
+  font-weight:500!important;
+  line-height:.82!important;
+  letter-spacing:-.072em!important;
+  white-space:nowrap!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-number span{
+  flex:0 0 auto!important;
+  margin-left:12px!important;
+  color:#174f9f!important;
+  font:500 11px/1 "IBM Plex Mono",monospace!important;
+  letter-spacing:0!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-proof{
+  grid-row:3!important;
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:19px 0 0!important;
+  border-top:1px solid #dce4e9!important;
+  align-self:end!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-proof strong{
+  display:block!important;
+  margin:0 0 8px!important;
+  padding:0!important;
+  border:0!important;
+  color:#174f9f!important;
+  font:600 18px/1.18 Inter,sans-serif!important;
+  letter-spacing:-.015em!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-proof p{
+  display:block!important;
+  max-width:330px!important;
+  margin:0!important;
+  color:#647689!important;
+  font:400 13px/1.5 Inter,sans-serif!important;
+}
+html body.v8.v13.v14 .engineering-depth .metric-card strong::before,
+html body.v8.v13.v14 .engineering-depth .metric-card strong::after{
+  content:none!important;
+  display:none!important;
+}
+
+html body.v8.v13.v14 .engineering-depth .archive-callout{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  min-width:0!important;
+  height:400px!important;
+  min-height:400px!important;
+  max-height:400px!important;
+  margin:0!important;
+  padding:31px 31px 28px!important;
+  box-sizing:border-box!important;
+  background:linear-gradient(145deg,#0b1723 0%,#10273b 100%)!important;
+  border:1px solid #274156!important;
+  box-shadow:0 20px 48px rgba(13,24,36,.14)!important;
+  overflow:hidden!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:4px!important;
+  background:linear-gradient(90deg,#2b91d3 0 50%,transparent 50%)!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout::after{
+  content:""!important;
+  position:absolute!important;
+  width:220px!important;
+  height:220px!important;
+  right:-100px!important;
+  top:-102px!important;
+  border:1px solid rgba(52,155,220,.19)!important;
+  border-radius:50%!important;
+  pointer-events:none!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout .kicker{
+  position:relative!important;
+  z-index:1!important;
+  margin:0!important;
+  color:#4aa9e2!important;
+  font:500 9px/1 "IBM Plex Mono",monospace!important;
+  letter-spacing:.13em!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout-number{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  margin:14px 0 8px!important;
+  color:#238bd5!important;
+  font-family:"Space Grotesk",Inter,sans-serif!important;
+  font-size:82px!important;
+  font-weight:600!important;
+  line-height:.82!important;
+  letter-spacing:-.055em!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout h3{
+  position:relative!important;
+  z-index:1!important;
+  max-width:390px!important;
+  margin:0!important;
+  color:#fff!important;
+  font-size:24px!important;
+  line-height:1.08!important;
+  letter-spacing:-.025em!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout>p{
+  position:relative!important;
+  z-index:1!important;
+  max-width:405px!important;
+  margin:12px 0 14px!important;
+  color:#bfccd7!important;
+  font-size:12px!important;
+  line-height:1.48!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout-split{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin:0 0 14px!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout-split span{
+  min-height:48px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:8px 11px!important;
+  border:1px solid #334e64!important;
+  background:rgba(20,38,58,.92)!important;
+  color:#e2ebf2!important;
+  font:500 7.5px/1.15 "IBM Plex Mono",monospace!important;
+  letter-spacing:.045em!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout-split b{
+  color:#4aa9e2!important;
+  font:600 21px/1 "Space Grotesk",sans-serif!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout .btn{
+  position:relative!important;
+  z-index:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  min-height:48px!important;
+  height:48px!important;
+  margin-top:auto!important;
+  padding:0 15px!important;
+  border:1px solid rgba(255,255,255,.48)!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#fff!important;
+  font-size:8.5px!important;
+  letter-spacing:.08em!important;
+}
+html body.v8.v13.v14 .engineering-depth .archive-callout .btn:hover{
+  background:#1e7fc1!important;
+  border-color:#1e7fc1!important;
+}
+
+/* Gallery banner — keep the chosen fourth panel crop deliberate. */
+html body.v8.v13.v14[data-page="gallery"] .gallery-hero-strip img:last-child{
+  object-fit:cover!important;
+  object-position:50% 48%!important;
+}
+
+@media (max-width:1599px){
+  html body.v8.v13.v14 .selected-projects-strip{padding-left:24px!important;padding-right:24px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]{grid-auto-rows:244px!important;gap:14px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{height:244px!important;min-height:244px!important;max-height:244px!important}
+
+  html body.v8.v13.v14 .engineering-depth{padding:92px 24px 104px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head{grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr)!important;gap:46px!important;margin-bottom:38px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(52px,4.1vw,68px)!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head>p{font-size:16px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:minmax(0,3fr) minmax(350px,1.06fr)!important;gap:16px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack{height:350px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{height:348px!important;min-height:348px!important;max-height:348px!important;padding:27px 24px 25px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:clamp(70px,5vw,90px)!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof strong{font-size:16px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof p{font-size:12px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{height:350px!important;min-height:350px!important;max-height:350px!important;padding:26px 26px 24px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout-number{font-size:68px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:21px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout>p{font-size:11px!important;margin:9px 0 11px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout-split span{min-height:42px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout .btn{min-height:42px!important;height:42px!important}
+}
+
+@media (max-width:1180px){
+  html body.v8.v13.v14 .selected-projects-strip{padding:32px 22px 60px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:250px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{height:250px!important;min-height:250px!important;max-height:250px!important}
+
+  html body.v8.v13.v14 .engineering-depth{padding:76px 22px 86px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head{grid-template-columns:1fr!important;gap:20px!important;margin-bottom:30px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head>p{max-width:760px!important;font-size:15px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:14px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:repeat(3,minmax(0,1fr))!important;height:300px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{height:298px!important;min-height:298px!important;max-height:298px!important;padding:23px 20px 22px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:clamp(58px,7vw,76px)!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof strong{font-size:15px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof p{font-size:11px!important;line-height:1.42!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{height:auto!important;min-height:280px!important;max-height:none!important}
+}
+
+@media (max-width:760px){
+  html body.v8.v13.v14 .selected-projects-strip{padding:28px 16px 52px!important}
+  html body.v8.v13.v14 .selected-projects-strip .project-collection-head{display:block!important;margin-bottom:18px!important}
+  html body.v8.v13.v14 .selected-projects-strip .project-collection-head a{display:inline-block!important;margin-top:9px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]{grid-template-columns:1fr!important;grid-auto-rows:230px!important;gap:12px!important}
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
+  html body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{height:230px!important;min-height:230px!important;max-height:230px!important}
+
+  html body.v8.v13.v14 .engineering-depth{padding:58px 16px 66px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head{margin-bottom:24px!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(43px,12vw,58px)!important}
+  html body.v8.v13.v14 .engineering-depth .depth-head>p{padding-top:22px!important;font-size:14px!important;line-height:1.5!important}
+  html body.v8.v13.v14 .engineering-depth .metric-stack{grid-template-columns:1fr!important;height:auto!important;border:0!important;box-shadow:none!important;gap:10px!important;background:transparent!important;overflow:visible!important}
+  html body.v8.v13.v14 .engineering-depth .metric-card{height:218px!important;min-height:218px!important;max-height:218px!important;border:1px solid #d5dde4!important;padding:20px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-number{font-size:58px!important;margin:5px 0 10px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof{padding-top:13px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof strong{font-size:15px!important;margin-bottom:5px!important}
+  html body.v8.v13.v14 .engineering-depth .metric-proof p{font-size:11px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout{min-height:290px!important;padding:23px 21px 21px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout-number{font-size:64px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:20px!important}
+  html body.v8.v13.v14 .engineering-depth .archive-callout-split{grid-template-columns:1fr 1fr!important}
+}
