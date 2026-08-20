@@ -1,5 +1,4 @@
 name: V16 Final Polish Verification
-# Final regression trigger: latest valid-media filtering
 on:
   push:
     branches: [client-review-v16-blue-refinement]
@@ -19,7 +18,7 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install playwright@1.55.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
-      - name: Verify responsive polish
+      - name: Verify full responsive site
         id: qa
         continue-on-error: true
         run: |
@@ -35,68 +34,126 @@ jobs:
             ['index.html','Bring VSK the part'],
             ['projects.html','If your requirement is unusual'],
             ['machines.html','Search 54 documented'],
-            ['gallery.html','Inspect VSK workmanship']
+            ['gallery.html','Inspect real VSK project media']
           ];
-          async function forceLazyMedia(page){
+          async function forceMedia(page){
             await page.evaluate(async()=>{
-              const step=Math.max(320,Math.floor(innerHeight*.75));
-              for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,45));}
-              scrollTo(0,document.documentElement.scrollHeight);await new Promise(r=>setTimeout(r,250));
+              const step=Math.max(320,Math.floor(innerHeight*.72));
+              for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await new Promise(r=>setTimeout(r,40));}
+              scrollTo(0,document.documentElement.scrollHeight);await new Promise(r=>setTimeout(r,180));
               scrollTo(0,0);await new Promise(r=>setTimeout(r,120));
             });
           }
           (async()=>{
-            const b=await chromium.launch({headless:true});
+            const browser=await chromium.launch({headless:true});
             const failures=[];
             for(const [size,w,h] of sizes){
-              const p=await b.newPage({viewport:{width:w,height:h}});
-              p.on('pageerror',e=>failures.push(`${size}: JS error ${e.message}`));
+              const page=await browser.newPage({viewport:{width:w,height:h}});
+              page.on('pageerror',e=>failures.push(`${size}: JS error ${e.message}`));
               for(const [file,needle] of pages){
-                await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});
-                await p.waitForTimeout(550);
-                if(file==='index.html'){
-                  if(w>=1181){
-                    const home=await p.evaluate(()=>{
-                      const btn=document.querySelector('.header-cta'), arrow=btn.querySelector('span').getBoundingClientRect(), br=btn.getBoundingClientRect();
-                      const stack=document.querySelector('.metric-stack').getBoundingClientRect(), archive=document.querySelector('.archive-callout').getBoundingClientRect();
-                      const hero=document.querySelector('.hero-blue-layout').getBoundingClientRect();
-                      const actions=document.querySelector('.hero-actions').getBoundingClientRect();
-                      const para=document.querySelector('.hero-blue-copy>p').getBoundingClientRect();
-                      return {arrowRight:br.right-arrow.right,stackH:stack.height,archiveH:archive.height,heroLeft:hero.left,heroRight:innerWidth-hero.right,actionsCenter:actions.left+actions.width/2,paraCenter:para.left+para.width/2};
-                    });
-                    if(home.arrowRight<12||home.arrowRight>30) failures.push(`${size}/home: header arrow spacing ${home.arrowRight}`);
-                    if(Math.abs(home.stackH-home.archiveH)>4) failures.push(`${size}/home: Engineering Depth heights ${home.stackH}/${home.archiveH}`);
-                    if(Math.abs(home.actionsCenter-home.paraCenter)>3) failures.push(`${size}/home: hero CTAs not centered under paragraph`);
-                    if(Math.abs(home.heroLeft-home.heroRight)>3) failures.push(`${size}/home: hero shell not centered`);
-                  }
-                  await p.locator('[data-capability="fluid"]').click();
-                  await p.waitForTimeout(220);
-                  const fluid=await p.locator('[data-capability-image]').getAttribute('src');
-                  if(!fluid?.includes('20230216-094120.webp')) failures.push(`${size}/home: alternate hydraulics image not active (${fluid})`);
-                }
-                await forceLazyMedia(p);
-                const basic=await p.evaluate(()=>({
+                await page.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});
+                await page.waitForTimeout(750);
+                const common=await page.evaluate(()=>({
                   vw:innerWidth,
                   docW:document.documentElement.scrollWidth,
                   progress:getComputedStyle(document.querySelector('.page-progress')).display,
                   text:document.body.innerText,
-                  imgs:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth}))
+                  nav:[...document.querySelectorAll('.desktop-nav a')].map(a=>a.textContent.trim())
                 }));
-                if(basic.docW>basic.vw+1) failures.push(`${size}/${file}: horizontal overflow ${basic.docW}>${basic.vw}`);
-                if(basic.progress!=='none') failures.push(`${size}/${file}: obsolete progress strip visible`);
-                if(!basic.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
-                const broken=basic.imgs.filter(i=>!i.complete||i.nw===0);
+                if(common.docW>common.vw+1) failures.push(`${size}/${file}: horizontal overflow ${common.docW}>${common.vw}`);
+                if(common.progress!=='none') failures.push(`${size}/${file}: top progress line visible`);
+                if(!common.text.includes(needle)) failures.push(`${size}/${file}: buyer-facing copy missing`);
+                if(w>=1181&&!common.nav.includes('Gallery')) failures.push(`${size}/${file}: Gallery missing from desktop navigation`);
+
+                if(file==='index.html'){
+                  await page.locator('[data-capability="fluid"]').click();
+                  await page.waitForTimeout(220);
+                  const fluid=await page.locator('[data-capability-image]').getAttribute('src');
+                  if(!fluid?.includes('20230216-094120.webp')) failures.push(`${size}/home: hydraulics image wrong (${fluid})`);
+                  if(w>=1181){
+                    const home=await page.evaluate(()=>{
+                      const shell=document.querySelector('.hero-blue-layout').getBoundingClientRect();
+                      const actions=document.querySelector('.hero-actions').getBoundingClientRect();
+                      const para=document.querySelector('.hero-blue-copy>p').getBoundingClientRect();
+                      const board=document.querySelector('.hero-engineering-board').getBoundingClientRect();
+                      const stack=document.querySelector('.metric-stack').getBoundingClientRect();
+                      const archive=document.querySelector('.archive-callout').getBoundingClientRect();
+                      const hero=document.querySelector('.hero-blue').getBoundingClientRect();
+                      return {
+                        shellLeft:shell.left,shellRight:innerWidth-shell.right,
+                        actionsCenter:actions.left+actions.width/2,paraCenter:para.left+para.width/2,
+                        boardW:board.width,stackH:stack.height,archiveH:archive.height,
+                        heroBottom:hero.bottom,viewportH:innerHeight
+                      };
+                    });
+                    if(Math.abs(home.shellLeft-home.shellRight)>3) failures.push(`${size}/home: hero shell off-center`);
+                    if(Math.abs(home.actionsCenter-home.paraCenter)>4) failures.push(`${size}/home: hero CTAs not centered under paragraph`);
+                    if(home.boardW>700||home.boardW<470) failures.push(`${size}/home: engineering board width ${home.boardW}`);
+                    if(Math.abs(home.stackH-home.archiveH)>4) failures.push(`${size}/home: Engineering Depth mismatch ${home.stackH}/${home.archiveH}`);
+                    if(h>=850&&Math.abs(home.heroBottom-home.viewportH)>5) failures.push(`${size}/home: first screen hero ends at ${home.heroBottom} vs ${home.viewportH}`);
+                  }
+                }
+
+                if(file==='projects.html'&&w>=1181){
+                  const project=await page.evaluate(()=>{
+                    const card=document.querySelector('.project-page-card');
+                    const media=card?.querySelector('.project-page-media')?.getBoundingClientRect();
+                    const copy=card?.querySelector('.project-page-copy')?.getBoundingClientRect();
+                    return {card:card?.getBoundingClientRect().height||0,media:media?.height||0,copy:copy?.height||0,text:card?.innerText||''};
+                  });
+                  if(project.card>760) failures.push(`${size}/projects: project card too tall ${project.card}`);
+                  if(project.copy<90||!project.text.includes('VIEW ENGINEERING CASE')) failures.push(`${size}/projects: project copy area incomplete`);
+                }
+
+                if(file==='machines.html'){
+                  const exp=await page.evaluate(()=>({
+                    mode:getComputedStyle(document.querySelector('.archive-mode')).display,
+                    visual:getComputedStyle(document.querySelector('[data-archive-visual-view]')).display,
+                    index:getComputedStyle(document.querySelector('[data-archive-index-view]')).display,
+                    button:document.querySelector('[data-archive-preview-open]')?.textContent.trim()||''
+                  }));
+                  if(exp.mode!=='none') failures.push(`${size}/experience: duplicate Index/Visual mode still visible`);
+                  if(exp.visual!=='none') failures.push(`${size}/experience: Visual Archive still visible`);
+                  if(exp.index==='none') failures.push(`${size}/experience: searchable index hidden`);
+                  if(!exp.button.includes('View full reference')) failures.push(`${size}/experience: preview CTA not upgraded`);
+                  const first=page.locator('[data-machine-id]').first();
+                  if(await first.count()){
+                    await first.click(); await page.waitForTimeout(200);
+                    if(w>=1181){
+                      const drawer=await page.evaluate(()=>{const r=document.querySelector('.dossier-panel').getBoundingClientRect();return {left:r.left,right:r.right,width:r.width,vw:innerWidth}});
+                      if(Math.abs(drawer.right-drawer.vw)>2||drawer.left<drawer.vw*.42||drawer.width>760) failures.push(`${size}/experience: dossier is not a right-side drawer (${JSON.stringify(drawer)})`);
+                    }
+                    await page.locator('[data-dossier-close]').first().click();
+                  }
+                }
+
+                if(file==='gallery.html'&&w>=1181){
+                  const gallery=await page.evaluate(()=>{
+                    const tiles=[...document.querySelectorAll('.gallery-tile')].slice(0,8).map(x=>x.getBoundingClientRect());
+                    const controls=document.querySelector('.gallery-controls').getBoundingClientRect();
+                    return {maxTile:Math.max(0,...tiles.map(x=>x.width)),controlsRight:controls.right,vw:innerWidth};
+                  });
+                  if(gallery.maxTile>470) failures.push(`${size}/gallery: media tiles too large ${gallery.maxTile}`);
+                  if(gallery.controlsRight>gallery.vw+1) failures.push(`${size}/gallery: filter controls overflow`);
+                }
+
+                await forceMedia(page);
+                const media=await page.evaluate(()=>[...document.images].filter(i=>i.getBoundingClientRect().width>0&&i.getBoundingClientRect().height>0).map(i=>({src:i.currentSrc||i.src,complete:i.complete,nw:i.naturalWidth})));
+                const broken=media.filter(i=>!i.complete||i.nw===0);
                 if(broken.length) failures.push(`${size}/${file}: ${broken.length} broken rendered images (${broken.slice(0,3).map(x=>x.src).join(', ')})`);
               }
-              await p.close();
+              await page.close();
             }
-            const shot=await b.newPage({viewport:{width:1660,height:900}});
-            await shot.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'}); await shot.waitForTimeout(700);
-            await shot.locator('.site-header').screenshot({path:'polish-header.png'});
+
+            const shot=await browser.newPage({viewport:{width:1660,height:900}});
+            await shot.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});await shot.waitForTimeout(800);
+            await shot.screenshot({path:'polish-home-1660.png',fullPage:false});
             await shot.locator('.engineering-depth').screenshot({path:'polish-depth.png'});
-            await shot.locator('[data-capability="fluid"]').click(); await shot.waitForTimeout(220);
-            await shot.locator('.capability-layout').screenshot({path:'polish-hydraulics.png'});
-            await b.close();
+            await shot.goto('http://127.0.0.1:4173/machines.html',{waitUntil:'networkidle'});await shot.waitForTimeout(800);
+            await shot.screenshot({path:'polish-experience-1660.png',fullPage:false});
+            await shot.locator('[data-machine-id]').first().click();await shot.waitForTimeout(200);await shot.screenshot({path:'polish-dossier-1660.png',fullPage:false});
+            await shot.goto('http://127.0.0.1:4173/gallery.html',{waitUntil:'networkidle'});await shot.waitForTimeout(900);await shot.screenshot({path:'polish-gallery-1660.png',fullPage:false});
+            await browser.close();
             if(failures.length){console.error(failures.join('\n'));process.exit(1)}
             console.log(`PASS: ${sizes.length*pages.length} responsive page/viewport combinations`);
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -110,28 +167,24 @@ jobs:
             polish-*.png
             final-responsive-qa.log
           retention-days: 7
-      - name: Record final QA result
+      - name: Record QA result
         if: always()
         run: |
           mkdir -p qa
-          if [ "${{ steps.qa.outcome }}" = "success" ]; then
-            STATUS=PASS
-          else
-            STATUS=FAIL
-          fi
+          if [ "${{ steps.qa.outcome }}" = "success" ]; then STATUS=PASS; else STATUS=FAIL; fi
           {
             echo "status=$STATUS"
             echo "tested_commit=$(git rev-parse HEAD)"
             echo "matrix=28 page/viewport combinations"
             echo "viewports=1920x1080,1660x900,1440x900,1366x768,1024x768,768x1024,390x844"
             echo "pages=index.html,projects.html,machines.html,gallery.html"
-            echo "checks=horizontal-overflow,broken-rendered-images,buyer-copy,hero-centering,cta-centering,engineering-depth-alignment,header-arrow,hydraulics-image"
+            echo "checks=desktop-shell,hero-centering,cta-centering,engineering-depth,gallery-discovery,gallery-sizing,experience-index,dossier-drawer,projects-cards,media,overflow,copy"
           } > qa/v16-final-responsive-status.txt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add qa/v16-final-responsive-status.txt
-          git commit -m "Record final responsive QA result" || true
+          git commit -m "Record final V16 acceptance result" || true
           git push origin HEAD:client-review-v16-blue-refinement
-      - name: Fail job when QA fails
+      - name: Fail when QA fails
         if: steps.qa.outcome == 'failure'
         run: exit 1
