@@ -1,11 +1,10 @@
-name: V16 Blue Clean QA
+name: V16 Release QA
 on:
   push:
     branches:
       - client-review-v16-blue-refinement
-    paths:
-      - .github/workflows/v16-blue-clean-qa.yml
   workflow_dispatch:
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -14,45 +13,141 @@ jobs:
         with:
           ref: client-review-v16-blue-refinement
           fetch-depth: 1
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /index.html
-            /projects.html
-            /machines.html
-            /gallery.html
-            /404.html
-            /styles.css
-            /v16.css
-            /v16-final.css
-            /v16-step3.css
-            /v16-step4.css
-            /v16-step5.css
-            /v16-step6.css
-            /v16-subpages.css
-            /v16-blue-refinement.css
-            /app.js
-            /app-v14.js
-            /data.js
-            /media/**
-      - run: |
+
+      - name: Install browser QA
+        run: |
           npm init -y >/dev/null 2>&1
           npm install playwright@1.55.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
-      - run: |
-          python3 -m http.server 4173 >/tmp/vsk-final.log 2>&1 &
-          sleep 2
-      - name: Check final render
+
+      - name: Start VSK preview
         run: |
-          cat > clean.cjs <<'JS'
-          const {chromium}=require('playwright');const fs=require('fs');const wait=ms=>new Promise(r=>setTimeout(r,ms));
-          (async()=>{const browser=await chromium.launch({headless:true}),fail=[],rows=[];for(const file of ['index.html','projects.html','machines.html','gallery.html','404.html'])for(const [mode,w,h] of [['desktop',1440,1000],['mobile',390,844]]){const p=await browser.newPage({viewport:{width:w,height:h}}),errs=[],bad=[];p.on('pageerror',e=>errs.push(String(e)));p.on('response',r=>{if(r.status()>=400&&r.url().startsWith('http://127.0.0.1:4173/'))bad.push(r.status()+' '+r.url())});await p.goto('http://127.0.0.1:4173/'+file,{waitUntil:'networkidle'});await wait(450);const a=await p.evaluate(()=>{const bad=[];for(const el of [...document.querySelectorAll('body *')].filter(x=>x.offsetParent!==null)){const s=getComputedStyle(el),v=[s.color,s.backgroundColor,s.borderTopColor,s.borderRightColor,s.borderBottomColor,s.borderLeftColor,s.boxShadow];if(v.some(x=>x.includes('40, 95, 80')||x.includes('159, 194, 181'))){bad.push({el:el.tagName+'.'+String(el.className||''),v});if(bad.length===10)break}}return{w:document.documentElement.scrollWidth,bad,theme:document.querySelector('meta[name="theme-color"]')?.content,robots:document.querySelector('meta[name="robots"]')?.content}});if(a.w>w+2)fail.push(`${file}/${mode} overflow ${a.w}`);if(a.bad.length)fail.push(`${file}/${mode} green ${JSON.stringify(a.bad)}`);if((a.theme||'').toUpperCase()!=='#0D1824')fail.push(`${file}/${mode} theme`);if(!String(a.robots).includes('noindex'))fail.push(`${file}/${mode} noindex`);if(file==='index.html'){const hero=await p.evaluate(()=>{const m=document.querySelector('.hero-board-main img'),s=document.querySelector('.hero-board-photo img'),x=document.querySelector('.hero-blue-copy h1 span'),y=document.querySelector('.hero-blue-copy h1 em');return{m:m?.src||'',s:s?.src||'',mo:m?.complete&&m?.naturalWidth>0,so:s?.complete&&s?.naturalWidth>0,x:getComputedStyle(x).color,y:getComputedStyle(y).color}});if(!hero.m.includes('slotting-mc-1.webp')||!hero.s.includes('slotting-detail.webp')||!hero.mo||!hero.so)fail.push(`home/${mode} hero media ${JSON.stringify(hero)}`);if(!hero.x.includes('255, 255, 255')||!hero.y.includes('69, 169, 232'))fail.push(`home/${mode} headline colors`);await p.locator('.hero').screenshot({path:`clean-hero-${mode}.png`})}await p.evaluate(async()=>{const d=document.documentElement;for(let y=0;y<d.scrollHeight;y+=Math.max(500,innerHeight*.75)){scrollTo(0,y);await new Promise(r=>setTimeout(r,55))}scrollTo(0,d.scrollHeight)});await wait(file==='gallery.html'?1300:500);const z=await p.evaluate(()=>({w:document.documentElement.scrollWidth,broken:[...document.images].filter(i=>i.offsetParent!==null&&i.complete&&i.naturalWidth===0).map(i=>i.src)}));if(z.w>w+2)fail.push(`${file}/${mode} final overflow ${z.w}`);if(z.broken.length)fail.push(`${file}/${mode} broken ${z.broken}`);if(errs.length)fail.push(`${file}/${mode} JS ${errs}`);if(bad.length)fail.push(`${file}/${mode} requests ${[...new Set(bad)]}`);rows.push({file,mode,a,z});await p.close()}fs.writeFileSync('clean-report.json',JSON.stringify({fail,rows},null,2));console.log(JSON.stringify({fail},null,2));await browser.close();if(fail.length)process.exit(1)})().catch(e=>{console.error(e);process.exit(1)});
+          python3 -m http.server 4173 >/tmp/vsk-release.log 2>&1 &
+          sleep 2
+
+      - name: Validate every customer viewport
+        run: |
+          cat > release-qa.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+
+          const viewports = [
+            ['desktop-1920',1920,1080],
+            ['desktop-1680',1680,1050],
+            ['desktop-1440',1440,900],
+            ['laptop-1366',1366,768],
+            ['laptop-1280',1280,800],
+            ['tablet-1024',1024,768],
+            ['tablet-768',768,1024],
+            ['mobile-430',430,932],
+            ['mobile-390',390,844],
+            ['mobile-360',360,800]
+          ];
+          const pages = ['index.html','machines.html','gallery.html','404.html'];
+          const fail = [], rows = [];
+          const local = 'http://127.0.0.1:4173/';
+
+          (async()=>{
+            const browser = await chromium.launch({headless:true});
+
+            for (const file of pages) {
+              for (const [mode,w,h] of viewports) {
+                const p = await browser.newPage({viewport:{width:w,height:h}});
+                const pageErrors = [], badRequests = [];
+                p.on('pageerror',e=>pageErrors.push(String(e)));
+                p.on('response',r=>{ if(r.status()>=400 && r.url().startsWith(local)) badRequests.push(`${r.status()} ${r.url()}`); });
+
+                await p.goto(local+file,{waitUntil:'networkidle'});
+                await wait(file==='gallery.html'?1400:800);
+
+                const audit = await p.evaluate(({w,file})=>{
+                  const visible = el => !!el && el.offsetParent!==null;
+                  const rect = el => el ? el.getBoundingClientRect() : null;
+                  const broken = [...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0).map(i=>i.src);
+                  const nav = [...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')].map(a=>a.textContent.trim()).join(' | ');
+                  const rootWidth = document.documentElement.scrollWidth;
+                  const header = document.querySelector('.site-header');
+                  const brand = document.querySelector('.site-header .brand');
+                  const desktopNav = document.querySelector('.desktop-nav');
+                  const navLinks = [...document.querySelectorAll('.desktop-nav a')].filter(visible);
+                  const cta = document.querySelector('.header-cta');
+                  const menu = document.querySelector('.menu-toggle');
+                  const clipping = [...document.querySelectorAll('h1,h2,h3,.btn,.text-cta,.ghost-cta,.header-cta,.contact-main,.contact-secondary')]
+                    .filter(visible)
+                    .filter(el=>{
+                      const s=getComputedStyle(el);
+                      return s.overflow!=='visible' && (el.scrollWidth>el.clientWidth+3 || el.scrollHeight>el.clientHeight+3);
+                    })
+                    .slice(0,12)
+                    .map(el=>({tag:el.tagName,cls:String(el.className||''),text:el.textContent.trim().slice(0,70),sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight}));
+                  const offscreen = [...document.querySelectorAll('main section')].filter(visible).filter(el=>{const r=rect(el);return r.left < -2 || r.right > w+2;}).map(el=>String(el.className||'')).slice(0,10);
+                  const result = {rootWidth,broken,nav,clipping,offscreen,header:rect(header),brand:rect(brand),navRect:rect(desktopNav),cta:rect(cta),menu:rect(menu),navFirst:rect(navLinks[0]),navLast:rect(navLinks.at(-1))};
+                  if(file==='index.html'){
+                    result.selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible).length;
+                    result.depthCards=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible).length;
+                    result.depth=rect(document.querySelector('.engineering-depth'));
+                    result.depthGrid=rect(document.querySelector('.engineering-depth .depth-grid'));
+                    result.callout=rect(document.querySelector('.engineering-depth .archive-callout'));
+                  }
+                  if(file==='machines.html') result.references=[...document.querySelectorAll('[data-machine-id]')].filter(visible).length;
+                  if(file==='gallery.html') result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid] > *')].filter(visible).length;
+                  return result;
+                },{w,file});
+
+                if(audit.rootWidth>w+2) fail.push(`${file}/${mode}: horizontal overflow ${audit.rootWidth}px > ${w}px`);
+                if(audit.broken.length) fail.push(`${file}/${mode}: broken visible media ${audit.broken.join(', ')}`);
+                if(audit.offscreen.length) fail.push(`${file}/${mode}: offscreen sections ${audit.offscreen.join(', ')}`);
+                if(audit.clipping.length) fail.push(`${file}/${mode}: clipped UI ${JSON.stringify(audit.clipping)}`);
+                if(pageErrors.length) fail.push(`${file}/${mode}: JS ${pageErrors.join(' | ')}`);
+                if(badRequests.length) fail.push(`${file}/${mode}: requests ${[...new Set(badRequests)].join(' | ')}`);
+
+                if(file!=='404.html'){
+                  if(/Projects/i.test(audit.nav)) fail.push(`${file}/${mode}: Projects still appears in customer navigation`);
+                  if(!/Experience/i.test(audit.nav)) fail.push(`${file}/${mode}: Experience missing from navigation`);
+                  if(!/Gallery/i.test(audit.nav)) fail.push(`${file}/${mode}: Gallery missing from navigation`);
+                }
+
+                if(w>1180 && file!=='404.html' && audit.navFirst && audit.navLast && audit.brand && audit.cta){
+                  if(audit.navFirst.left < audit.brand.right+8) fail.push(`${file}/${mode}: brand/nav collision`);
+                  if(audit.navLast.right > audit.cta.left-8) fail.push(`${file}/${mode}: nav/CTA collision`);
+                }
+
+                if(file==='index.html'){
+                  if(audit.selected<5) fail.push(`${file}/${mode}: Selected Experience rendered only ${audit.selected} cards`);
+                  if(audit.depthCards!==3) fail.push(`${file}/${mode}: Engineering Depth has ${audit.depthCards} proof cards, expected 3`);
+                  if(audit.depthGrid && (audit.depthGrid.left<-2 || audit.depthGrid.right>w+2)) fail.push(`${file}/${mode}: Engineering Depth grid exceeds viewport`);
+                  await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
+                  if(['desktop-1920','laptop-1366','tablet-768','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
+                }
+                if(file==='machines.html' && audit.references<54) fail.push(`${file}/${mode}: Experience rendered ${audit.references} references, expected 54`);
+                if(file==='gallery.html' && audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery rendered no project groups`);
+
+                rows.push({file,mode,w,h,audit,pageErrors,badRequests});
+                await p.close();
+              }
+            }
+
+            const redirect = await browser.newPage({viewport:{width:1440,height:900}});
+            await redirect.goto(local+'projects.html',{waitUntil:'networkidle'});
+            await wait(500);
+            if(!redirect.url().includes('/machines.html')) fail.push(`projects.html: legacy route did not fold into Experience (${redirect.url()})`);
+            await redirect.close();
+
+            fs.writeFileSync('release-qa-report.json',JSON.stringify({fail,rows},null,2));
+            console.log(JSON.stringify({fail},null,2));
+            await browser.close();
+            if(fail.length) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
           JS
-          node clean.cjs
+          node release-qa.cjs
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: v16-blue-clean-preview
+          name: v16-release-qa
           path: |
-            clean-hero-*.png
-            clean-report.json
+            engineering-depth-*.png
+            home-*.png
+            release-qa-report.json
           retention-days: 14
