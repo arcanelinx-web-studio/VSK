@@ -6,7 +6,6 @@
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
   const galleryCapabilityCategories = [
-    ['New Projects', 'new-project'],
     ['SPM / CNC Machines', 'spm-cnc-machines'],
     ['SPM · PLC / HMI / Servo', 'spm-machines-plc-hmi-and-servo-controlled'],
     ['Hydraulics & Pressing', 'hydraulic-systems-and-pressing-units'],
@@ -19,10 +18,17 @@
     if (!list || list.dataset.galleryLinked === 'true') return;
 
     list.innerHTML = galleryCapabilityCategories.map(([label, key], index) => `
-      <a class="capability-row${index === 0 ? ' is-active' : ''}" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
+      <a class="capability-row" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
         <span>${String(index + 1).padStart(2, '0')}</span><strong>${label}</strong><i>→</i>
       </a>`).join('');
     list.dataset.galleryLinked = 'true';
+
+    if (!document.querySelector('.capability-gallery-cta')) {
+      list.insertAdjacentHTML('afterend', `
+        <a class="capability-gallery-cta" href="gallery.html">
+          <span>Explore the complete VSK gallery</span><i>→</i>
+        </a>`);
+    }
 
     const introCopy = document.querySelector('.capabilities .section-intro > p');
     if (introCopy) introCopy.textContent = 'Choose the engineering category closest to your requirement, then open the corresponding VSK project groups, machine photos and engineering detail in Gallery.';
@@ -45,9 +51,44 @@
           color:inherit!important;
           cursor:pointer!important;
         }
-        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible{
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible,
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:focus-visible{
           outline:2px solid #1e56aa!important;
           outline-offset:3px!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+          width:100%!important;
+          box-sizing:border-box!important;
+          margin:20px 0 0!important;
+          padding:20px 4px 13px!important;
+          border-top:1px solid #cbd5df!important;
+          display:flex!important;
+          align-items:center!important;
+          justify-content:flex-end!important;
+          gap:14px!important;
+          color:#102333!important;
+          text-decoration:none!important;
+          font:600 12px/1.35 "IBM Plex Mono",monospace!important;
+          letter-spacing:.055em!important;
+          transition:color .18s ease,border-color .18s ease!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{
+          font-style:normal!important;
+          color:#1e56aa!important;
+          font-size:15px!important;
+          transition:transform .18s ease!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{
+          color:#1e56aa!important;
+          border-color:#1e56aa!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(4px)!important}
+        @media (max-width:760px){
+          body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+            justify-content:space-between!important;
+            padding:17px 2px 11px!important;
+            font-size:11px!important;
+          }
         }
       `;
       document.head.appendChild(style);
