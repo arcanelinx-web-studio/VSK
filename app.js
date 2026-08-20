@@ -28,10 +28,7 @@
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.12'; document.head.appendChild(css);
   }
   if (!document.querySelector('link[href^="v16-final-lock.css"]')) {
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-final-lock.css?v=16.12'; document.head.appendChild(css);
-  }
-  if (!document.querySelector('script[src^="v16-final-lock.js"]')) {
-    const script = document.createElement('script'); script.src = 'v16-final-lock.js?v=16.12'; script.defer = true; document.body.appendChild(script);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-final-lock.css?v=16.14'; document.head.appendChild(css);
   }
 
   const nativeFetch = window.fetch.bind(window);
@@ -218,12 +215,18 @@
     electric:'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/electric-oven/img-0021.webp'
   };
 
+  let originalLoaded = false;
   const loadOriginal = () => {
+    if (originalLoaded) return;
+    originalLoaded = true;
     const script = document.createElement('script');
     script.src = 'app-v14.js?v=16.7';
     script.defer = true;
     document.body.appendChild(script);
   };
+
+  /* Core interaction must never wait on media or manifest fetches. */
+  loadOriginal();
 
   Promise.all([
     nativeFetch('media/v16/manifest.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
@@ -232,9 +235,6 @@
     const manifest = cleanManifest(rawManifest,validSet);
     if (typeof siteProjects !== 'undefined') {
       siteProjects.forEach(project => { if (mediaMap[project.id] && (!validSet || validSet.has(mediaMap[project.id]))) project.cover = mediaMap[project.id]; });
-      /* Rod Boring is already the Featured Engineering case and Kellenberg has its own
-         dedicated retrofit chapter. Keep both available for dossiers, but move Kellenberg
-         out of the five-card Selected Experience slice so the homepage does not repeat itself. */
       const kellenbergIndex = siteProjects.findIndex(project => project.id === 'kellenberg');
       if (kellenbergIndex >= 0) siteProjects.push(...siteProjects.splice(kellenbergIndex,1));
     }
@@ -246,5 +246,5 @@
     if(groups&&Number.isFinite(summary.groups))groups.textContent=`${summary.groups} project groups`;
     if(images&&Number.isFinite(summary.images))images.textContent=`${summary.images} images`;
     if(videos&&Number.isFinite(summary.videos))videos.textContent=`${summary.videos} videos`;
-  }).catch(()=>{}).finally(loadOriginal);
+  }).catch(()=>{});
 })();
