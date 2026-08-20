@@ -2,6 +2,8 @@
   'use strict';
 
   const page = document.body.dataset.page || 'home';
+  const params = new URLSearchParams(location.search);
+  const requestedType = params.get('type');
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
@@ -12,56 +14,125 @@
     ['Retrofit & Service', 'retrofitting-and-service']
   ];
 
+  const routeItems = [
+    ['Home', 'index.html', 'home'],
+    ['Company', page === 'home' ? '#about' : 'index.html#about', 'company'],
+    ['Capabilities', page === 'home' ? '#expertise' : 'index.html#expertise', 'capabilities'],
+    ['Custom & SPM', 'custom-spm.html', 'spm'],
+    ['Retrofit & CNC', 'machines.html?type=retrofit', 'retrofit'],
+    ['Experience', 'machines.html', 'experience'],
+    ['Gallery', 'gallery.html', 'gallery']
+  ];
+
+  const activeRoute = () => {
+    if (page === 'custom-spm') return 'spm';
+    if (page === 'gallery') return 'gallery';
+    if (page === 'machines' && requestedType === 'spm') return 'spm';
+    if (page === 'machines' && requestedType === 'retrofit') return 'retrofit';
+    if (page === 'machines') return 'experience';
+    if (page === 'home') return 'home';
+    return '';
+  };
+
   const ensureGlobalStyles = () => {
     if (document.getElementById('v16-taxonomy-lock')) return;
     const style = document.createElement('style');
     style.id = 'v16-taxonomy-lock';
     style.textContent = `
       @media (min-width:1221px){
-        body.v8.v13.v14 .desktop-nav{gap:clamp(10px,1vw,17px)!important}
-        body.v8.v13.v14 .desktop-nav a{font-size:10px!important;letter-spacing:.025em!important}
+        body.v8.v13.v14 .desktop-nav{gap:clamp(9px,.9vw,15px)!important}
+        body.v8.v13.v14 .desktop-nav a{font-size:9.7px!important;letter-spacing:.018em!important;white-space:nowrap!important}
       }
       @media (min-width:1221px) and (max-width:1480px){
-        body.v8.v13.v14 .desktop-nav{gap:11px!important}
-        body.v8.v13.v14 .desktop-nav a{font-size:9.6px!important}
-        body.v8.v13.v14 .header-cta{padding-inline:12px!important;font-size:10px!important}
+        body.v8.v13.v14 .desktop-nav{gap:9px!important}
+        body.v8.v13.v14 .desktop-nav a{font-size:9.2px!important}
+        body.v8.v13.v14 .header-cta{padding-inline:11px!important;font-size:9.7px!important}
       }
       body.v8.v13.v14[data-page="home"] .capability-layout{grid-template-columns:minmax(0,1fr)!important}
       body.v8.v13.v14[data-page="home"] .capability-media{display:none!important}
-      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{
-        text-decoration:none!important;color:inherit!important;cursor:pointer!important
+      body.v8.v13.v14[data-page="home"] .capability-list{
+        display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        border-top:1px solid #c8d3dd!important;border-left:1px solid #c8d3dd!important
       }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{
+        min-height:88px!important;padding:0 22px!important;margin:0!important;
+        display:grid!important;grid-template-columns:42px minmax(0,1fr) 28px!important;align-items:center!important;
+        border:0!important;border-right:1px solid #c8d3dd!important;border-bottom:1px solid #c8d3dd!important;
+        background:#fff!important;text-decoration:none!important;color:#102333!important;cursor:pointer!important;
+        transition:background .18s ease,color .18s ease,border-color .18s ease!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row span{
+        color:#6c8194!important;font:500 10px/1 "IBM Plex Mono",monospace!important;letter-spacing:.08em!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row strong{
+        color:inherit!important;font-family:"Space Grotesk",sans-serif!important;font-size:18px!important;font-weight:600!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row i{
+        justify-self:end!important;color:#1e56aa!important;font-style:normal!important;font-size:17px!important;transition:transform .18s ease!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:hover{
+        background:#f1f5f8!important;color:#174f9f!important;border-color:#9fb5c9!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:hover i{transform:translateX(4px)!important}
       body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible,
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta:focus-visible{
         outline:2px solid #1e56aa!important;outline-offset:3px!important
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
         width:100%!important;box-sizing:border-box!important;margin:26px 0 0!important;
-        min-height:76px!important;padding:0 24px!important;border:1px solid rgba(255,255,255,.12)!important;
-        border-top-color:rgba(147,177,203,.34)!important;background:#0d1b29!important;
-        display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;
+        min-height:78px!important;padding:0 24px!important;border:1px solid #20394e!important;
+        background:#0d1b29!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;
         color:#f7f8f8!important;text-decoration:none!important;
-        font:600 12px/1.35 "IBM Plex Mono",monospace!important;letter-spacing:.055em!important;
+        font:600 11px/1.35 "IBM Plex Mono",monospace!important;letter-spacing:.075em!important;text-transform:uppercase!important;
         transition:background .18s ease,border-color .18s ease,color .18s ease!important
       }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta::before{
+        content:"PROJECT EVIDENCE"!important;color:#7591a8!important;font-size:8px!important;letter-spacing:.14em!important;margin-right:auto!important
+      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{margin-left:22px!important}
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{
-        font-style:normal!important;color:#f7f8f8!important;font-size:16px!important;
-        transition:transform .18s ease,color .18s ease!important
+        font-style:normal!important;color:#8fb8e8!important;font-size:17px!important;transition:transform .18s ease!important
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{
         background:#10263a!important;border-color:#356ead!important;color:#fff!important
       }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{
-        transform:translateX(5px)!important;color:#8fb8e8!important
-      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(5px)!important}
       body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout .btn{margin-bottom:30px!important}
       @media (max-width:760px){
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
-          min-height:68px!important;padding:0 17px!important;font-size:10.5px!important
-        }
+        body.v8.v13.v14[data-page="home"] .capability-list{grid-template-columns:1fr!important}
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row{min-height:74px!important;padding:0 17px!important;grid-template-columns:36px minmax(0,1fr) 24px!important}
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row strong{font-size:15px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{min-height:70px!important;padding:0 17px!important;font-size:9.8px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta::before{display:none!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{margin-left:0!important}
       }
     `;
     document.head.appendChild(style);
+  };
+
+  const normalizeNavigation = () => {
+    const current = activeRoute();
+    const desktop = document.querySelector('.desktop-nav');
+    if (desktop) {
+      desktop.innerHTML = routeItems.map(([label, href, route]) =>
+        `<a href="${href}"${route === current ? ' class="is-current" aria-current="page"' : ''}>${label}</a>`
+      ).join('');
+    }
+
+    const mobileNav = document.querySelector('[data-mobile-menu] nav');
+    if (mobileNav) {
+      mobileNav.innerHTML = routeItems.map(([label, href, route], index) =>
+        `<a href="${href}"${route === current ? ' class="is-current" aria-current="page"' : ''}>${label} <span>${String(index + 1).padStart(2, '0')}</span></a>`
+      ).join('');
+    }
+
+    const footerEngineering = [...document.querySelectorAll('.footer-col')].find(col => /engineering/i.test(col.querySelector(':scope > span')?.textContent || ''));
+    if (footerEngineering) {
+      const quote = footerEngineering.querySelector('[data-quote-open]');
+      footerEngineering.innerHTML = '<span>Engineering</span><a href="index.html#expertise">Capabilities</a><a href="custom-spm.html">Custom &amp; SPM</a><a href="machines.html?type=retrofit">Retrofit &amp; CNC</a>';
+      if (quote) footerEngineering.appendChild(quote);
+      else footerEngineering.insertAdjacentHTML('beforeend','<button type="button" data-quote-open>Discuss a Machine ↗</button>');
+    }
   };
 
   const alignCapabilitiesToGallery = () => {
@@ -69,103 +140,23 @@
     const list = document.querySelector('[data-capability-list]');
     if (!list) return;
 
-    if (list.dataset.galleryLinked !== 'true') {
-      list.innerHTML = galleryCapabilityCategories.map(([label, key], index) => `
-        <a class="capability-row" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
-          <span>${String(index + 1).padStart(2, '0')}</span><strong>${label}</strong><i>→</i>
-        </a>`).join('');
+    const wanted = galleryCapabilityCategories.map(([label, key], index) =>
+      `<a class="capability-row" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability="${key}"><span>${String(index + 1).padStart(2, '0')}</span><strong>${label}</strong><i>→</i></a>`
+    ).join('');
+    if (list.dataset.galleryLinked !== 'true' || list.querySelectorAll('[data-gallery-capability]').length !== galleryCapabilityCategories.length) {
+      list.innerHTML = wanted;
       list.dataset.galleryLinked = 'true';
     }
 
-    if (!document.querySelector('.capability-gallery-cta')) {
-      list.insertAdjacentHTML('afterend', `
-        <a class="capability-gallery-cta" href="gallery.html">
-          <span>Explore the complete VSK project gallery</span><i>→</i>
-        </a>`);
+    let cta = document.querySelector('.capability-gallery-cta');
+    if (!cta) {
+      list.insertAdjacentHTML('afterend','<a class="capability-gallery-cta" href="gallery.html"><span>Explore the complete VSK project gallery</span><i>→</i></a>');
+      cta = document.querySelector('.capability-gallery-cta');
     }
+    if (cta) cta.href = 'gallery.html';
 
-    const introCopy = document.querySelector('.capabilities .section-intro > p');
-    if (introCopy) introCopy.textContent = 'Choose the engineering category closest to your requirement, then open the corresponding VSK project groups, machine photos and engineering detail in Gallery.';
-  };
-
-  const makeNavLink = (label, href, route) => {
-    const a = document.createElement('a');
-    a.href = href;
-    a.textContent = label;
-    a.dataset.v16Route = route;
-    return a;
-  };
-
-  const normalizeNavigation = () => {
-    const params = new URLSearchParams(location.search);
-    const requestedType = params.get('type');
-
-    const desktop = document.querySelector('.desktop-nav');
-    if (desktop) {
-      let retrofit = [...desktop.querySelectorAll('a')].find(a => a.href.includes('type=retrofit') || /retrofit\s*&\s*cnc/i.test(a.textContent));
-      let custom = desktop.querySelector('[data-v16-route="spm"]');
-      if (!custom) {
-        custom = makeNavLink('Custom & SPM', 'machines.html?type=spm', 'spm');
-        if (retrofit) desktop.insertBefore(custom, retrofit);
-        else {
-          const experience = [...desktop.querySelectorAll('a')].find(a => /experience/i.test(a.textContent));
-          desktop.insertBefore(custom, experience || null);
-        }
-      }
-      custom.href = 'machines.html?type=spm';
-      custom.textContent = 'Custom & SPM';
-      if (retrofit) {
-        retrofit.href = 'machines.html?type=retrofit';
-        retrofit.textContent = 'Retrofit & CNC';
-        retrofit.dataset.v16Route = 'retrofit';
-      }
-
-      if (page === 'machines') {
-        desktop.querySelectorAll('a').forEach(a => { a.classList.remove('is-current'); a.removeAttribute('aria-current'); });
-        let active;
-        if (requestedType === 'spm') active = custom;
-        else if (requestedType === 'retrofit') active = retrofit;
-        else active = [...desktop.querySelectorAll('a')].find(a => /^experience$/i.test(a.textContent.trim()));
-        if (active) { active.classList.add('is-current'); active.setAttribute('aria-current','page'); }
-      }
-    }
-
-    const mobile = document.querySelector('[data-mobile-menu] nav');
-    if (mobile) {
-      let retrofit = [...mobile.querySelectorAll('a')].find(a => a.href.includes('type=retrofit') || /retrofit\s*&\s*cnc/i.test(a.textContent));
-      let custom = mobile.querySelector('[data-v16-route="spm"]');
-      if (!custom) {
-        custom = document.createElement('a');
-        custom.href = 'machines.html?type=spm';
-        custom.dataset.v16Route = 'spm';
-        custom.innerHTML = 'Custom &amp; SPM <span></span>';
-        if (retrofit) mobile.insertBefore(custom, retrofit);
-        else mobile.appendChild(custom);
-      }
-      custom.href = 'machines.html?type=spm';
-      custom.innerHTML = 'Custom &amp; SPM <span></span>';
-      retrofit = [...mobile.querySelectorAll('a')].find(a => a.href.includes('type=retrofit') || /retrofit/i.test(a.textContent));
-      if (retrofit) {
-        retrofit.href = 'machines.html?type=retrofit';
-        retrofit.innerHTML = 'Retrofit &amp; CNC <span></span>';
-      }
-      [...mobile.querySelectorAll('a')].forEach((a, index) => {
-        let n = a.querySelector('span');
-        if (!n) { n = document.createElement('span'); a.appendChild(n); }
-        n.textContent = String(index + 1).padStart(2,'0');
-      });
-    }
-
-    const footerEngineering = [...document.querySelectorAll('.footer-col')].find(col => /engineering/i.test(col.querySelector(':scope > span')?.textContent || ''));
-    if (footerEngineering) {
-      const retrofit = [...footerEngineering.querySelectorAll('a')].find(a => a.href.includes('type=retrofit'));
-      let custom = footerEngineering.querySelector('[data-v16-route="spm"]');
-      if (!custom) {
-        custom = makeNavLink('Custom & SPM', 'machines.html?type=spm', 'spm');
-        footerEngineering.insertBefore(custom, retrofit || footerEngineering.querySelector('button') || null);
-      }
-      if (retrofit) retrofit.textContent = 'Retrofit & CNC';
-    }
+    const intro = document.querySelector('.capabilities .section-intro > p');
+    if (intro) intro.textContent = 'Choose the engineering category closest to your requirement, then inspect the corresponding VSK project groups, machine photographs and engineering detail in the Gallery.';
   };
 
   const normalizeHomeTaxonomy = () => {
@@ -180,8 +171,8 @@
     if (archiveCopy) archiveCopy.textContent = 'Search 39 Custom / SPM and 15 Retrofit & CNC references by process, machine type, customer need or control platform before you start the discussion.';
 
     const heroChips = [...document.querySelectorAll('.hero-chips span')];
-    const cncChip = heroChips.find(el => /cnc.*retrofit|retrofit.*cnc/i.test(el.textContent));
-    if (cncChip) cncChip.textContent = 'RETROFIT & CNC';
+    const retrofitChip = heroChips.find(el => /cnc.*retrofit|retrofit.*cnc/i.test(el.textContent));
+    if (retrofitChip) retrofitChip.textContent = 'RETROFIT & CNC';
 
     const retrofitExperience = document.querySelector('.retrofit-actions a[href*="type=retrofit"]');
     if (retrofitExperience) retrofitExperience.innerHTML = 'See Retrofit &amp; CNC experience <span>↗</span>';
@@ -189,31 +180,95 @@
 
   const normalizeExperienceTaxonomy = () => {
     if (page !== 'machines') return;
+    const isRetrofit = requestedType === 'retrofit';
+    const isSpm = requestedType === 'spm';
+
+    const heroKicker = document.querySelector('.archive-hero .kicker');
+    const heroNumberLabel = document.querySelector('.archive-hero-number small');
+    const heroTitle = document.querySelector('.archive-hero h1');
     const heroCopy = document.querySelector('.archive-hero p');
-    if (heroCopy && !heroCopy.textContent.includes('Retrofit & CNC')) heroCopy.textContent = 'Search VSK’s Custom & SPM and Retrofit & CNC experience by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
+
+    if (isRetrofit) {
+      if (heroKicker) heroKicker.textContent = 'RETROFIT & CNC EXPERIENCE';
+      if (heroNumberLabel) heroNumberLabel.textContent = '15 DOCUMENTED REFERENCES';
+      if (heroTitle) heroTitle.innerHTML = 'Modernise a sound machine.<br><em>Recover capability and control.</em>';
+      if (heroCopy) heroCopy.textContent = 'Explore VSK Retrofit & CNC experience across CNC, PLC, HMI, servo, drive, electrical and machine-tool systems, then compare the closest references with what you need to recover or upgrade.';
+    } else if (isSpm) {
+      if (heroKicker) heroKicker.textContent = 'CUSTOM & SPM EXPERIENCE';
+      if (heroNumberLabel) heroNumberLabel.textContent = '39 DOCUMENTED REFERENCES';
+      if (heroTitle) heroTitle.innerHTML = 'Find a custom-machine reference<br><em>close to your production need.</em>';
+      if (heroCopy) heroCopy.textContent = 'Browse VSK Custom & SPM experience across purpose-built machines, CNC applications, servo systems, hydraulics, testing and process equipment.';
+    } else {
+      if (heroKicker) heroKicker.textContent = 'VSK ENGINEERING EXPERIENCE';
+      if (heroNumberLabel) heroNumberLabel.textContent = '54 SEARCHABLE REFERENCES';
+      if (heroTitle) heroTitle.innerHTML = 'Find experience<br><em>close to your requirement.</em>';
+      if (heroCopy) heroCopy.textContent = 'Search VSK’s 39 Custom / SPM and 15 Retrofit & CNC references by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
+    }
 
     const facts = document.querySelectorAll('.archive-hero-facts span');
-    if (facts[0] && !/CUSTOM \/ SPM/i.test(facts[0].textContent)) facts[0].innerHTML = '<strong>39</strong> CUSTOM / SPM';
-    if (facts[1] && !/RETROFIT & CNC/i.test(facts[1].textContent)) facts[1].innerHTML = '<strong>15</strong> RETROFIT &amp; CNC';
+    if (facts[0]) facts[0].innerHTML = '<strong>39</strong> CUSTOM / SPM';
+    if (facts[1]) facts[1].innerHTML = '<strong>15</strong> RETROFIT &amp; CNC';
+    if (facts[2]) facts[2].innerHTML = '<strong>54</strong> DOCUMENTED REFERENCES';
 
     const spm = document.querySelector('[data-type-filter="spm"]');
     const retrofit = document.querySelector('[data-type-filter="retrofit"]');
-    if (spm && !/Custom & SPM/i.test(spm.textContent)) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
-    if (retrofit && !/Retrofit & CNC/i.test(retrofit.textContent)) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
+    if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
+    if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
     const active = document.querySelector('[data-active-filters]');
-    if (active && /^retrofit$/i.test(active.textContent.trim())) active.textContent = 'Retrofit & CNC';
+    if (active) {
+      const text = active.textContent.trim();
+      if (/^retrofit$/i.test(text)) active.textContent = 'Retrofit & CNC';
+      if (/^custom \/ spm$/i.test(text)) active.textContent = 'Custom & SPM';
+    }
 
     const dossierKicker = document.querySelector('[data-dossier-kicker]');
-    if (dossierKicker && /^retrofit experience$/i.test(dossierKicker.textContent.trim())) dossierKicker.textContent = 'RETROFIT & CNC EXPERIENCE';
+    if (dossierKicker && /retrofit experience/i.test(dossierKicker.textContent)) dossierKicker.textContent = 'RETROFIT & CNC EXPERIENCE';
+    if (dossierKicker && /custom machine experience/i.test(dossierKicker.textContent)) dossierKicker.textContent = 'CUSTOM & SPM EXPERIENCE';
   };
 
   const ensureExperienceRoute = () => {
-    if (page !== 'machines') return;
-    const requestedType = new URLSearchParams(location.search).get('type');
-    if (!['spm','retrofit'].includes(requestedType)) return;
+    if (page !== 'machines' || !['spm','retrofit'].includes(requestedType)) return;
     const target = document.querySelector(`[data-type-filter="${requestedType}"]`);
     if (target && !target.classList.contains('is-active')) target.click();
+  };
+
+  const applyMechanicalImage = () => {
+    if (typeof capabilityData !== 'undefined' && capabilityData?.mechanical) {
+      capabilityData.mechanical.image = mechanicalImage;
+      capabilityData.mechanical.alt = mechanicalAlt;
+    }
+  };
+
+  const ensureContactNumber = () => {
+    const contactDirect = document.querySelector('.contact-direct');
+    if (!contactDirect || contactDirect.querySelector('a[href="tel:+917353100095"]')) return;
+    const primary = contactDirect.querySelector('a[href^="tel:"]');
+    const secondary = document.createElement('a');
+    secondary.href = 'tel:+917353100095';
+    secondary.textContent = '+91 73531 00095';
+    if (primary?.nextSibling) contactDirect.insertBefore(secondary, primary.nextSibling);
+    else contactDirect.appendChild(secondary);
+  };
+
+  const ensureGalleryController = () => {
+    if (page !== 'gallery') return;
+    if (!document.getElementById('v16-gallery-first-paint-guard')) {
+      const guard = document.createElement('style');
+      guard.id = 'v16-gallery-first-paint-guard';
+      guard.textContent = `
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{min-height:146px!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+        body.v8.v13.v14[data-page="gallery"].gallery-categories-ready .gallery-controls{visibility:visible!important;opacity:1!important;pointer-events:auto!important;transition:opacity .16s ease!important}
+      `;
+      document.head.appendChild(guard);
+    }
+    if (!document.querySelector('script[data-v16-gallery-categories]')) {
+      const script = document.createElement('script');
+      script.src = 'gallery-categories.js?v=16.35';
+      script.async = false;
+      script.dataset.v16GalleryCategories = '';
+      document.body.appendChild(script);
+    }
   };
 
   [
@@ -229,13 +284,6 @@
     document.head.appendChild(link);
   });
 
-  if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = 'v16-review-authority.css?v=16.33';
-    document.head.appendChild(css);
-  }
-
   if (typeof siteProjects !== 'undefined' && Array.isArray(siteProjects)) {
     const preferred = ['zcut', 'vertical', 'jig', 'udrill', 'slotting'];
     const rank = new Map(preferred.map((id, index) => [id, index]));
@@ -246,53 +294,6 @@
     });
   }
 
-  if (page === 'gallery') {
-    if (!document.getElementById('v16-gallery-first-paint-guard')) {
-      const guard = document.createElement('style');
-      guard.id = 'v16-gallery-first-paint-guard';
-      guard.textContent = `
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls{
-          min-height:146px!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important
-        }
-        body.v8.v13.v14[data-page="gallery"].gallery-categories-ready .gallery-controls{
-          visibility:visible!important;opacity:1!important;pointer-events:auto!important;transition:opacity .16s ease!important
-        }
-      `;
-      document.head.appendChild(guard);
-    }
-    if (!document.querySelector('script[data-v16-gallery-categories]')) {
-      const script = document.createElement('script');
-      script.src = 'gallery-categories.js?v=16.33';
-      script.async = false;
-      script.dataset.v16GalleryCategories = '';
-      document.body.appendChild(script);
-    }
-  }
-
-  const applyMechanicalImage = () => {
-    if (typeof capabilityData !== 'undefined' && capabilityData?.mechanical) {
-      capabilityData.mechanical.image = mechanicalImage;
-      capabilityData.mechanical.alt = mechanicalAlt;
-    }
-    const image = document.querySelector('[data-capability-image]');
-    const row = document.querySelector('[data-capability="mechanical"]');
-    if (image && row?.classList.contains('is-active')) {
-      image.src = mechanicalImage;
-      image.alt = mechanicalAlt;
-    }
-  };
-
-  const ensureContactNumber = () => {
-    const contactDirect = document.querySelector('.contact-direct');
-    if (!contactDirect || contactDirect.querySelector('a[href="tel:+917353100095"]')) return;
-    const primary = contactDirect.querySelector('a[href^="tel:"]');
-    const secondary = document.createElement('a');
-    secondary.href = 'tel:+917353100095';
-    secondary.textContent = '+91 73531 00095';
-    if (primary?.nextSibling) contactDirect.insertBefore(secondary, primary.nextSibling);
-    else contactDirect.appendChild(secondary);
-  };
-
   const apply = () => {
     ensureGlobalStyles();
     normalizeNavigation();
@@ -301,22 +302,30 @@
     normalizeExperienceTaxonomy();
     applyMechanicalImage();
     ensureContactNumber();
+    ensureGalleryController();
     ensureExperienceRoute();
   };
 
   apply();
-  document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(apply), { once: true });
+
+  const afterOtherScripts = () => {
+    setTimeout(apply, 0);
+    requestAnimationFrame(() => requestAnimationFrame(apply));
+  };
+
+  document.addEventListener('DOMContentLoaded', afterOtherScripts, { once: true });
   window.addEventListener('load', () => {
-    apply();
-    setTimeout(apply, 450);
-    setTimeout(apply, 1100);
+    afterOtherScripts();
+    setTimeout(apply, 250);
+    setTimeout(apply, 900);
   }, { once: true });
 
-  if (page === 'machines') {
-    document.addEventListener('click', e => {
-      if (e.target.closest('[data-type-filter],[data-machine-id],[data-archive-preview-open],[data-dossier-next],[data-dossier-prev]')) {
-        setTimeout(normalizeExperienceTaxonomy, 0);
-      }
-    });
-  }
+  document.addEventListener('click', e => {
+    if (page === 'machines' && e.target.closest('[data-type-filter],[data-machine-id],[data-archive-preview-open],[data-dossier-next],[data-dossier-prev]')) {
+      setTimeout(() => {
+        normalizeNavigation();
+        normalizeExperienceTaxonomy();
+      }, 0);
+    }
+  });
 })();
