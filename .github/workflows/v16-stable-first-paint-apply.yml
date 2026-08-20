@@ -41,7 +41,6 @@ jobs:
               path = Path(name)
               text = path.read_text(encoding='utf-8')
 
-              # Remove duplicate late-polish links, then preload them before the final authority.
               for asset in preload_css:
                   text = re.sub(
                       rf'\s*<link[^>]+href=[\"\']{re.escape(asset)}(?:\?[^\"\']*)?[\"\'][^>]*>\s*',
@@ -52,7 +51,6 @@ jobs:
                   links = ''.join(f'<link rel="stylesheet" href="{asset}?v={VERSION}">\n' for asset in preload_css)
                   text = text[:marker.start()] + links + text[marker.start():]
 
-              # One cache version for every final-stage asset.
               for asset in [
                   'v16-final-lock.css', 'v16-review-authority.css',
                   'v16-engineering-depth-final.css', 'v16-final-lock.js',
@@ -60,14 +58,12 @@ jobs:
               ]:
                   text = replace_asset_version(text, asset)
 
-              # Gallery no longer needs the hidden image collage in the DOM at all.
               if name == 'gallery.html':
                   text = re.sub(
                       r'<div aria-hidden=[\"\']true[\"\'] class=[\"\']gallery-hero-strip[\"\']>.*?</div><div class=[\"\']gallery-hero-shade[\"\']></div>',
                       '', text, count=1, flags=re.S
                   )
 
-              # Deterministic, ordered script boot. app-v14 is no longer dynamically raced in.
               script_start = re.search(r'<script\s+src=[\"\']data\.js(?:\?[^\"\']*)?[\"\']></script>', text, flags=re.I)
               if script_start:
                   body_end = text.find('</body>', script_start.start())
@@ -82,7 +78,6 @@ jobs:
 
               path.write_text(text, encoding='utf-8')
 
-          # app.js: never race app-v14 into the DOM when the static ordered script is present.
           app = Path('app.js')
           text = app.read_text(encoding='utf-8')
           text = text.replace("let originalLoaded = false;", "let originalLoaded = !!document.querySelector('script[data-v16-core]');")
@@ -99,14 +94,12 @@ jobs:
               "setText('.gallery-browser-head > p','Look from the complete machine down to fixtures, mechanisms, control panels and process details to judge how VSK executes real shop-floor engineering.');",
               "setText('.gallery-browser-head > p','Choose the engineering category closest to your requirement, then open the individual project groups to inspect machine construction, controls, mechanisms and process detail.');"
           )
-          # Gallery summary belongs to the category renderer; do not overwrite it with image/video counts later.
           text = text.replace(
               "if(groups&&Number.isFinite(summary.groups))groups.textContent=`${summary.groups} project groups`;\n    if(images&&Number.isFinite(summary.images))images.textContent=`${summary.images} images`;\n    if(videos&&Number.isFinite(summary.videos))videos.textContent=`${summary.videos} videos`;",
               "if(page !== 'gallery'){\n      if(groups&&Number.isFinite(summary.groups))groups.textContent=`${summary.groups} project groups`;\n      if(images&&Number.isFinite(summary.images))images.textContent=`${summary.images} images`;\n      if(videos&&Number.isFinite(summary.videos))videos.textContent=`${summary.videos} videos`;\n    }"
           )
           app.write_text(text, encoding='utf-8')
 
-          # Final lock fallbacks use the same release token.
           lock_js = Path('v16-final-lock.js')
           text = lock_js.read_text(encoding='utf-8')
           text = re.sub(r'v16-review-authority\.css\?v=[^\"\']+', f'v16-review-authority.css?v={VERSION}', text)
@@ -118,7 +111,6 @@ jobs:
           text = re.sub(r'v16-review-authority\.css\?v=[^\"\')]+', f'v16-review-authority.css?v={VERSION}', text)
           lock_css.write_text(text, encoding='utf-8')
 
-          # Stable local first paint: no full-page loader, no flash of the 34 legacy Gallery filters.
           review = Path('v16-review-authority.css')
           text = review.read_text(encoding='utf-8')
           start = '/* V16.32 STABLE FIRST PAINT START */'
@@ -149,7 +141,6 @@ html body.v8.v13.v14[data-page="gallery"] .gallery-hero-shade{display:none!impor
               text += '\n' + block
           review.write_text(text, encoding='utf-8')
 
-          # Keep deployment documentation from sending future work to the wrong branch.
           Path('DEPLOY-README.txt').write_text(
               'VSK V16 - GitHub Pages Review\n\n'
               'Development source: client-review-v16-blue-refinement / (root)\n'
@@ -179,3 +170,5 @@ html body.v8.v13.v14[data-page="gallery"] .gallery-hero-shade{display:none!impor
           git fetch origin client-review-v16-blue-refinement
           git checkout -B client-review-v16-blue-refinement origin/client-review-v16-blue-refinement
           git push --force origin HEAD:client-review-v5
+
+# trigger: normalize after workflow registration
