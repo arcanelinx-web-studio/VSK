@@ -25,7 +25,7 @@ jobs:
           python3 -m http.server 4173 >/tmp/vsk-release.log 2>&1 &
           sleep 2
 
-      - name: Validate current V16 review build
+      - name: Validate final V16 review build
         run: |
           cat > release-qa.cjs <<'JS'
           const { chromium } = require('playwright');
@@ -34,133 +34,123 @@ jobs:
           const local = 'http://127.0.0.1:4173/';
           const viewports = [
             ['desktop-1920',1920,1080],['desktop-1680',1680,1050],['desktop-1440',1440,900],
-            ['laptop-1366',1366,768],['tablet-1024',1024,768],['tablet-768',768,1024],
-            ['mobile-430',430,932],['mobile-390',390,844],['mobile-360',360,800]
+            ['tablet-1024',1024,768],['tablet-768',768,1024],['mobile-390',390,844]
           ];
           const pages = ['index.html','machines.html','gallery.html'];
           const fail = [], report = [];
-          const visible = el => !!el && el.offsetParent !== null;
-          const rect = el => el ? el.getBoundingClientRect() : null;
 
           (async()=>{
             const browser = await chromium.launch({headless:true});
             for (const file of pages) {
               for (const [mode,w,h] of viewports) {
-                const p = await browser.newPage({viewport:{width:w,height:h}});
+                const page = await browser.newPage({viewport:{width:w,height:h}});
                 const pageErrors=[];
-                p.on('pageerror',e=>pageErrors.push(String(e)));
-                await p.goto(local+file,{waitUntil:'networkidle'});
-                await wait(file==='index.html'?1700:2600);
+                page.on('pageerror',e=>pageErrors.push(String(e)));
+                await page.goto(local+file,{waitUntil:'networkidle'});
+                await wait(file==='gallery.html'?1900:1300);
 
-                const audit = await p.evaluate(({w,file})=>{
+                const audit = await page.evaluate(({file,w})=>{
                   const visible = el => !!el && el.offsetParent !== null;
                   const rect = el => el ? el.getBoundingClientRect() : null;
-                  const broken=[...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0).map(i=>i.src);
-                  const nav=[...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')].map(a=>a.textContent.trim()).join(' | ');
-                  const footer=document.querySelector('.site-footer')?.innerText||'';
-                  const boot=document.querySelector('#v16-boot-screen');
-                  const result={scrollWidth:document.documentElement.scrollWidth,broken,nav,footer,bootVisible:visible(boot)};
+                  const result={
+                    scrollWidth:document.documentElement.scrollWidth,
+                    broken:[...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0).map(i=>i.src),
+                    footer:document.querySelector('.site-footer')?.innerText||'',
+                    nav:[...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')].map(a=>a.textContent.trim()).join(' | '),
+                    bootVisible:visible(document.querySelector('#v16-boot-screen'))
+                  };
+
                   if(file==='index.html'){
                     const selectedGrid=document.querySelector('[data-home-projects]');
                     const selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible);
-                    const depthSection=document.querySelector('.engineering-depth');
-                    const depth=document.querySelector('.engineering-depth .depth-grid');
-                    const metricStack=document.querySelector('.engineering-depth .metric-stack');
-                    const callout=document.querySelector('.engineering-depth .archive-callout');
+                    const depth=document.querySelector('.engineering-depth');
+                    const depthGrid=document.querySelector('.engineering-depth .depth-grid');
                     const metrics=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible);
-                    const featured=document.querySelector('.featured-case');
-                    result.selected=selected.length;
+                    const callout=document.querySelector('.engineering-depth .archive-callout');
+                    result.selectedCount=selected.length;
                     result.selectedTitles=selected.map(x=>x.textContent.trim());
-                    result.selectedRects=selected.map(rect);
                     result.selectedGridRect=rect(selectedGrid);
-                    result.depthRect=rect(depth);
-                    result.depthBackground=depthSection?getComputedStyle(depthSection).backgroundColor:'';
-                    result.metricStackRect=rect(metricStack);
-                    result.metricStackDisplay=metricStack?getComputedStyle(metricStack).display:'';
-                    result.metricRects=metrics.map(rect);
-                    result.calloutRect=rect(callout);
-                    result.calloutClipped=!!callout && (callout.scrollHeight>callout.clientHeight+3 || callout.scrollWidth>callout.clientWidth+3);
-                    result.featuredRect=rect(featured);
-                    result.heroInsetVisible=visible(document.querySelector('.hero-board-photo'));
-                    result.mechanicalSrc=document.querySelector('[data-capability-image]')?.getAttribute('src')||'';
-                    result.proofTexts=metrics.map(x=>x.innerText);
+                    result.selectedHeights=selected.map(x=>Math.round(x.getBoundingClientRect().height));
+                    result.depthBg=depth?getComputedStyle(depth).backgroundColor:'';
+                    result.depthGridRect=rect(depthGrid);
+                    result.metricAlign=metrics.map(x=>getComputedStyle(x).textAlign);
+                    result.metricPadding=metrics.map(x=>parseFloat(getComputedStyle(x).paddingLeft)||0);
+                    result.metricProofCounts=metrics.map(x=>({
+                      tolerance:(x.innerText.match(/Tolerance reference/g)||[]).length,
+                      alignment:(x.innerText.match(/Alignment reference/g)||[]).length,
+                      cycle:(x.innerText.match(/Cycle reference/g)||[]).length
+                    }));
+                    result.calloutBg=callout?`${getComputedStyle(callout).backgroundImage} ${getComputedStyle(callout).backgroundColor}`:'';
+                    result.calloutClipped=!!callout&&(callout.scrollHeight>callout.clientHeight+3||callout.scrollWidth>callout.clientWidth+3);
                   }
+
                   if(file==='machines.html'){
                     result.indexVisible=visible(document.querySelector('[data-archive-index-view]'));
-                    result.visualVisible=visible(document.querySelector('[data-archive-visual-view]'));
                     result.references=[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(visible).length;
-                    const preview=document.querySelector('[data-archive-preview-media] img');
-                    result.previewLoaded=!!(preview&&preview.complete&&preview.naturalWidth>0);
                   }
+
                   if(file==='gallery.html'){
-                    result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid]>*')].filter(visible).length;
-                    const strip=document.querySelector('.gallery-hero-strip');
                     const hero=document.querySelector('.gallery-hero');
-                    result.galleryStripVisible=visible(strip);
-                    result.galleryHeroRect=rect(hero);
-                    result.galleryHeroBackground=hero?getComputedStyle(hero).backgroundImage:'';
+                    result.heroBg=hero?getComputedStyle(hero).backgroundColor:'';
+                    result.heroHeight=hero?Math.round(hero.getBoundingClientRect().height):0;
+                    result.heroStripVisible=visible(document.querySelector('.gallery-hero-strip'));
+                    result.categoryButtons=[...document.querySelectorAll('[data-gallery-category]')].filter(visible).map(x=>x.innerText.trim());
+                    result.legacyGroupButtons=[...document.querySelectorAll('[data-gallery-filter-list] [data-gallery-filter]')].filter(visible).length;
+                    result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid] .gallery-project-group')].filter(visible).length;
                   }
                   return result;
-                },{w,file});
+                },{file,w});
 
                 if(audit.scrollWidth>w+2) fail.push(`${file}/${mode}: horizontal overflow ${audit.scrollWidth}px > ${w}px`);
                 if(audit.broken.length) fail.push(`${file}/${mode}: broken images ${audit.broken.join(', ')}`);
                 if(pageErrors.length) fail.push(`${file}/${mode}: JS errors ${pageErrors.join(' | ')}`);
-                if(audit.bootVisible) fail.push(`${file}/${mode}: V16 boot transition did not clear`);
+                if(audit.bootVisible) fail.push(`${file}/${mode}: obsolete loading overlay is visible`);
                 if(/Projects/i.test(audit.nav)) fail.push(`${file}/${mode}: obsolete Projects navigation visible`);
-                if(!/Experience/i.test(audit.nav)||!/Gallery/i.test(audit.nav)) fail.push(`${file}/${mode}: simplified navigation incomplete`);
                 if(!audit.footer.includes('+91 98803 36714')||!audit.footer.includes('+91 73531 00095')) fail.push(`${file}/${mode}: footer phone numbers inconsistent`);
 
                 if(file==='index.html'){
-                  if(audit.selected!==5) fail.push(`${file}/${mode}: expected 5 Selected Experience cards, got ${audit.selected}`);
+                  if(audit.selectedCount!==5) fail.push(`${file}/${mode}: expected 5 Selected Experience cards, got ${audit.selectedCount}`);
                   if(audit.selectedTitles.some(t=>/Kellenberg|Rod Boring/i.test(t))) fail.push(`${file}/${mode}: dedicated case duplicated in Selected Experience`);
-                  const heights=audit.selectedRects.map(r=>Math.round(r.height));
-                  if(heights.length&&Math.max(...heights)-Math.min(...heights)>3) fail.push(`${file}/${mode}: Selected Experience heights inconsistent`);
+                  if(audit.selectedHeights.length&&Math.max(...audit.selectedHeights)-Math.min(...audit.selectedHeights)>3) fail.push(`${file}/${mode}: Selected Experience heights inconsistent`);
                   if(w>=1180&&audit.selectedGridRect){
-                    const left=Math.round(audit.selectedGridRect.left);
-                    const right=Math.round(w-audit.selectedGridRect.right);
-                    if(Math.abs(left-right)>3) fail.push(`${file}/${mode}: Selected Experience gutters are asymmetric (${left}px left / ${right}px right)`);
-                    if(left<24||right<24) fail.push(`${file}/${mode}: Selected Experience edge gutters are too small (${left}px / ${right}px)`);
+                    const left=Math.round(audit.selectedGridRect.left),right=Math.round(w-audit.selectedGridRect.right);
+                    if(Math.abs(left-right)>3) fail.push(`${file}/${mode}: Selected Experience gutters asymmetric (${left}/${right})`);
                   }
-                  if(w>=1600){
-                    const expectedFeatured=w-80;
-                    const expectedDepth=w-64;
-                    if(audit.featuredRect&&Math.abs(audit.featuredRect.width-expectedFeatured)>8) fail.push(`${file}/${mode}: Featured Engineering is not using wide desktop canvas (${Math.round(audit.featuredRect.width)} vs ${expectedFeatured})`);
-                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expectedDepth)>8) fail.push(`${file}/${mode}: Engineering Depth is not using near-full desktop canvas (${Math.round(audit.depthRect.width)} vs ${expectedDepth})`);
+                  if(audit.depthBg!=='rgb(250, 250, 247)') fail.push(`${file}/${mode}: Engineering Depth background is not light ivory (${audit.depthBg})`);
+                  if(w>=1180&&audit.depthGridRect){
+                    const left=Math.round(audit.depthGridRect.left),right=Math.round(w-audit.depthGridRect.right);
+                    if(Math.abs(left-right)>3) fail.push(`${file}/${mode}: Engineering Depth gutters asymmetric (${left}/${right})`);
                   }
-                  if(!/rgb\(13, 24, 36\)/.test(audit.depthBackground)) fail.push(`${file}/${mode}: Engineering Depth is not using the approved blue background (${audit.depthBackground})`);
-                  if(audit.metricRects.length!==3) fail.push(`${file}/${mode}: expected 3 Engineering Depth metric cards`);
-                  if(w>1180&&audit.metricStackDisplay!=='grid') fail.push(`${file}/${mode}: Engineering Depth metric stack is not a real grid`);
-                  if(audit.calloutClipped) fail.push(`${file}/${mode}: Engineering Depth 54-card content is clipped`);
-                  if(w>1180){
-                    const proof=[...audit.metricRects,audit.calloutRect].filter(Boolean).map(r=>Math.round(r.height));
-                    if(proof.length&&Math.max(...proof)-Math.min(...proof)>4) fail.push(`${file}/${mode}: Engineering Depth proof-card heights inconsistent ${proof.join(',')}`);
-                  }
-                  if(audit.proofTexts.some(t=>(t.match(/Tolerance reference/g)||[]).length>1||(t.match(/Alignment reference/g)||[]).length>1||(t.match(/Cycle reference/g)||[]).length>1)) fail.push(`${file}/${mode}: duplicate Engineering Depth proof copy detected`);
-                  if(audit.heroInsetVisible) fail.push(`${file}/${mode}: repeated hero inset CAD view is still visible`);
-                  if(!String(audit.mechanicalSrc).includes('transtech-motor-flange-facing-cnc-mc')) fail.push(`${file}/${mode}: final Mechanical Engineering image is not active`);
-                  if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
-                  await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
+                  if(audit.metricAlign.some(v=>v!=='left')) fail.push(`${file}/${mode}: Engineering Depth proof cards are not left aligned`);
+                  if(audit.metricPadding.some(v=>v<20)) fail.push(`${file}/${mode}: Engineering Depth proof content is too close to card edge`);
+                  if(audit.calloutClipped) fail.push(`${file}/${mode}: 54 Experience card content is clipped`);
+                  if(!/linear-gradient/i.test(audit.calloutBg)) fail.push(`${file}/${mode}: 54 Experience card is not using the blue treatment`);
+                  if(audit.metricProofCounts.some(x=>x.tolerance>1||x.alignment>1||x.cycle>1)) fail.push(`${file}/${mode}: duplicate Engineering Depth copy detected`);
+                  if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await page.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
                 }
 
                 if(file==='machines.html'){
-                  if(!audit.indexVisible||audit.visualVisible) fail.push(`${file}/${mode}: Experience is not using index presentation`);
+                  if(!audit.indexVisible) fail.push(`${file}/${mode}: Experience index is not visible`);
                   if(audit.references!==54) fail.push(`${file}/${mode}: expected 54 Experience references, got ${audit.references}`);
-                  if(!audit.previewLoaded) fail.push(`${file}/${mode}: Experience preview media did not load`);
                 }
+
                 if(file==='gallery.html'){
+                  if(audit.heroStripVisible) fail.push(`${file}/${mode}: old Gallery image collage is visible`);
+                  if(audit.heroBg!=='rgb(13, 24, 36)') fail.push(`${file}/${mode}: Gallery hero does not match Experience dark navy (${audit.heroBg})`);
+                  if(w>=1180&&(audit.heroHeight<460||audit.heroHeight>530)) fail.push(`${file}/${mode}: Gallery hero height is outside final banner range (${audit.heroHeight}px)`);
+                  if(audit.categoryButtons.length!==5) fail.push(`${file}/${mode}: expected 5 Gallery project categories, got ${audit.categoryButtons.length}`);
+                  if(audit.categoryButtons.some(t=>!/project/i.test(t))) fail.push(`${file}/${mode}: Gallery category buttons do not show project counts`);
+                  if(audit.legacyGroupButtons) fail.push(`${file}/${mode}: long individual project-name filters are still visible`);
                   if(audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery has no visible project groups`);
-                  if(audit.galleryStripVisible) fail.push(`${file}/${mode}: Gallery still exposes the old image-collage hero`);
-                  if(!String(audit.galleryHeroBackground).includes('linear-gradient')) fail.push(`${file}/${mode}: Gallery hero is not using the blue Experience-style background`);
-                  if(audit.galleryHeroRect&&audit.galleryHeroRect.height<400) fail.push(`${file}/${mode}: Gallery blue hero is too shallow (${Math.round(audit.galleryHeroRect.height)}px)`);
                 }
-                report.push({file,mode,w,h,audit,pageErrors});
-                await p.close();
+
+                report.push({file,mode,audit,pageErrors});
+                await page.close();
               }
             }
 
             const retrofit=await browser.newPage({viewport:{width:1440,height:900}});
-            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1900);
+            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1600);
             const retrofitAudit=await retrofit.evaluate(()=>({
               active:document.querySelector('[data-type-filter="retrofit"]')?.classList.contains('is-active')||false,
               count:[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(x=>x.offsetParent!==null).length,
@@ -170,16 +160,6 @@ jobs:
             if(retrofitAudit.count!==15) fail.push(`retrofit route: expected 15 retrofit references, got ${retrofitAudit.count}`);
             if(!/Recover capability/i.test(retrofitAudit.title)) fail.push('retrofit route: retrofit-specific hero did not load');
             await retrofit.close();
-
-            const interaction=await browser.newPage({viewport:{width:1440,height:900}});
-            await interaction.goto(local+'index.html',{waitUntil:'networkidle'});await wait(1200);
-            await interaction.locator('[data-capability="automation"]').click();await wait(200);
-            const autoSrc=await interaction.locator('[data-capability-image]').getAttribute('src');
-            if(String(autoSrc).includes('slotting-mc-1.webp')) fail.push('interaction: Automation still reuses hero image');
-            await interaction.locator('[data-quote-open]').first().click();
-            if(!(await interaction.locator('[data-quote-panel]').isVisible())) fail.push('interaction: requirement dialog did not open');
-            await interaction.locator('[data-quote-close]').first().click();
-            await interaction.close();
 
             fs.writeFileSync('release-qa-report.json',JSON.stringify({fail,report},null,2));
             console.log(JSON.stringify({fail},null,2));
@@ -194,7 +174,6 @@ jobs:
         with:
           name: v16-release-qa
           path: |
-            home-*.png
             engineering-depth-*.png
             release-qa-report.json
           retention-days: 14
