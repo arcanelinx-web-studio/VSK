@@ -3,12 +3,89 @@
   if (document.body.dataset.page !== 'gallery') return;
 
   const list = document.querySelector('[data-gallery-filter-list]');
-  const allButton = document.querySelector('.gallery-filter');
+  const allButton = document.querySelector('.gallery-controls > .gallery-filter');
   const grid = document.querySelector('[data-gallery-grid]');
   const status = document.querySelector('[data-gallery-status]');
   const browserKicker = document.querySelector('.gallery-browser-head .kicker');
   const browserCopy = document.querySelector('.gallery-browser-head > p');
   if (!list || !allButton || !grid) return;
+
+  /* Final Gallery category presentation. The legacy project-name controls are never shown. */
+  if (!document.getElementById('v16-gallery-category-field')) {
+    const style = document.createElement('style');
+    style.id = 'v16-gallery-category-field';
+    style.textContent = `
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:10px!important;
+        align-items:stretch!important;
+        margin-top:28px!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{display:contents!important}
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list] > [data-gallery-filter]{display:none!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{
+        box-sizing:border-box!important;
+        width:100%!important;
+        min-width:0!important;
+        min-height:68px!important;
+        margin:0!important;
+        padding:12px 17px 11px!important;
+        display:flex!important;
+        flex-direction:column!important;
+        align-items:flex-start!important;
+        justify-content:center!important;
+        gap:5px!important;
+        border:1px solid #c9d5df!important;
+        background:#fff!important;
+        color:#314254!important;
+        text-align:left!important;
+        box-shadow:none!important;
+        transition:border-color .18s ease,background .18s ease,color .18s ease!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter span,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category] span{
+        display:block!important;
+        color:#31567f!important;
+        font:500 10px/1.2 "IBM Plex Mono",monospace!important;
+        letter-spacing:.075em!important;
+        text-transform:uppercase!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter b,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category] b{
+        display:block!important;
+        color:#314254!important;
+        font:600 15px/1.15 Inter,sans-serif!important;
+        letter-spacing:-.01em!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter:hover,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{
+        border-color:#1e56aa!important;
+        background:#f7fafc!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active{
+        background:#1e56aa!important;
+        border-color:#1e56aa!important;
+        color:#fff!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active span,
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active b,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active span,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active b{color:#fff!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-status{margin-top:22px!important}
+      @media (max-width:980px){
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+      }
+      @media (max-width:620px){
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:1fr!important;gap:8px!important}
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:60px!important;padding:11px 14px!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   if (browserKicker) browserKicker.textContent = 'PROJECT CATEGORIES';
   if (browserCopy) browserCopy.textContent = 'Choose the engineering category closest to your requirement, then open the individual project groups to inspect machine construction, controls, mechanisms and process detail.';
@@ -103,9 +180,7 @@
     activeCategory = key;
     buildCategoryButtons();
     applyCategory();
-    try {
-      history.replaceState(null, '', key === 'all' ? 'gallery.html' : `gallery.html?category=${encodeURIComponent(key)}`);
-    } catch (_) {}
+    try { history.replaceState(null, '', key === 'all' ? 'gallery.html' : `gallery.html?category=${encodeURIComponent(key)}`); } catch (_) {}
   };
 
   list.addEventListener('click', event => {
@@ -116,13 +191,7 @@
     selectCategory(button.dataset.galleryCategory || 'all');
   });
 
-  allButton.addEventListener('click', () => {
-    activeCategory = 'all';
-    requestAnimationFrame(() => {
-      buildCategoryButtons();
-      applyCategory();
-    });
-  });
+  allButton.addEventListener('click', () => selectCategory('all'));
 
   const syncAfterLegacyRender = () => {
     if (!manifest?.groups?.length) return;
@@ -130,12 +199,12 @@
     applyCategory();
   };
 
-  /* app-v14 replaces the filter list once when the full manifest arrives. Watch only the
-     Gallery controls/grid during that short boot window, then disconnect permanently. */
+  /* Legacy gallery rendering can replace the filter list during initial manifest hydration.
+     Watch only this local control/grid boot window, then disconnect permanently. */
   const observer = new MutationObserver(syncAfterLegacyRender);
   observer.observe(list, { childList: true });
   observer.observe(grid, { childList: true });
-  setTimeout(() => observer.disconnect(), 10000);
+  setTimeout(() => observer.disconnect(), 8000);
 
   fetch('media/archive-manifest.json', { cache: 'no-store' })
     .then(response => response.ok ? response.json() : null)
@@ -147,10 +216,8 @@
       activeCategory = requested && available.has(requested) ? requested : 'all';
       buildCategoryButtons();
       requestAnimationFrame(applyCategory);
-      setTimeout(syncAfterLegacyRender, 650);
-      setTimeout(syncAfterLegacyRender, 1600);
+      setTimeout(syncAfterLegacyRender, 500);
+      setTimeout(syncAfterLegacyRender, 1300);
     })
-    .catch(() => {
-      document.body.classList.add('gallery-categories-ready');
-    });
+    .catch(() => document.body.classList.add('gallery-categories-ready'));
 })();
