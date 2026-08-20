@@ -1,0 +1,95 @@
+/* V16 LARGE-DESKTOP FINAL PASS
+   Static geometry only. Loaded once from v16-final-lock.js.
+   Keeps 40px desktop gutters while using the available viewport. */
+
+@media (min-width:1600px){
+  body.v8.v13.v14{
+    --shell:calc(100vw - 80px)!important;
+  }
+
+  body.v8.v13.v14 .shell,
+  body.v8.v13.v14 .hero-blue-layout,
+  body.v8.v13.v14 .featured-case,
+  body.v8.v13.v14 .selected-projects-strip .project-collection-head,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects],
+  body.v8.v13.v14 .engineering-depth .depth-head,
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    width:calc(100vw - 80px)!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.v8.v13.v14 .projects-showcase .section-intro{
+    width:calc(100vw - 80px)!important;
+    max-width:none!important;
+  }
+
+  body.v8.v13.v14 .featured-case{
+    grid-template-columns:minmax(0,1.72fr) minmax(400px,.72fr)!important;
+  }
+
+  body.v8.v13.v14 .capability-media{
+    width:min(100%,860px)!important;
+    max-width:860px!important;
+  }
+
+  body.v8.v13.v14 .capability-media .media-frame{
+    height:460px!important;
+  }
+}
+
+/* Hero board: one strong engineering visual instead of a repeated inset render. */
+body.v8.v13.v14 .hero-board-photo{
+  display:none!important;
+}
+body.v8.v13.v14 .hero-board-main{
+  left:5.5%!important;
+  top:13%!important;
+  width:78%!important;
+  height:73%!important;
+}
+body.v8.v13.v14 .hero-board-main img{
+  object-fit:cover!important;
+  object-position:18% 50%!important;
+  transform:scale(1.24)!important;
+  transform-origin:24% 50%!important;
+}
+body.v8.v13.v14 .hero-tech-sheet{
+  right:2.7%!important;
+  top:7.5%!important;
+  width:27%!important;
+  height:27%!important;
+}
+body.v8.v13.v14 .hero-proof-chip{
+  right:3.7%!important;
+  bottom:6.2%!important;
+}
+body.v8.v13.v14 .hero-board-side-note{
+  right:4.3%!important;
+  top:44%!important;
+}
+
+/* New Mechanical Engineering image: present the complete machine, not an incidental close-up. */
+body.v8.v13.v14 .capability-media img[src*="cnc-thread-cutting-machine"]{
+  object-fit:cover!important;
+  object-position:center 48%!important;
+  transform:none!important;
+}
+
+@media (max-width:1599px){
+  body.v8.v13.v14 .hero-board-photo{display:none!important}
+  body.v8.v13.v14 .hero-board-main{
+    left:6%!important;
+    width:77%!important;
+  }
+}
+
+@media (max-width:900px){
+  body.v8.v13.v14 .hero-board-main{
+    left:6%!important;
+    top:14%!important;
+    width:79%!important;
+    height:70%!important;
+  }
+}
