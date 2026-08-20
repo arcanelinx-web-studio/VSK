@@ -5,7 +5,7 @@ on:
     branches: [client-review-v16-blue-refinement]
     paths: ['.github/workflows/v16-polish-verification.yml']
 permissions:
-  contents: read
+  contents: write
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -20,6 +20,8 @@ jobs:
           npm install playwright@1.55.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
       - name: Verify responsive polish
+        id: qa
+        continue-on-error: true
         run: |
           python3 -m http.server 4173 >/tmp/vsk-polish.log 2>&1 &
           sleep 2
@@ -99,10 +101,37 @@ jobs:
             console.log(`PASS: ${sizes.length*pages.length} responsive page/viewport combinations`);
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
-          node polish-verify.cjs
+          node polish-verify.cjs 2>&1 | tee final-responsive-qa.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: v16-polish-verification
-          path: polish-*.png
+          path: |
+            polish-*.png
+            final-responsive-qa.log
           retention-days: 7
+      - name: Record final QA result
+        if: always()
+        run: |
+          mkdir -p qa
+          if [ "${{ steps.qa.outcome }}" = "success" ]; then
+            STATUS=PASS
+          else
+            STATUS=FAIL
+          fi
+          {
+            echo "status=$STATUS"
+            echo "tested_commit=$(git rev-parse HEAD)"
+            echo "matrix=28 page/viewport combinations"
+            echo "viewports=1920x1080,1660x900,1440x900,1366x768,1024x768,768x1024,390x844"
+            echo "pages=index.html,projects.html,machines.html,gallery.html"
+            echo "checks=horizontal-overflow,broken-rendered-images,buyer-copy,hero-centering,cta-centering,engineering-depth-alignment,header-arrow,hydraulics-image"
+          } > qa/v16-final-responsive-status.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add qa/v16-final-responsive-status.txt
+          git commit -m "Record final responsive QA result" || true
+          git push origin HEAD:client-review-v16-blue-refinement
+      - name: Fail job when QA fails
+        if: steps.qa.outcome == 'failure'
+        run: exit 1
