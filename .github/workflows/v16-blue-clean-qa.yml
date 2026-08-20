@@ -50,7 +50,7 @@ jobs:
                 const pageErrors=[];
                 p.on('pageerror',e=>pageErrors.push(String(e)));
                 await p.goto(local+file,{waitUntil:'networkidle'});
-                await wait(file==='index.html'?1200:1800);
+                await wait(file==='index.html'?1400:2400);
 
                 const audit = await p.evaluate(({w,file})=>{
                   const visible = el => !!el && el.offsetParent !== null;
@@ -62,6 +62,7 @@ jobs:
                   if(file==='index.html'){
                     const selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible);
                     const depth=document.querySelector('.engineering-depth .depth-grid');
+                    const metricStack=document.querySelector('.engineering-depth .metric-stack');
                     const callout=document.querySelector('.engineering-depth .archive-callout');
                     const metrics=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible);
                     const featured=document.querySelector('.featured-case');
@@ -69,12 +70,15 @@ jobs:
                     result.selectedTitles=selected.map(x=>x.textContent.trim());
                     result.selectedRects=selected.map(rect);
                     result.depthRect=rect(depth);
+                    result.metricStackRect=rect(metricStack);
+                    result.metricStackDisplay=metricStack?getComputedStyle(metricStack).display:'';
                     result.metricRects=metrics.map(rect);
                     result.calloutRect=rect(callout);
                     result.calloutClipped=!!callout && (callout.scrollHeight>callout.clientHeight+3 || callout.scrollWidth>callout.clientWidth+3);
                     result.featuredRect=rect(featured);
                     result.heroInsetVisible=visible(document.querySelector('.hero-board-photo'));
                     result.mechanicalSrc=document.querySelector('[data-capability-image]')?.getAttribute('src')||'';
+                    result.proofTexts=metrics.map(x=>x.innerText);
                   }
                   if(file==='machines.html'){
                     result.indexVisible=visible(document.querySelector('[data-archive-index-view]'));
@@ -83,7 +87,11 @@ jobs:
                     const preview=document.querySelector('[data-archive-preview-media] img');
                     result.previewLoaded=!!(preview&&preview.complete&&preview.naturalWidth>0);
                   }
-                  if(file==='gallery.html') result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid]>*')].filter(visible).length;
+                  if(file==='gallery.html'){
+                    result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid]>*')].filter(visible).length;
+                    const hero=[...document.querySelectorAll('.gallery-hero-strip img')];
+                    result.galleryHeroLast=hero.at(-1)?.getAttribute('src')||'';
+                  }
                   return result;
                 },{w,file});
 
@@ -100,18 +108,21 @@ jobs:
                   const heights=audit.selectedRects.map(r=>Math.round(r.height));
                   if(heights.length&&Math.max(...heights)-Math.min(...heights)>3) fail.push(`${file}/${mode}: Selected Experience heights inconsistent`);
                   if(w>=1600){
-                    const expected=w-80;
-                    if(audit.featuredRect&&Math.abs(audit.featuredRect.width-expected)>8) fail.push(`${file}/${mode}: Featured Engineering is not using wide desktop canvas (${Math.round(audit.featuredRect.width)} vs ${expected})`);
-                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expected)>8) fail.push(`${file}/${mode}: Engineering Depth is not using wide desktop canvas`);
+                    const expectedFeatured=w-80;
+                    const expectedDepth=w-64;
+                    if(audit.featuredRect&&Math.abs(audit.featuredRect.width-expectedFeatured)>8) fail.push(`${file}/${mode}: Featured Engineering is not using wide desktop canvas (${Math.round(audit.featuredRect.width)} vs ${expectedFeatured})`);
+                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expectedDepth)>8) fail.push(`${file}/${mode}: Engineering Depth is not using near-full desktop canvas (${Math.round(audit.depthRect.width)} vs ${expectedDepth})`);
                   }
                   if(audit.metricRects.length!==3) fail.push(`${file}/${mode}: expected 3 Engineering Depth metric cards`);
+                  if(w>1180&&audit.metricStackDisplay!=='grid') fail.push(`${file}/${mode}: Engineering Depth metric stack is not a real grid`);
                   if(audit.calloutClipped) fail.push(`${file}/${mode}: Engineering Depth 54-card content is clipped`);
-                  if(w>=1180){
+                  if(w>1180){
                     const proof=[...audit.metricRects,audit.calloutRect].filter(Boolean).map(r=>Math.round(r.height));
                     if(proof.length&&Math.max(...proof)-Math.min(...proof)>4) fail.push(`${file}/${mode}: Engineering Depth proof-card heights inconsistent ${proof.join(',')}`);
                   }
+                  if(audit.proofTexts.some(t=>(t.match(/Tolerance reference/g)||[]).length>1||(t.match(/Alignment reference/g)||[]).length>1||(t.match(/Cycle reference/g)||[]).length>1)) fail.push(`${file}/${mode}: duplicate Engineering Depth proof copy detected`);
                   if(audit.heroInsetVisible) fail.push(`${file}/${mode}: repeated hero inset CAD view is still visible`);
-                  if(!String(audit.mechanicalSrc).includes('cnc-thread-cutting-machine')) fail.push(`${file}/${mode}: weak Mechanical Engineering image still active`);
+                  if(!String(audit.mechanicalSrc).includes('transtech-motor-flange-facing-cnc-mc')) fail.push(`${file}/${mode}: final Mechanical Engineering image is not active`);
                   if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
                   await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
                 }
@@ -121,14 +132,17 @@ jobs:
                   if(audit.references!==54) fail.push(`${file}/${mode}: expected 54 Experience references, got ${audit.references}`);
                   if(!audit.previewLoaded) fail.push(`${file}/${mode}: Experience preview media did not load`);
                 }
-                if(file==='gallery.html'&&audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery has no visible project groups`);
+                if(file==='gallery.html'){
+                  if(audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery has no visible project groups`);
+                  if(!String(audit.galleryHeroLast).includes('transtech-spigot-turning-cnc/20230331-151553.webp')) fail.push(`${file}/${mode}: Gallery banner fourth panel is not the Spigot Turning CNC image`);
+                }
                 report.push({file,mode,w,h,audit,pageErrors});
                 await p.close();
               }
             }
 
             const interaction=await browser.newPage({viewport:{width:1440,height:900}});
-            await interaction.goto(local+'index.html',{waitUntil:'networkidle'});await wait(900);
+            await interaction.goto(local+'index.html',{waitUntil:'networkidle'});await wait(1000);
             await interaction.locator('[data-capability="automation"]').click();await wait(200);
             const autoSrc=await interaction.locator('[data-capability-image]').getAttribute('src');
             if(String(autoSrc).includes('slotting-mc-1.webp')) fail.push('interaction: Automation still reuses hero image');
