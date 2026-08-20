@@ -4,6 +4,8 @@
   document.body.classList.add('v16-premium');
   const page = document.body.dataset.page || 'home';
   const homeHref = hash => page === 'home' ? hash : `index.html${hash}`;
+  const query = new URLSearchParams(location.search);
+  const isRetrofitExperience = page === 'machines' && query.get('type') === 'retrofit';
 
   /* Projects is no longer a customer-facing destination. Preserve old links/bookmarks by
      taking visitors directly to the searchable Experience page. */
@@ -21,6 +23,9 @@
   }
   if (!document.querySelector('link[href^="v16-release-polish.css"]')) {
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-release-polish.css?v=16.8'; document.head.appendChild(css);
+  }
+  if (!document.querySelector('link[href^="v16-corrections.css"]')) {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.9'; document.head.appendChild(css);
   }
 
   const nativeFetch = window.fetch.bind(window);
@@ -49,7 +54,7 @@
         if (item.type === 'video') {
           const mp4 = validPath(validSet, item.src_mp4), webm = validPath(validSet, item.src_webm), generic = validPath(validSet, item.web, item.src);
           if (!mp4 && !webm && !generic) return null;
-          return { ...item, src_mp4: mp4 || undefined, src_webm: webm || undefined, web: generic || mp4 || webm, src: generic || mp4 || webm };
+          return { ...item, src_mp4: mp4 || undefined, src_webm: webm || mp4 || webm, web: generic || mp4 || webm, src: generic || mp4 || webm };
         }
         return null;
       }).filter(Boolean);
@@ -84,8 +89,8 @@
     ['Home','index.html',page === 'home'],
     ['Company',homeHref('#about'),false],
     ['Capabilities',homeHref('#expertise'),false],
-    ['Retrofit & CNC',homeHref('#retrofit'),false],
-    ['Experience','machines.html',page === 'machines'],
+    ['Retrofit & CNC','machines.html?type=retrofit',isRetrofitExperience],
+    ['Experience','machines.html',page === 'machines' && !isRetrofitExperience],
     ['Gallery','gallery.html',page === 'gallery']
   ];
 
@@ -107,7 +112,7 @@
     Object.assign(capabilityData.controls,{image:'media/retrofit/jig-grinding.webp',alt:'Jig grinding machine CNC PLC and HMI retrofit',title:'Controls engineered for the way your machine must actually run.',copy:'CNC, PLC, HMI, servo and drive systems are integrated around sequence, safety, repeatability, diagnostics and operator use.'});
     Object.assign(capabilityData.fluid,{image:'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp',alt:'VSK hydraulic pressing system',title:'Hydraulic and pneumatic systems sized for the force and motion your process needs.',copy:'Clamping, pressing, testing and machine movement are engineered for dependable force, sequence, response and serviceability.'});
     Object.assign(capabilityData.electrical,{image:'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/control-panel-honning-machine/20250416-215953.webp',alt:'VSK machine control panel and electrical system',title:'Electrical systems designed for reliable operation and easier fault finding.',copy:'Panels, drives, field devices and machine wiring are integrated for clean commissioning, practical diagnostics and maintainable field service.'});
-    Object.assign(capabilityData.automation,{image:'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-servo-seal-slotting-machine/slotting-mc-1.webp',alt:'VSK four-servo automated slotting machine',title:'Automation that improves flow, repeatability and operator efficiency.',copy:'Servo motion, indexing, loading, handling and interlocks are engineered around the required cycle instead of being added after the machine is built.'});
+    Object.assign(capabilityData.automation,{image:'media/legacy/centerless-conveyor.webp',alt:'VSK automated conveyor and machine handling system',title:'Automation that improves flow, repeatability and operator efficiency.',copy:'Servo motion, indexing, loading, handling and interlocks are engineered around the required cycle instead of being added after the machine is built.'});
     Object.assign(capabilityData.manufacturing,{image:'media/legacy/metal-facing-machine.webp',alt:'VSK precision metal facing machine',title:'Process knowledge that keeps the machine practical on the shop floor.',copy:'Turning, machining, grinding and finishing experience supports realistic choices in workholding, tooling, access, tolerance and process stability.'});
   }
 
@@ -115,17 +120,25 @@
   const setHTML = (selector,html) => { const el = document.querySelector(selector); if (el) el.innerHTML = html; };
   const setMeta = (name,content) => { const el = document.querySelector(`meta[name="${name}"]`); if (el) el.content = content; };
 
+  /* One footer source for every page. */
   setText('.footer-brand > p','Special purpose machines, CNC retrofit and automation built around demanding production requirements.');
   setText('.footer-brand small','Machine engineering for new equipment, retrofit and production improvement.');
+  const footerButton = document.querySelector('.footer-brand button');
+  if (footerButton) footerButton.textContent = 'Discuss a Machine ↗';
   setText('.quote-head h2','Tell us what your machine or production needs to achieve.');
   const footerCols = document.querySelectorAll('.footer-col');
   if (footerCols[0]) footerCols[0].innerHTML = `<span>Explore</span><a href="machines.html">Experience</a><a href="gallery.html">Gallery</a><a href="${homeHref('#about')}">Company</a>`;
-  if (footerCols[1]) footerCols[1].innerHTML = `<span>Engineering</span><a href="${homeHref('#expertise')}">Capabilities</a><a href="${homeHref('#retrofit')}">Retrofit & CNC</a><button type="button" data-quote-open>Discuss a Machine ↗</button>`;
+  if (footerCols[1]) footerCols[1].innerHTML = `<span>Engineering</span><a href="${homeHref('#expertise')}">Capabilities</a><a href="machines.html?type=retrofit">Retrofit & CNC</a><button type="button" data-quote-open>Discuss a Machine ↗</button>`;
+  if (footerCols[2]) footerCols[2].innerHTML = `<span>Contact</span><a href="tel:+919880336714">+91 98803 36714</a><a href="tel:+917353100095">+91 73531 00095</a><a href="mailto:vsk.electromech@gmail.com">vsk.electromech@gmail.com</a><p>Peenya Industrial Area<br>Bengaluru 560058<br>Karnataka, India</p>`;
 
   if (page === 'home') {
     setText('.hero-blue-copy > p','Bring VSK the part, cycle-time target, tolerance or machine challenge. We develop the mechanics, controls and process around the production result you need — whether that means a purpose-built SPM, automation or a CNC retrofit.');
     const heroSecondary = document.querySelector('.hero-actions .ghost-cta');
     if (heroSecondary) { heroSecondary.href = 'machines.html'; heroSecondary.textContent = 'See relevant experience'; }
+    const heroCaption = document.querySelector('.hero-board-main figcaption');
+    if (heroCaption) heroCaption.innerHTML = '<span>4-SERVO SLOTTING MACHINE</span><span>APPLICATION-LED SPM</span>';
+    const heroTag = document.querySelector('.hero-board-tag');
+    if (heroTag) heroTag.innerHTML = '<b>04 SERVO</b> / CUSTOM SPM';
 
     setText('.capabilities .section-intro > p','One requirement, one engineering team. Mechanical design, controls, electrical systems, fluid power and manufacturing decisions stay aligned to the result your production needs.');
     setText('.projects-showcase .section-intro > p','See how a demanding application becomes a working machine when workholding, mechanism, controls and cycle are engineered together from the start.');
@@ -136,7 +149,7 @@
     const selectedSection = document.querySelector('.selected-projects-strip');
     if (selectedSection) selectedSection.setAttribute('aria-label','Selected VSK engineering experience');
 
-    setText('.engineering-depth .depth-head > p','Use real tolerance, alignment and cycle-time results as quick proof, then find VSK experience closest to your machine, process or production target.');
+    setText('.engineering-depth .depth-head > p','Three measured examples show the level of precision and cycle focus VSK works around. Use Experience to find the machine or process closest to your own requirement.');
     setText('.archive-callout .kicker','PROVEN EXPERIENCE');
     setText('.archive-callout h3','Find work relevant to your requirement.');
     setText('.archive-callout > p','Search VSK experience by process, machine type, customer need or control platform before you start the discussion.');
@@ -153,12 +166,19 @@
   }
 
   if (page === 'machines') {
-    document.title = 'Engineering Experience — VSK Electro-Mech Solutions';
-    setMeta('description','Find VSK machine-building, special purpose machine and CNC retrofit experience relevant to your process, machine type, application or control platform.');
-    setText('.archive-hero .kicker','VSK ENGINEERING EXPERIENCE');
-    setText('.archive-hero-number small','MACHINE-BUILDING EXPERIENCE');
-    setHTML('.archive-hero h1','Find experience<br><em>close to your requirement.</em>');
-    setText('.archive-hero p','Search VSK machine-building and retrofit experience by process, machine type, application or control platform, then open the closest examples to discuss your own requirement.');
+    document.title = isRetrofitExperience ? 'CNC Retrofit & Reconditioning Experience — VSK Electro-Mech Solutions' : 'Engineering Experience — VSK Electro-Mech Solutions';
+    setMeta('description',isRetrofitExperience ? 'Explore VSK CNC, PLC, HMI, servo, drive and machine-tool retrofit experience for grinding, turning, machining and other production equipment.' : 'Find VSK machine-building, special purpose machine and CNC retrofit experience relevant to your process, machine type, application or control platform.');
+    if (isRetrofitExperience) {
+      setText('.archive-hero .kicker','CNC RETROFIT & RECONDITIONING');
+      setText('.archive-hero-number small','RETROFIT EXPERIENCE');
+      setHTML('.archive-hero h1','Recover capability.<br><em>Modernise what is worth keeping.</em>');
+      setText('.archive-hero p','Explore VSK retrofit and reconditioning work across CNC, PLC, HMI, servo, drive and machine-tool systems, then compare the closest machines with what you need to recover or upgrade.');
+    } else {
+      setText('.archive-hero .kicker','VSK ENGINEERING EXPERIENCE');
+      setText('.archive-hero-number small','MACHINE-BUILDING EXPERIENCE');
+      setHTML('.archive-hero h1','Find experience<br><em>close to your requirement.</em>');
+      setText('.archive-hero p','Search VSK machine-building and retrofit experience by process, machine type, application or control platform, then open the closest examples to discuss your own requirement.');
+    }
     setText('.archive-search span','Find relevant experience');
     const search = document.querySelector('[data-archive-search]');
     if (search) search.placeholder = 'Machine, process, customer, control…';
