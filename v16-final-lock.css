@@ -4,6 +4,9 @@
    Kept intentionally small: final review geometry is imported above during CSS loading,
    so the browser paints the current design immediately instead of morphing after JavaScript. */
 
+/* Never show the temporary transition overlay from an older cached runtime. */
+#v16-boot-screen{display:none!important}
+
 /* HERO — approved engineering-board refinements. */
 body.v8.v13.v14 .hero-blue-copy .text-cta{
   display:inline-flex!important;
