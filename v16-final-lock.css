@@ -1,7 +1,7 @@
-@import url("v16-user-polish.css?v=16.32");
-@import url("v16-release-polish.css?v=16.32");
-@import url("v16-corrections.css?v=16.32");
-@import url("v16-review-authority.css?v=16.32");
+@import url("v16-user-polish.css?v=16.33");
+@import url("v16-release-polish.css?v=16.33");
+@import url("v16-corrections.css?v=16.33");
+@import url("v16-review-authority.css?v=16.33");
 
 /* V16 FINAL LOCK
    Final geometry is available during CSS loading, so the browser paints the current design immediately. */
@@ -125,4 +125,323 @@ body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archiv
   body.v8.v13.v14[data-page="gallery"] .gallery-hero{height:auto!important;min-height:430px!important;max-height:none!important}
   body.v8.v13.v14[data-page="machines"] .archive-hero-grid,
   body.v8.v13.v14[data-page="gallery"] .gallery-hero-copy{width:calc(100% - 40px)!important}
+}
+
+/* =========================================================
+   V16.33 — THREE REQUEST FIX
+   1) Featured Engineering restored to wide 100% desktop canvas.
+   2) Deliberate left/right breathing gutter.
+   3) Engineering Depth rebuilt as a composed proof board.
+   ========================================================= */
+@media (min-width:1181px){
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase{
+    --v16-wide-gutter:clamp(52px,3.4vw,68px);
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    padding:0 var(--v16-wide-gutter) 78px!important;
+    background:#0d1824!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.section-intro,
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.featured-case{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.section-intro{
+    padding-top:86px!important;
+    margin-bottom:38px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.16fr) minmax(390px,.62fr)!important;
+    gap:clamp(58px,6vw,118px)!important;
+    align-items:end!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.section-intro h2{
+    max-width:900px!important;
+    font-size:clamp(56px,4vw,78px)!important;
+    line-height:.94!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.section-intro>p{
+    max-width:570px!important;
+    margin:0 0 4px!important;
+    font-size:16px!important;
+    line-height:1.65!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.featured-case{
+    height:560px!important;
+    min-height:560px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.88fr) minmax(430px,.78fr)!important;
+    border-top:1px solid #294057!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-media,
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{
+    height:560px!important;
+    min-height:560px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-media img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{
+    box-sizing:border-box!important;
+    padding:46px 48px 42px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    background:#101c29!important;
+  }
+
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth{
+    --v16-depth-gutter:clamp(52px,3.4vw,68px);
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    padding:98px var(--v16-depth-gutter) 116px!important;
+    background:#fafaf7!important;
+    color:#0d1824!important;
+    overflow:visible!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-head,
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-grid{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-head{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.08fr) minmax(460px,.92fr)!important;
+    gap:clamp(64px,7vw,138px)!important;
+    align-items:end!important;
+    margin-bottom:46px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-head h2{
+    max-width:850px!important;
+    margin:0!important;
+    font-size:clamp(60px,4.1vw,80px)!important;
+    line-height:.94!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-head>p{
+    position:relative!important;
+    max-width:700px!important;
+    margin:0 0 4px!important;
+    padding:0!important;
+    color:#657789!important;
+    font-size:18px!important;
+    line-height:1.58!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-head>p::before{
+    content:"MEASURED ENGINEERING PROOF"!important;
+    position:static!important;
+    display:block!important;
+    margin:0 0 17px!important;
+    color:#1e56aa!important;
+    font:500 9px/1 "IBM Plex Mono",monospace!important;
+    letter-spacing:.15em!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,3fr) minmax(420px,.98fr)!important;
+    gap:22px!important;
+    align-items:stretch!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-stack{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:1fr!important;
+    gap:0!important;
+    min-height:414px!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    border:1px solid #cfd9e1!important;
+    box-shadow:0 22px 48px rgba(13,24,36,.055)!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-stack::before{
+    content:""!important;
+    position:absolute!important;
+    z-index:3!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    height:4px!important;
+    background:#1e56aa!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card{
+    position:relative!important;
+    display:grid!important;
+    grid-template-rows:auto 1fr auto!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:414px!important;
+    height:414px!important;
+    margin:0!important;
+    padding:38px 44px 34px!important;
+    background:#fff!important;
+    border:0!important;
+    border-right:1px solid #cfd9e1!important;
+    color:#0d1824!important;
+    text-align:left!important;
+    box-shadow:none!important;
+    transform:none!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card:last-child{
+    border-right:0!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card::before,
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card::after{
+    content:none!important;
+    display:none!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-machine{
+    grid-row:1!important;
+    display:block!important;
+    max-width:240px!important;
+    margin:0!important;
+    padding:0 34px 0 0!important;
+    color:#174f9f!important;
+    font:500 9px/1.35 "IBM Plex Mono",monospace!important;
+    letter-spacing:.14em!important;
+    text-align:left!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card>i{
+    top:35px!important;
+    right:34px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-number{
+    grid-row:2!important;
+    align-self:center!important;
+    justify-self:start!important;
+    display:flex!important;
+    align-items:baseline!important;
+    margin:12px 0 18px!important;
+    color:#0d1824!important;
+    font-size:clamp(88px,5vw,112px)!important;
+    line-height:.83!important;
+    letter-spacing:-.065em!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-number span{
+    margin-left:13px!important;
+    font-size:11px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-proof{
+    grid-row:3!important;
+    width:100%!important;
+    margin:0!important;
+    padding:19px 0 0!important;
+    border-top:1px solid #dce4e9!important;
+    text-align:left!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-proof strong{
+    display:block!important;
+    margin:0 0 8px!important;
+    color:#174f9f!important;
+    font-size:18px!important;
+    line-height:1.2!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-proof p{
+    max-width:300px!important;
+    margin:0!important;
+    color:#657789!important;
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout{
+    position:relative!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-height:414px!important;
+    height:414px!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:38px 38px 32px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    background:#0d1824!important;
+    border:1px solid #26394b!important;
+    box-shadow:0 22px 48px rgba(13,24,36,.12)!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout::before,
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout::after{
+    content:none!important;
+    display:none!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout .kicker{
+    margin:0!important;
+    color:#72c7ef!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout-number{
+    display:block!important;
+    margin:17px 0 10px!important;
+    color:#2088ca!important;
+    font-size:78px!important;
+    line-height:.82!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout h3{
+    max-width:360px!important;
+    margin:0!important;
+    color:#fff!important;
+    font-size:27px!important;
+    line-height:1.08!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout>p{
+    max-width:390px!important;
+    margin:13px 0 16px!important;
+    color:#c9d5df!important;
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout-split{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+    margin:0 0 14px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout-split span{
+    min-height:52px!important;
+    padding:9px 12px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout .btn{
+    width:100%!important;
+    min-height:50px!important;
+    height:50px!important;
+    margin-top:auto!important;
+    flex:0 0 50px!important;
+  }
+}
+
+@media (min-width:1181px) and (max-width:1500px){
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase{
+    --v16-wide-gutter:48px;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.featured-case,
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-media,
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{
+    height:510px!important;
+    min-height:510px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth{
+    --v16-depth-gutter:48px;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .depth-grid{
+    grid-template-columns:minmax(0,3fr) minmax(390px,.95fr)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card{
+    padding-left:36px!important;
+    padding-right:36px!important;
+  }
 }
