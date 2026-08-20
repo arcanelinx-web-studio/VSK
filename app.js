@@ -5,11 +5,19 @@
   const page = document.body.dataset.page || 'home';
   const homeHref = hash => page === 'home' ? hash : `index.html${hash}`;
 
+  /* Projects is no longer a customer-facing destination. Preserve old links/bookmarks by
+     taking visitors directly to the searchable Experience page. */
+  if (page === 'projects') {
+    const target = new URL('machines.html', location.href);
+    location.replace(target.href);
+    return;
+  }
+
   if (!document.querySelector('link[href^="v16.css"]')) {
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16.css?v=16.2'; document.head.appendChild(css);
   }
   if (!document.querySelector('link[href^="v16-user-polish.css"]')) {
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-user-polish.css?v=16.6'; document.head.appendChild(css);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-user-polish.css?v=16.8'; document.head.appendChild(css);
   }
 
   const nativeFetch = window.fetch.bind(window);
@@ -74,8 +82,7 @@
     ['Company',homeHref('#about'),false],
     ['Capabilities',homeHref('#expertise'),false],
     ['Retrofit & CNC',homeHref('#retrofit'),false],
-    ['Projects','projects.html',page === 'projects'],
-    ['54 References','machines.html',page === 'machines'],
+    ['Experience','machines.html',page === 'machines'],
     ['Gallery','gallery.html',page === 'gallery']
   ];
 
@@ -89,6 +96,9 @@
   const mobile = document.querySelector('[data-mobile-menu]');
   if (mobile) mobile.innerHTML = `<button class="mobile-menu-backdrop" data-menu-close type="button" aria-label="Close navigation"></button><div class="mobile-menu-panel"><div class="mobile-menu-head"><span>Navigate</span><button data-menu-close type="button">Close ×</button></div><nav aria-label="Mobile navigation">${navItems.map(([label,href],i) => `<a href="${href}">${label} <span>${String(i+1).padStart(2,'0')}</span></a>`).join('')}</nav><button class="mobile-menu-cta" type="button" data-quote-open>Discuss a Machine ↗</button></div>`;
 
+  /* Any old static Projects link is intentionally folded into Experience before interaction. */
+  document.querySelectorAll('a[href="projects.html"]').forEach(a => { a.href = 'machines.html'; });
+
   if (typeof capabilityData !== 'undefined') {
     Object.assign(capabilityData.mechanical,{image:'media/legacy/spindle-interface.webp',alt:'Machine-tool spindle and workholding interface',title:'Machine architecture built around your component and operation.',copy:'Structure, mechanisms, fixtures and workholding are developed around the part, process, access, accuracy and cycle target you need.'});
     Object.assign(capabilityData.controls,{image:'media/retrofit/jig-grinding.webp',alt:'Jig grinding machine CNC PLC and HMI retrofit',title:'Controls engineered for the way your machine must actually run.',copy:'CNC, PLC, HMI, servo and drive systems are integrated around sequence, safety, repeatability, diagnostics and operator use.'});
@@ -100,54 +110,71 @@
 
   const setText = (selector,text) => { const el = document.querySelector(selector); if (el) el.textContent = text; };
   const setHTML = (selector,html) => { const el = document.querySelector(selector); if (el) el.innerHTML = html; };
+  const setMeta = (name,content) => { const el = document.querySelector(`meta[name="${name}"]`); if (el) el.content = content; };
 
-  setText('.footer-brand > p','Special purpose machines, CNC retrofit and automation engineered around difficult production requirements.');
+  setText('.footer-brand > p','Special purpose machines, CNC retrofit and automation built around demanding production requirements.');
   setText('.footer-brand small','Machine engineering for new equipment, retrofit and production improvement.');
-  setText('.quote-head h2','Tell us the production or machine problem you need to solve.');
+  setText('.quote-head h2','Tell us what your machine or production needs to achieve.');
   const footerCols = document.querySelectorAll('.footer-col');
-  if (footerCols[0]) footerCols[0].innerHTML = `<span>Explore</span><a href="projects.html">Selected Projects</a><a href="machines.html">54 Engineering References</a><a href="gallery.html">Project Gallery</a><a href="${homeHref('#about')}">Company</a>`;
+  if (footerCols[0]) footerCols[0].innerHTML = `<span>Explore</span><a href="machines.html">Experience</a><a href="gallery.html">Gallery</a><a href="${homeHref('#about')}">Company</a>`;
   if (footerCols[1]) footerCols[1].innerHTML = `<span>Engineering</span><a href="${homeHref('#expertise')}">Capabilities</a><a href="${homeHref('#retrofit')}">Retrofit & CNC</a><button type="button" data-quote-open>Discuss a Machine ↗</button>`;
 
   if (page === 'home') {
     setText('.hero-blue-copy > p','Bring VSK the part, cycle-time target, tolerance or machine challenge. We develop the mechanics, controls and process around the production result you need — whether that means a purpose-built SPM, automation or a CNC retrofit.');
-    setText('.capabilities .section-intro > p','One requirement, one engineering team. Mechanical design, controls, electrical systems, fluid power and manufacturing decisions stay aligned to the production result you need.');
-    setText('.projects-showcase .section-intro > p','See how a difficult production requirement becomes a working machine when workholding, mechanism, controls and cycle are engineered together from the start.');
-    setText('.engineering-depth .depth-head > p','Use recorded tolerance, alignment and cycle-time references as quick proof points, then search all 54 references when you need a closer technical precedent.');
-    setText('.archive-callout .kicker','54 ENGINEERING REFERENCES');
-    setText('.archive-callout h3','Find the closest precedent.');
-    setText('.archive-callout > p','Search by process, machine type, application or control platform before you brief a new requirement.');
-    setHTML('.archive-callout .btn','Search 54 references <span>→</span>');
-    setText('.retrofit-inner > p','Keep a sound mechanical platform productive for longer. VSK combines machine reconditioning with modern CNC, PLC, drive and electrical systems to recover capability and serviceability.');
-    setText('.process .section-intro > p','From the first application study to trials and commissioning, the same production target guides machine architecture, controls, build and validation.');
-    setText('.about-copy > p','For a new machine, a difficult retrofit or a production problem that needs more than an off-the-shelf answer, VSK brings machine-building, controls and machine-tool experience together under one engineering team.');
-  }
+    const heroSecondary = document.querySelector('.hero-actions .ghost-cta');
+    if (heroSecondary) { heroSecondary.href = 'machines.html'; heroSecondary.textContent = 'See relevant experience'; }
 
-  if (page === 'projects') {
-    setText('.page-hero-copy > p','Six selected VSK case studies show how application, workholding, machine architecture and controls come together in delivered equipment. Use them for a fast first impression; use the 54-reference database when you need a closer match.');
-    setText('.project-index .kicker','CURATED CASE STUDIES');
-    setHTML('.project-index .section-intro h2','Six machines.<br><em>Six different engineering problems.</em>');
-    setText('.project-index .section-intro > p','Each case is deliberately media-rich and concise, so you can quickly judge the type of machine, process and control experience relevant to your requirement.');
-    setHTML('.projects-cta h2','Need a closer technical match?<br><em>Search all 54 references.</em>');
-    setText('.projects-cta p','Projects gives you the highlights. The 54-reference database lets you filter the wider VSK record by process, machine type, application and control platform.');
-    const links = document.querySelectorAll('.projects-cta .big-link');
-    if (links[0]) links[0].innerHTML = '<span>54 Engineering References</span><strong>Search the wider experience database</strong><i>→</i>';
-    if (links[1]) links[1].innerHTML = '<span>Project Gallery</span><strong>Inspect source-grouped photos and videos</strong><i>↗</i>';
+    setText('.capabilities .section-intro > p','One requirement, one engineering team. Mechanical design, controls, electrical systems, fluid power and manufacturing decisions stay aligned to the result your production needs.');
+    setText('.projects-showcase .section-intro > p','See how a demanding application becomes a working machine when workholding, mechanism, controls and cycle are engineered together from the start.');
+
+    setText('.project-collection-head span','SELECTED ENGINEERING EXPERIENCE');
+    const selectedLink = document.querySelector('.project-collection-head a');
+    if (selectedLink) { selectedLink.href = 'machines.html'; selectedLink.textContent = 'Find experience relevant to your requirement →'; }
+    const selectedSection = document.querySelector('.selected-projects-strip');
+    if (selectedSection) selectedSection.setAttribute('aria-label','Selected VSK engineering experience');
+
+    setText('.engineering-depth .depth-head > p','Use real tolerance, alignment and cycle-time results as quick proof, then find VSK experience closest to your machine, process or production target.');
+    setText('.archive-callout .kicker','PROVEN EXPERIENCE');
+    setText('.archive-callout h3','Find work relevant to your requirement.');
+    setText('.archive-callout > p','Search VSK experience by process, machine type, customer need or control platform before you start the discussion.');
+    setHTML('.archive-callout .btn','Find relevant experience <span>→</span>');
+
+    setText('.retrofit-inner > p','Keep a sound mechanical platform productive for longer. VSK combines machine reconditioning with modern CNC, PLC, drive and electrical systems to recover capability, reliability and serviceability.');
+    const retrofitAll = document.querySelector('.retrofit-actions a[href*="machines.html"]');
+    if (retrofitAll) retrofitAll.innerHTML = 'See retrofit experience <span>↗</span>';
+    const retrofitOpen = document.querySelector('.retrofit-actions [data-feature-open]');
+    if (retrofitOpen) retrofitOpen.innerHTML = 'See machine details <span>→</span>';
+
+    setText('.process .section-intro > p','From application study to trials and commissioning, the same production target guides machine architecture, controls, build and validation.');
+    setText('.about-copy > p','Whether you need a new machine, a difficult retrofit or a production improvement that cannot be solved off the shelf, VSK brings machine-building, controls and machine-tool experience together around your requirement.');
   }
 
   if (page === 'machines') {
-    setText('.archive-hero .kicker','54 ENGINEERING REFERENCES');
-    setText('.archive-hero-number small','SEARCHABLE EXPERIENCE');
-    setText('.archive-hero p','Search documented VSK machine-building and retrofit experience by process, machine type, application and control platform. Project-specific media is shown only where it is actually mapped to that reference.');
-    setText('.archive-status a','Inspect source-grouped project media ↗');
-    setHTML('.archive-note h2','Found a relevant precedent?<br><em>Bring VSK your requirement.</em>');
-    setText('.archive-note p','Use the reference database to narrow the conversation, then share your part, target cycle, tolerance and existing-machine details for an application review.');
+    document.title = 'Engineering Experience — VSK Electro-Mech Solutions';
+    setMeta('description','Find VSK machine-building, special purpose machine and CNC retrofit experience relevant to your process, machine type, application or control platform.');
+    setText('.archive-hero .kicker','VSK ENGINEERING EXPERIENCE');
+    setText('.archive-hero-number small','MACHINE-BUILDING EXPERIENCE');
+    setHTML('.archive-hero h1','Find experience<br><em>close to your requirement.</em>');
+    setText('.archive-hero p','Search VSK machine-building and retrofit experience by process, machine type, application or control platform, then open the closest examples to discuss your own requirement.');
+    setText('.archive-search span','Find relevant experience');
+    const search = document.querySelector('[data-archive-search]');
+    if (search) search.placeholder = 'Machine, process, customer, control…';
+    setText('.archive-status a','See actual machine photos & videos ↗');
+    setHTML('.archive-note h2','Found something similar?<br><em>Let’s discuss what you need.</em>');
+    setText('.archive-note p','Share your part, target cycle, tolerance, control platform or existing-machine details. VSK can start from comparable experience and focus the discussion on your production objective.');
   }
 
   if (page === 'gallery') {
-    setText('.gallery-hero-copy > p','Inspect photos and videos grouped by their actual VSK source project. Use Gallery to judge construction, fixtures, controls and integration detail without mixing media between machine titles.');
-    setText('.gallery-browser-head > p','Every media group follows its source project folder, so the machine title and the photos or videos shown with it stay together.');
-    setHTML('.gallery-policy h2','See the workmanship.<br><em>Then find the closest reference.</em>');
-    setText('.gallery-policy p','Use Gallery for visual evidence and the 54-reference database when you need to search by application, machine type or control platform.');
+    document.title = 'Machine Gallery — VSK Electro-Mech Solutions';
+    setMeta('description','Browse actual VSK machine builds, CNC retrofits, fixtures, controls and process equipment through project photos and videos.');
+    setText('.gallery-hero-copy .kicker','VSK MACHINE GALLERY');
+    setText('.gallery-hero-copy > p','Browse actual VSK machine builds, retrofit work, fixtures, controls and process equipment. Open a group to inspect the workmanship and integration in more detail.');
+    setText('.gallery-browser-head > p','Look from the complete machine down to fixtures, mechanisms, control panels and process details to judge how VSK executes real shop-floor engineering.');
+    setText('.gallery-status a','Find similar engineering experience →');
+    const galleryStatusLink = document.querySelector('.gallery-status a');
+    if (galleryStatusLink) galleryStatusLink.href = 'machines.html';
+    setHTML('.gallery-policy h2','Seen something relevant?<br><em>Bring us your requirement.</em>');
+    setText('.gallery-policy p','Use the gallery to inspect VSK workmanship, then search Experience by machine, process or control platform and start a discussion around your own production need.');
   }
 
   const mediaMap = {
