@@ -5,6 +5,22 @@
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
+  /* The three polish layers are already imported synchronously by v16-final-lock.css.
+     Register matching link elements before app.js runs so it does not append the same
+     stylesheets again after first paint. */
+  [
+    ['v16-user-polish.css', 'v16-user-polish.css?v=16.32'],
+    ['v16-release-polish.css', 'v16-release-polish.css?v=16.32'],
+    ['v16-corrections.css', 'v16-corrections.css?v=16.32']
+  ].forEach(([prefix, href]) => {
+    if (document.querySelector(`link[href^="${prefix}"]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.dataset.v16PreloadedPolish = '';
+    document.head.appendChild(link);
+  });
+
   /* Fallback only for older pages that do not already link the current review CSS. */
   if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
