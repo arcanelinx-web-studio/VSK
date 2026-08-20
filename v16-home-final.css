@@ -1,0 +1,247 @@
+/* V16 HOME FINAL — static presentation only.
+   No runtime layout logic. This layer owns the reviewed homepage hero and proof section. */
+
+/* HERO CTA — give the arrow deliberate breathing room. */
+body.v8.v13.v14 .hero-blue-copy .text-cta{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:20px!important;
+  padding-inline:22px 18px!important;
+}
+body.v8.v13.v14 .hero-blue-copy .text-cta span{
+  display:inline-block!important;
+  margin-left:2px!important;
+}
+
+/* HERO BOARD — cleaner composition, larger machine, less visual clutter. */
+body.v8.v13.v14 .hero-board-main figcaption{
+  display:none!important;
+}
+body.v8.v13.v14 .hero-board-main{
+  left:7.5%!important;
+  top:14.2%!important;
+  width:73.5%!important;
+  height:69.5%!important;
+  background:linear-gradient(145deg,#D9E0E8,#C5CED8)!important;
+  clip-path:polygon(9% 0,93% 0,100% 9%,100% 90%,89% 100%,0 100%,0 11%)!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .hero-board-main img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:22% 49%!important;
+  transform:scale(1.22)!important;
+  transform-origin:27% 50%!important;
+  filter:saturate(.9) contrast(1.04)!important;
+}
+body.v8.v13.v14 .hero-board-photo{
+  left:3.4%!important;
+  bottom:4.5%!important;
+  width:29.5%!important;
+  height:31%!important;
+  border:5px solid rgba(250,250,247,.96)!important;
+  background:#F6F8FA!important;
+  box-shadow:0 18px 40px rgba(25,54,76,.15)!important;
+  transform:rotate(-1.25deg)!important;
+}
+body.v8.v13.v14 .hero-board-photo img{
+  object-fit:cover!important;
+  object-position:45% 50%!important;
+}
+body.v8.v13.v14 .hero-board-photo::after{
+  left:8px!important;
+  bottom:8px!important;
+  padding:5px 7px!important;
+  background:rgba(250,250,247,.94)!important;
+  color:#27445A!important;
+  box-shadow:0 4px 12px rgba(13,24,36,.06)!important;
+}
+body.v8.v13.v14 .hero-tech-sheet{
+  right:2.6%!important;
+  top:7.6%!important;
+  width:27.5%!important;
+  height:27.5%!important;
+  transform:rotate(2.6deg)!important;
+  box-shadow:0 16px 34px rgba(25,54,76,.13)!important;
+}
+body.v8.v13.v14 .hero-proof-chip{
+  right:3.8%!important;
+  bottom:6.1%!important;
+  padding:12px 15px!important;
+  gap:9px!important;
+}
+body.v8.v13.v14 .hero-proof-chip strong{
+  font-size:16px!important;
+}
+body.v8.v13.v14 .hero-proof-chip span{
+  font-size:7.5px!important;
+}
+body.v8.v13.v14 .hero-board-side-note{
+  right:4.3%!important;
+  top:43.5%!important;
+  color:#6D8394!important;
+}
+body.v8.v13.v14 .hero-crosshair{
+  right:7.1%!important;
+  bottom:1.7%!important;
+  opacity:.72!important;
+}
+
+@media (min-width:1501px){
+  body.v8.v13.v14 .hero-engineering-board{
+    width:min(100%,760px)!important;
+    min-height:620px!important;
+  }
+}
+@media (min-width:1181px) and (max-width:1500px){
+  body.v8.v13.v14 .hero-engineering-board{
+    width:min(100%,700px)!important;
+    min-height:575px!important;
+  }
+}
+
+/* ENGINEERING DEPTH — longer, better resolved proof cards with the 54 card fully presented. */
+body.v8.v13.v14 .engineering-depth{
+  padding:82px 0 90px!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-head{
+  margin:0 auto 34px!important;
+  align-items:end!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-head>p{
+  max-width:600px!important;
+  font-size:17px!important;
+  line-height:1.55!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.12fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card,
+body.v8.v13.v14 .engineering-depth .archive-callout{
+  height:276px!important;
+  min-height:276px!important;
+  max-height:276px!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card{
+  padding:26px 25px 24px!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-number{
+  font-size:74px!important;
+  line-height:.88!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-number span{
+  font-size:10px!important;
+  margin-left:8px!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{
+  margin-top:auto!important;
+  padding-top:18px!important;
+  border-top:1px solid #DDE3E8!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card small{
+  margin-bottom:8px!important;
+  font-size:8.5px!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card strong{
+  max-width:215px!important;
+  font-size:15px!important;
+  line-height:1.28!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout{
+  padding:23px 24px 22px!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout .kicker{
+  font-size:8px!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-number{
+  margin:10px 0 5px!important;
+  font-size:62px!important;
+  line-height:.84!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout h3{
+  max-width:310px!important;
+  font-size:21px!important;
+  line-height:1.06!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout>p{
+  max-width:330px!important;
+  margin:8px 0 12px!important;
+  font-size:11px!important;
+  line-height:1.42!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-split{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  margin:0 0 12px!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-split span{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:8px 10px!important;
+  border:1px solid #31475B!important;
+  background:#14263A!important;
+  color:#DDE8F0!important;
+  font:500 7px/1.15 "IBM Plex Mono",monospace!important;
+  letter-spacing:.04em!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-split b{
+  color:#2B8DD0!important;
+  font:600 17px/1 "Space Grotesk",sans-serif!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout .btn{
+  min-height:40px!important;
+  height:40px!important;
+  margin-top:auto!important;
+  padding:0 13px!important;
+  font-size:8px!important;
+}
+
+@media (max-width:1500px){
+  body.v8.v13.v14 .engineering-depth .metric-card,
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:262px!important;
+    min-height:262px!important;
+    max-height:262px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-number{font-size:68px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout-number{font-size:56px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:19px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout>p{font-size:10.5px!important;margin-bottom:9px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout-split{margin-bottom:9px!important}
+}
+
+@media (max-width:1180px){
+  body.v8.v13.v14 .engineering-depth{padding:68px 0 76px!important}
+  body.v8.v13.v14 .engineering-depth .depth-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-card{
+    height:226px!important;min-height:226px!important;max-height:226px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:250px!important;min-height:250px!important;max-height:250px!important;
+  }
+}
+
+@media (max-width:720px){
+  body.v8.v13.v14 .hero-blue-copy .text-cta{gap:14px!important}
+  body.v8.v13.v14 .engineering-depth{padding:56px 0 64px!important}
+  body.v8.v13.v14 .engineering-depth .depth-head>p{font-size:14px!important}
+  body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:10px!important}
+  body.v8.v13.v14 .engineering-depth .metric-card{
+    height:188px!important;min-height:188px!important;max-height:188px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-number{font-size:58px!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:auto!important;min-height:250px!important;max-height:none!important;
+  }
+}
