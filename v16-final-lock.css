@@ -253,3 +253,33 @@ body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archiv
   }
   body.v8.v13.v14 .engineering-depth .archive-callout{height:auto!important;max-height:none!important;min-height:190px!important}
 }
+
+/* CSS-only specificity lock: legacy project-layout classes may remain in the DOM,
+   but they can no longer recreate the old 2+3 masonry geometry. */
+body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card.project-layout-0,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card.project-layout-1,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card.project-layout-2,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card.project-layout-3,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card.project-layout-4{
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  height:244px!important;
+  min-height:244px!important;
+  max-height:244px!important;
+}
+@media (max-width:1500px){
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card[class*="project-layout-"]{
+    height:226px!important;min-height:226px!important;max-height:226px!important;
+  }
+}
+@media (max-width:1180px){
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card[class*="project-layout-"]{
+    height:240px!important;min-height:240px!important;max-height:240px!important;
+  }
+}
+@media (max-width:720px){
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects].project-grid-editorial>.project-card[class*="project-layout-"]{
+    height:250px!important;min-height:250px!important;max-height:250px!important;
+  }
+}
