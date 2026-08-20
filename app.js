@@ -17,7 +17,10 @@
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16.css?v=16.2'; document.head.appendChild(css);
   }
   if (!document.querySelector('link[href^="v16-user-polish.css"]')) {
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-user-polish.css?v=16.8'; document.head.appendChild(css);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-user-polish.css?v=16.6'; document.head.appendChild(css);
+  }
+  if (!document.querySelector('link[href^="v16-release-polish.css"]')) {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-release-polish.css?v=16.8'; document.head.appendChild(css);
   }
 
   const nativeFetch = window.fetch.bind(window);
