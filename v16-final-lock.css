@@ -1,66 +1,10 @@
-/* V16 FINAL REVIEW AUTHORITY
-   One static CSS layer for the approved client-review composition.
-   No runtime layout enforcement. */
+@import url("v16-review-authority.css?v=16.25");
 
-/* ---------------------------------------------------------
-   SELECTED ENGINEERING EXPERIENCE — five equal peer cards
-   --------------------------------------------------------- */
-body.v8.v13.v14 .selected-projects-strip{
-  padding:34px 0 68px!important;
-  background:#0D1824!important;
-  border-top:1px solid #26384A!important;
-}
-body.v8.v13.v14 .selected-projects-strip .project-collection-head{
-  width:min(1660px,calc(100% - 72px))!important;
-  margin:0 auto 20px!important;
-  min-height:38px!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
-  width:min(1660px,calc(100% - 72px))!important;
-  max-width:none!important;
-  margin:0 auto!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  grid-auto-rows:244px!important;
-  gap:14px!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{
-  grid-column:auto!important;
-  grid-row:auto!important;
-  width:100%!important;
-  height:244px!important;
-  min-height:244px!important;
-  max-height:244px!important;
-  aspect-ratio:auto!important;
-  margin:0!important;
-  overflow:hidden!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image,
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
-  width:100%!important;
-  height:100%!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
-  object-fit:cover!important;
-  padding:0!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy{
-  inset:auto 16px 15px!important;
-  padding:0!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy strong{
-  font-size:18px!important;
-  line-height:1.08!important;
-}
-body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy small{
-  font-size:7.5px!important;
-  letter-spacing:.08em!important;
-}
+/* V16 FINAL LOCK
+   Kept intentionally small: final review geometry is imported above during CSS loading,
+   so the browser paints the current design immediately instead of morphing after JavaScript. */
 
-/* ---------------------------------------------------------
-   HERO — cleaner engineering board + deliberate CTA spacing
-   --------------------------------------------------------- */
+/* HERO — approved engineering-board refinements. */
 body.v8.v13.v14 .hero-blue-copy .text-cta{
   display:inline-flex!important;
   align-items:center!important;
@@ -68,17 +12,14 @@ body.v8.v13.v14 .hero-blue-copy .text-cta{
   gap:20px!important;
   padding-inline:22px 18px!important;
 }
-body.v8.v13.v14 .hero-blue-copy .text-cta span{
-  display:inline-block!important;
-  margin-left:2px!important;
-}
+body.v8.v13.v14 .hero-blue-copy .text-cta span{display:inline-block!important;margin-left:2px!important}
 body.v8.v13.v14 .hero-board-main figcaption{display:none!important}
 body.v8.v13.v14 .hero-board-main{
   left:7.5%!important;
   top:14.2%!important;
   width:73.5%!important;
   height:69.5%!important;
-  background:linear-gradient(145deg,#D9E0E8,#C5CED8)!important;
+  background:linear-gradient(145deg,#d9e0e8,#c5ced8)!important;
   clip-path:polygon(9% 0,93% 0,100% 9%,100% 90%,89% 100%,0 100%,0 11%)!important;
   overflow:hidden!important;
 }
@@ -91,29 +32,7 @@ body.v8.v13.v14 .hero-board-main img{
   transform-origin:27% 50%!important;
   filter:saturate(.9) contrast(1.04)!important;
 }
-body.v8.v13.v14 .hero-board-photo{
-  left:3.4%!important;
-  bottom:4.5%!important;
-  width:29.5%!important;
-  height:31%!important;
-  border:5px solid rgba(250,250,247,.96)!important;
-  background:#F6F8FA!important;
-  box-shadow:0 18px 40px rgba(25,54,76,.15)!important;
-  transform:rotate(-1.25deg)!important;
-}
-body.v8.v13.v14 .hero-board-photo img{
-  object-fit:cover!important;
-  object-position:45% 50%!important;
-}
-body.v8.v13.v14 .hero-board-photo::after{
-  content:"ACTUAL MACHINE VIEW"!important;
-  left:8px!important;
-  bottom:8px!important;
-  padding:5px 7px!important;
-  background:rgba(250,250,247,.94)!important;
-  color:#27445A!important;
-  box-shadow:0 4px 12px rgba(13,24,36,.06)!important;
-}
+body.v8.v13.v14 .hero-board-photo{display:none!important}
 body.v8.v13.v14 .hero-tech-sheet{
   right:2.6%!important;
   top:7.6%!important;
@@ -122,281 +41,16 @@ body.v8.v13.v14 .hero-tech-sheet{
   transform:rotate(2.6deg)!important;
   box-shadow:0 16px 34px rgba(25,54,76,.13)!important;
 }
-body.v8.v13.v14 .hero-proof-chip{
-  right:3.8%!important;
-  bottom:6.1%!important;
-  padding:12px 15px!important;
-  gap:9px!important;
-}
+body.v8.v13.v14 .hero-proof-chip{right:3.8%!important;bottom:6.1%!important;padding:12px 15px!important;gap:9px!important}
 body.v8.v13.v14 .hero-proof-chip strong{font-size:16px!important}
 body.v8.v13.v14 .hero-proof-chip span{font-size:7.5px!important}
-body.v8.v13.v14 .hero-board-side-note{
-  right:4.3%!important;
-  top:43.5%!important;
-  color:#6D8394!important;
-}
-body.v8.v13.v14 .hero-crosshair{
-  right:7.1%!important;
-  bottom:1.7%!important;
-  opacity:.72!important;
-}
-@media (min-width:1501px){
-  body.v8.v13.v14 .hero-engineering-board{
-    width:min(100%,760px)!important;
-    min-height:620px!important;
-  }
-}
-@media (min-width:1181px) and (max-width:1500px){
-  body.v8.v13.v14 .hero-engineering-board{
-    width:min(100%,700px)!important;
-    min-height:575px!important;
-  }
-}
+body.v8.v13.v14 .hero-board-side-note{right:4.3%!important;top:43.5%!important;color:#6d8394!important}
+body.v8.v13.v14 .hero-crosshair{right:7.1%!important;bottom:1.7%!important;opacity:.72!important}
 
-/* ---------------------------------------------------------
-   ENGINEERING DEPTH — final proof-led composition
-   --------------------------------------------------------- */
-body.v8.v13.v14 .engineering-depth{
-  padding:86px 0 96px!important;
-  background:#FAFAF7!important;
-}
-body.v8.v13.v14 .engineering-depth .depth-head{
-  width:min(1660px,calc(100% - 72px))!important;
-  margin:0 auto 34px!important;
-  padding:0!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr)!important;
-  gap:clamp(48px,6vw,104px)!important;
-  align-items:end!important;
-}
-body.v8.v13.v14 .engineering-depth .depth-head>div{max-width:760px!important}
-body.v8.v13.v14 .engineering-depth .depth-head h2{
-  margin-bottom:0!important;
-  font-size:clamp(50px,3.5vw,66px)!important;
-  line-height:.95!important;
-}
-body.v8.v13.v14 .engineering-depth .depth-head>p{
-  margin:0 0 5px!important;
-  max-width:590px!important;
-  font-size:16px!important;
-  line-height:1.58!important;
-  color:#657789!important;
-}
-body.v8.v13.v14 .engineering-depth .depth-grid{
-  width:min(1660px,calc(100% - 72px))!important;
-  max-width:none!important;
-  margin:0 auto!important;
-  padding:0!important;
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.16fr)!important;
-  gap:16px!important;
-  align-items:stretch!important;
-  border:0!important;
-  background:transparent!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-stack{display:contents!important}
-body.v8.v13.v14 .engineering-depth .metric-card,
-body.v8.v13.v14 .engineering-depth .archive-callout{
-  width:100%!important;
-  height:270px!important;
-  min-height:270px!important;
-  max-height:270px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card{
-  position:relative!important;
-  padding:23px 24px 22px!important;
-  display:grid!important;
-  grid-template-rows:auto 1fr auto!important;
-  background:#fff!important;
-  border:1px solid #D7DEE5!important;
-  box-shadow:0 12px 32px rgba(13,24,36,.035)!important;
-  text-align:left!important;
-  overflow:hidden!important;
-  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card:hover{
-  transform:translateY(-3px)!important;
-  border-color:#B8C7D3!important;
-  box-shadow:0 18px 38px rgba(13,24,36,.07)!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{
-  display:contents!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card small{
-  grid-row:1!important;
-  align-self:start!important;
-  display:block!important;
-  max-width:180px!important;
-  margin:0!important;
-  color:#164A9C!important;
-  font:500 8.5px/1.3 "IBM Plex Mono",monospace!important;
-  letter-spacing:.12em!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card>i{
-  position:absolute!important;
-  top:21px!important;
-  right:22px!important;
-  color:#167BC4!important;
-  font-style:normal!important;
-  font-size:17px!important;
-  line-height:1!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-number{
-  grid-row:2!important;
-  align-self:center!important;
-  margin:4px 0 0!important;
-  color:#0D1824!important;
-  font-size:clamp(64px,4vw,78px)!important;
-  line-height:.86!important;
-  letter-spacing:-.065em!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-number span{
-  margin-left:8px!important;
-  color:#164A9C!important;
-  font:500 10px/1 "IBM Plex Mono",monospace!important;
-  letter-spacing:0!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card strong{
-  grid-row:3!important;
-  display:block!important;
-  width:100%!important;
-  max-width:none!important;
-  padding-top:15px!important;
-  border-top:1px solid #E1E7EC!important;
-  color:#164A9C!important;
-  font-size:0!important;
-  line-height:1.25!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card strong::before{
-  display:block!important;
-  margin-bottom:5px!important;
-  color:#164A9C!important;
-  font:600 15px/1.18 Inter,sans-serif!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card strong::after{
-  display:block!important;
-  max-width:250px!important;
-  color:#657789!important;
-  font:400 11px/1.4 Inter,sans-serif!important;
-}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="zcut"] strong::before{content:"Tolerance reference"}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="zcut"] strong::after{content:"Held on a documented VSK machine application."}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="wheel"] strong::before{content:"Alignment reference"}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="wheel"] strong::after{content:"Used as a measured machine setup benchmark."}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="facing"] strong::before{content:"Cycle reference"}
-body.v8.v13.v14 .engineering-depth .metric-card[data-feature-open="facing"] strong::after{content:"Recorded on a production-facing machine operation."}
-
-body.v8.v13.v14 .engineering-depth .archive-callout{
-  position:relative!important;
-  padding:22px 23px 20px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  background:linear-gradient(145deg,#0D1824,#102338)!important;
-  border:1px solid #263B4E!important;
-  box-shadow:0 14px 34px rgba(13,24,36,.09)!important;
-  overflow:hidden!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout::after{
-  content:"";
-  position:absolute;
-  width:160px;
-  height:160px;
-  right:-72px;
-  top:-72px;
-  border:1px solid rgba(43,141,208,.18);
-  border-radius:50%;
-  pointer-events:none;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout .kicker{
-  position:relative!important;
-  z-index:1!important;
-  margin:0!important;
-  color:#2B8DD0!important;
-  font-size:8px!important;
-  letter-spacing:.11em!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout-number{
-  position:relative!important;
-  z-index:1!important;
-  margin:9px 0 5px!important;
-  color:#2389D4!important;
-  font-size:58px!important;
-  line-height:.84!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout h3{
-  position:relative!important;
-  z-index:1!important;
-  margin:0!important;
-  max-width:315px!important;
-  color:#fff!important;
-  font-size:20px!important;
-  line-height:1.07!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout>p{
-  position:relative!important;
-  z-index:1!important;
-  margin:8px 0 11px!important;
-  max-width:330px!important;
-  color:#BFCCD7!important;
-  font-size:10.5px!important;
-  line-height:1.42!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout-split{
-  position:relative!important;
-  z-index:1!important;
-  display:grid!important;
-  grid-template-columns:1fr 1fr!important;
-  gap:8px!important;
-  margin:0 0 10px!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout-split span{
-  min-height:38px!important;
-  display:flex!important;
-  align-items:center!important;
-  gap:8px!important;
-  padding:7px 9px!important;
-  border:1px solid #31475B!important;
-  background:#14263A!important;
-  color:#DDE8F0!important;
-  font:500 7px/1.15 "IBM Plex Mono",monospace!important;
-  letter-spacing:.04em!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout-split b{
-  color:#2B8DD0!important;
-  font:600 17px/1 "Space Grotesk",sans-serif!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout .btn{
-  position:relative!important;
-  z-index:1!important;
-  width:100%!important;
-  min-height:38px!important;
-  height:38px!important;
-  margin-top:auto!important;
-  padding:0 12px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  border:1px solid rgba(255,255,255,.48)!important;
-  background:transparent!important;
-  color:#fff!important;
-  font-size:8px!important;
-  letter-spacing:.08em!important;
-}
-body.v8.v13.v14 .engineering-depth .archive-callout .btn:hover{
-  background:#167BC4!important;
-  border-color:#167BC4!important;
-}
-
-/* ---------------------------------------------------------
-   EXPERIENCE — index first, Gallery remains media first
-   --------------------------------------------------------- */
+/* EXPERIENCE stays index-first; Gallery remains the photo-first destination. */
 body.v8.v13.v14[data-page="machines"] [data-archive-visual-view],
 body.v8.v13.v14[data-page="machines"] .experience-visual-grid,
-body.v8.v13.v14[data-page="machines"] .experience-media-showcase{
-  display:none!important;
-}
+body.v8.v13.v14[data-page="machines"] .experience-media-showcase{display:none!important}
 body.v8.v13.v14[data-page="machines"] [data-archive-index-view]{display:grid!important}
 body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archive-preview-open]{
   width:100%!important;
@@ -406,107 +60,20 @@ body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archiv
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
-  border:1px solid #164A9C!important;
-  background:#164A9C!important;
+  border:1px solid #164a9c!important;
+  background:#164a9c!important;
   color:#fff!important;
   font-family:Inter,sans-serif!important;
   font-size:11px!important;
   font-weight:600!important;
-  line-height:1!important;
-  letter-spacing:.01em!important;
   text-transform:none!important;
   box-shadow:0 8px 18px rgba(22,74,156,.14)!important;
-  transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease!important;
 }
 body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archive-preview-open]:hover{
-  background:#167BC4!important;
-  border-color:#167BC4!important;
-  transform:translateY(-1px)!important;
-  box-shadow:0 10px 22px rgba(22,123,196,.18)!important;
+  background:#167bc4!important;
+  border-color:#167bc4!important;
 }
 
-/* ---------------------------------------------------------
-   RESPONSIVE
-   --------------------------------------------------------- */
-@media (max-width:1500px){
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{grid-auto-rows:226px!important}
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{
-    height:226px!important;min-height:226px!important;max-height:226px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .metric-card,
-  body.v8.v13.v14 .engineering-depth .archive-callout{
-    height:260px!important;min-height:260px!important;max-height:260px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .archive-callout h3{font-size:18px!important}
-  body.v8.v13.v14 .engineering-depth .archive-callout>p{font-size:10px!important;margin-bottom:8px!important}
-}
-
-@media (max-width:1180px){
-  body.v8.v13.v14 .selected-projects-strip .project-collection-head,
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects],
-  body.v8.v13.v14 .engineering-depth .depth-head,
-  body.v8.v13.v14 .engineering-depth .depth-grid{
-    width:min(100% - 44px,1120px)!important;
-  }
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    grid-auto-rows:240px!important;
-  }
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{
-    height:240px!important;min-height:240px!important;max-height:240px!important;
-  }
-  body.v8.v13.v14 .engineering-depth{padding:70px 0 78px!important}
-  body.v8.v13.v14 .engineering-depth .depth-head{
-    grid-template-columns:1fr!important;
-    gap:18px!important;
-    margin-bottom:28px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .depth-head>p{max-width:720px!important;font-size:15px!important}
-  body.v8.v13.v14 .engineering-depth .depth-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:12px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .metric-card{
-    height:226px!important;min-height:226px!important;max-height:226px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .archive-callout{
-    height:246px!important;min-height:246px!important;max-height:246px!important;
-  }
-}
-
-@media (max-width:720px){
-  body.v8.v13.v14 .selected-projects-strip{padding:28px 0 48px!important}
-  body.v8.v13.v14 .selected-projects-strip .project-collection-head,
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects],
-  body.v8.v13.v14 .engineering-depth .depth-head,
-  body.v8.v13.v14 .engineering-depth .depth-grid{
-    width:calc(100% - 32px)!important;
-  }
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
-    grid-template-columns:1fr!important;
-    grid-auto-rows:250px!important;
-  }
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card,
-  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card[class*="project-layout-"]{
-    height:250px!important;min-height:250px!important;max-height:250px!important;
-  }
-  body.v8.v13.v14 .hero-blue-copy .text-cta{gap:14px!important}
-  body.v8.v13.v14 .engineering-depth{padding:54px 0 62px!important}
-  body.v8.v13.v14 .engineering-depth .depth-head h2{font-size:clamp(42px,12vw,54px)!important}
-  body.v8.v13.v14 .engineering-depth .depth-head>p{font-size:14px!important;line-height:1.5!important}
-  body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:10px!important}
-  body.v8.v13.v14 .engineering-depth .metric-card{
-    height:190px!important;min-height:190px!important;max-height:190px!important;
-    padding:20px!important;
-  }
-  body.v8.v13.v14 .engineering-depth .metric-card>i{top:19px!important;right:19px!important}
-  body.v8.v13.v14 .engineering-depth .metric-number{font-size:58px!important}
-  body.v8.v13.v14 .engineering-depth .metric-card strong{padding-top:11px!important}
-  body.v8.v13.v14 .engineering-depth .metric-card strong::before{font-size:14px!important}
-  body.v8.v13.v14 .engineering-depth .metric-card strong::after{font-size:10.5px!important}
-  body.v8.v13.v14 .engineering-depth .archive-callout{
-    height:auto!important;min-height:250px!important;max-height:none!important;
-  }
-}
+@media (min-width:1501px){body.v8.v13.v14 .hero-engineering-board{width:min(100%,760px)!important;min-height:620px!important}}
+@media (min-width:1181px) and (max-width:1500px){body.v8.v13.v14 .hero-engineering-board{width:min(100%,700px)!important;min-height:575px!important}}
+@media (max-width:720px){body.v8.v13.v14 .hero-blue-copy .text-cta{gap:14px!important}}
