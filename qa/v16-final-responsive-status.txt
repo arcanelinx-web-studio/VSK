@@ -1,0 +1,6 @@
+status=PASS
+tested_commit=ba03591d0d6214ed27071dfccf4377f9af270a8b
+matrix=28 page/viewport combinations
+viewports=1920x1080,1660x900,1440x900,1366x768,1024x768,768x1024,390x844
+pages=index.html,projects.html,machines.html,gallery.html
+checks=horizontal-overflow,broken-rendered-images,buyer-copy,hero-centering,cta-centering,engineering-depth-alignment,header-arrow,hydraulics-image
