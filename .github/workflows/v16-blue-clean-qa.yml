@@ -1,0 +1,156 @@
+name: V16 Release QA
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+          fetch-depth: 1
+
+      - name: Install browser QA
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+
+      - name: Start preview
+        run: |
+          python3 -m http.server 4173 >/tmp/vsk-release.log 2>&1 &
+          sleep 2
+
+      - name: Validate current V16 review build
+        run: |
+          cat > release-qa.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+          const local = 'http://127.0.0.1:4173/';
+          const viewports = [
+            ['desktop-1920',1920,1080],['desktop-1680',1680,1050],['desktop-1440',1440,900],
+            ['laptop-1366',1366,768],['tablet-1024',1024,768],['tablet-768',768,1024],
+            ['mobile-430',430,932],['mobile-390',390,844],['mobile-360',360,800]
+          ];
+          const pages = ['index.html','machines.html','gallery.html'];
+          const fail = [], report = [];
+          const visible = el => !!el && el.offsetParent !== null;
+          const rect = el => el ? el.getBoundingClientRect() : null;
+
+          (async()=>{
+            const browser = await chromium.launch({headless:true});
+            for (const file of pages) {
+              for (const [mode,w,h] of viewports) {
+                const p = await browser.newPage({viewport:{width:w,height:h}});
+                const pageErrors=[];
+                p.on('pageerror',e=>pageErrors.push(String(e)));
+                await p.goto(local+file,{waitUntil:'networkidle'});
+                await wait(file==='index.html'?1200:1800);
+
+                const audit = await p.evaluate(({w,file})=>{
+                  const visible = el => !!el && el.offsetParent !== null;
+                  const rect = el => el ? el.getBoundingClientRect() : null;
+                  const broken=[...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0).map(i=>i.src);
+                  const nav=[...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')].map(a=>a.textContent.trim()).join(' | ');
+                  const footer=document.querySelector('.site-footer')?.innerText||'';
+                  const result={scrollWidth:document.documentElement.scrollWidth,broken,nav,footer};
+                  if(file==='index.html'){
+                    const selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible);
+                    const depth=document.querySelector('.engineering-depth .depth-grid');
+                    const callout=document.querySelector('.engineering-depth .archive-callout');
+                    const metrics=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible);
+                    const featured=document.querySelector('.featured-case');
+                    result.selected=selected.length;
+                    result.selectedTitles=selected.map(x=>x.textContent.trim());
+                    result.selectedRects=selected.map(rect);
+                    result.depthRect=rect(depth);
+                    result.metricRects=metrics.map(rect);
+                    result.calloutRect=rect(callout);
+                    result.calloutClipped=!!callout && (callout.scrollHeight>callout.clientHeight+3 || callout.scrollWidth>callout.clientWidth+3);
+                    result.featuredRect=rect(featured);
+                    result.heroInsetVisible=visible(document.querySelector('.hero-board-photo'));
+                    result.mechanicalSrc=document.querySelector('[data-capability-image]')?.getAttribute('src')||'';
+                  }
+                  if(file==='machines.html'){
+                    result.indexVisible=visible(document.querySelector('[data-archive-index-view]'));
+                    result.visualVisible=visible(document.querySelector('[data-archive-visual-view]'));
+                    result.references=[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(visible).length;
+                    const preview=document.querySelector('[data-archive-preview-media] img');
+                    result.previewLoaded=!!(preview&&preview.complete&&preview.naturalWidth>0);
+                  }
+                  if(file==='gallery.html') result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid]>*')].filter(visible).length;
+                  return result;
+                },{w,file});
+
+                if(audit.scrollWidth>w+2) fail.push(`${file}/${mode}: horizontal overflow ${audit.scrollWidth}px > ${w}px`);
+                if(audit.broken.length) fail.push(`${file}/${mode}: broken images ${audit.broken.join(', ')}`);
+                if(pageErrors.length) fail.push(`${file}/${mode}: JS errors ${pageErrors.join(' | ')}`);
+                if(/Projects/i.test(audit.nav)) fail.push(`${file}/${mode}: obsolete Projects navigation visible`);
+                if(!/Experience/i.test(audit.nav)||!/Gallery/i.test(audit.nav)) fail.push(`${file}/${mode}: simplified navigation incomplete`);
+                if(!audit.footer.includes('+91 98803 36714')||!audit.footer.includes('+91 73531 00095')) fail.push(`${file}/${mode}: footer phone numbers inconsistent`);
+
+                if(file==='index.html'){
+                  if(audit.selected!==5) fail.push(`${file}/${mode}: expected 5 Selected Experience cards, got ${audit.selected}`);
+                  if(audit.selectedTitles.some(t=>/Kellenberg|Rod Boring/i.test(t))) fail.push(`${file}/${mode}: dedicated case duplicated in Selected Experience`);
+                  const heights=audit.selectedRects.map(r=>Math.round(r.height));
+                  if(heights.length&&Math.max(...heights)-Math.min(...heights)>3) fail.push(`${file}/${mode}: Selected Experience heights inconsistent`);
+                  if(w>=1600){
+                    const expected=w-80;
+                    if(audit.featuredRect&&Math.abs(audit.featuredRect.width-expected)>8) fail.push(`${file}/${mode}: Featured Engineering is not using wide desktop canvas (${Math.round(audit.featuredRect.width)} vs ${expected})`);
+                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expected)>8) fail.push(`${file}/${mode}: Engineering Depth is not using wide desktop canvas`);
+                  }
+                  if(audit.metricRects.length!==3) fail.push(`${file}/${mode}: expected 3 Engineering Depth metric cards`);
+                  if(audit.calloutClipped) fail.push(`${file}/${mode}: Engineering Depth 54-card content is clipped`);
+                  if(w>=1180){
+                    const proof=[...audit.metricRects,audit.calloutRect].filter(Boolean).map(r=>Math.round(r.height));
+                    if(proof.length&&Math.max(...proof)-Math.min(...proof)>4) fail.push(`${file}/${mode}: Engineering Depth proof-card heights inconsistent ${proof.join(',')}`);
+                  }
+                  if(audit.heroInsetVisible) fail.push(`${file}/${mode}: repeated hero inset CAD view is still visible`);
+                  if(!String(audit.mechanicalSrc).includes('cnc-thread-cutting-machine')) fail.push(`${file}/${mode}: weak Mechanical Engineering image still active`);
+                  if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
+                  await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
+                }
+
+                if(file==='machines.html'){
+                  if(!audit.indexVisible||audit.visualVisible) fail.push(`${file}/${mode}: Experience is not using index presentation`);
+                  if(audit.references!==54) fail.push(`${file}/${mode}: expected 54 Experience references, got ${audit.references}`);
+                  if(!audit.previewLoaded) fail.push(`${file}/${mode}: Experience preview media did not load`);
+                }
+                if(file==='gallery.html'&&audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery has no visible project groups`);
+                report.push({file,mode,w,h,audit,pageErrors});
+                await p.close();
+              }
+            }
+
+            const interaction=await browser.newPage({viewport:{width:1440,height:900}});
+            await interaction.goto(local+'index.html',{waitUntil:'networkidle'});await wait(900);
+            await interaction.locator('[data-capability="automation"]').click();await wait(200);
+            const autoSrc=await interaction.locator('[data-capability-image]').getAttribute('src');
+            if(String(autoSrc).includes('slotting-mc-1.webp')) fail.push('interaction: Automation still reuses hero image');
+            await interaction.locator('[data-quote-open]').first().click();
+            if(!(await interaction.locator('[data-quote-panel]').isVisible())) fail.push('interaction: requirement dialog did not open');
+            await interaction.locator('[data-quote-close]').first().click();
+            await interaction.close();
+
+            fs.writeFileSync('release-qa-report.json',JSON.stringify({fail,report},null,2));
+            console.log(JSON.stringify({fail},null,2));
+            await browser.close();
+            if(fail.length) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node release-qa.cjs
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-release-qa
+          path: |
+            home-*.png
+            engineering-depth-*.png
+            release-qa-report.json
+          retention-days: 14
