@@ -59,13 +59,15 @@ jobs:
                 p.on('response',r=>{ if(r.status()>=400 && r.url().startsWith(local)) badRequests.push(`${r.status()} ${r.url()}`); });
 
                 await p.goto(local+file,{waitUntil:'networkidle'});
-                await wait(file==='gallery.html'?1400:800);
+                await wait(file==='gallery.html'||file==='machines.html'?1600:900);
 
                 const audit = await p.evaluate(({w,file})=>{
                   const visible = el => !!el && el.offsetParent!==null;
                   const rect = el => el ? el.getBoundingClientRect() : null;
                   const broken = [...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0).map(i=>i.src);
-                  const nav = [...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')].map(a=>a.textContent.trim()).join(' | ');
+                  const navAnchors = [...document.querySelectorAll('.desktop-nav a,.mobile-menu nav a')];
+                  const nav = navAnchors.map(a=>a.textContent.trim()).join(' | ');
+                  const retrofitLink = navAnchors.find(a=>/Retrofit & CNC/i.test(a.textContent));
                   const rootWidth = document.documentElement.scrollWidth;
                   const header = document.querySelector('.site-header');
                   const brand = document.querySelector('.site-header .brand');
@@ -73,7 +75,8 @@ jobs:
                   const navLinks = [...document.querySelectorAll('.desktop-nav a')].filter(visible);
                   const cta = document.querySelector('.header-cta');
                   const menu = document.querySelector('.menu-toggle');
-                  const clipping = [...document.querySelectorAll('h1,h2,h3,.btn,.text-cta,.ghost-cta,.header-cta,.contact-main,.contact-secondary')]
+                  const footerText = document.querySelector('.site-footer')?.innerText||'';
+                  const clipping = [...document.querySelectorAll('h1,h2,h3,.btn,.text-cta,.ghost-cta,.header-cta,.contact-main,.contact-secondary,.hero-board-main figcaption')]
                     .filter(visible)
                     .filter(el=>{
                       const s=getComputedStyle(el);
@@ -82,15 +85,24 @@ jobs:
                     .slice(0,12)
                     .map(el=>({tag:el.tagName,cls:String(el.className||''),text:el.textContent.trim().slice(0,70),sw:el.scrollWidth,cw:el.clientWidth,sh:el.scrollHeight,ch:el.clientHeight}));
                   const offscreen = [...document.querySelectorAll('main section')].filter(visible).filter(el=>{const r=rect(el);return r.left < -2 || r.right > w+2;}).map(el=>String(el.className||'')).slice(0,10);
-                  const result = {rootWidth,broken,nav,clipping,offscreen,header:rect(header),brand:rect(brand),navRect:rect(desktopNav),cta:rect(cta),menu:rect(menu),navFirst:rect(navLinks[0]),navLast:rect(navLinks.at(-1))};
+                  const result = {rootWidth,broken,nav,retrofitHref:retrofitLink?.getAttribute('href')||'',footerText,clipping,offscreen,header:rect(header),brand:rect(brand),navRect:rect(desktopNav),cta:rect(cta),menu:rect(menu),navFirst:rect(navLinks[0]),navLast:rect(navLinks.at(-1))};
                   if(file==='index.html'){
                     result.selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible).length;
                     result.depthCards=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible).length;
                     result.depth=rect(document.querySelector('.engineering-depth'));
                     result.depthGrid=rect(document.querySelector('.engineering-depth .depth-grid'));
+                    result.metric=rect(document.querySelector('.engineering-depth .metric-card'));
                     result.callout=rect(document.querySelector('.engineering-depth .archive-callout'));
+                    result.heroCaption=rect(document.querySelector('.hero-board-main figcaption'));
+                    result.heroCaptionText=document.querySelector('.hero-board-main figcaption')?.innerText||'';
+                    result.automationSrc=document.querySelector('[data-capability="automation"]')?.dataset?.capability||'';
                   }
-                  if(file==='machines.html') result.references=[...document.querySelectorAll('[data-machine-id]')].filter(visible).length;
+                  if(file==='machines.html'){
+                    result.references=[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(visible).length;
+                    result.mediaCards=[...document.querySelectorAll('.experience-media-card')].filter(visible).length;
+                    const preview=document.querySelector('[data-archive-preview-media] img');
+                    result.previewLoaded=!!(preview&&preview.complete&&preview.naturalWidth>0);
+                  }
                   if(file==='gallery.html') result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid] > *')].filter(visible).length;
                   return result;
                 },{w,file});
@@ -106,6 +118,8 @@ jobs:
                   if(/Projects/i.test(audit.nav)) fail.push(`${file}/${mode}: Projects still appears in customer navigation`);
                   if(!/Experience/i.test(audit.nav)) fail.push(`${file}/${mode}: Experience missing from navigation`);
                   if(!/Gallery/i.test(audit.nav)) fail.push(`${file}/${mode}: Gallery missing from navigation`);
+                  if(!audit.retrofitHref.includes('machines.html?type=retrofit')) fail.push(`${file}/${mode}: Retrofit nav points to ${audit.retrofitHref}`);
+                  if(!audit.footerText.includes('+91 98803 36714')||!audit.footerText.includes('+91 73531 00095')) fail.push(`${file}/${mode}: footer is missing one or both phone numbers`);
                 }
 
                 if(w>1180 && file!=='404.html' && audit.navFirst && audit.navLast && audit.brand && audit.cta){
@@ -117,16 +131,40 @@ jobs:
                   if(audit.selected<5) fail.push(`${file}/${mode}: Selected Experience rendered only ${audit.selected} cards`);
                   if(audit.depthCards!==3) fail.push(`${file}/${mode}: Engineering Depth has ${audit.depthCards} proof cards, expected 3`);
                   if(audit.depthGrid && (audit.depthGrid.left<-2 || audit.depthGrid.right>w+2)) fail.push(`${file}/${mode}: Engineering Depth grid exceeds viewport`);
+                  if(w>=1180 && audit.metric?.height>360) fail.push(`${file}/${mode}: Engineering Depth proof card is too tall (${audit.metric.height}px)`);
+                  if(w>=1180 && audit.callout && Math.abs(audit.callout.height-audit.metric.height)>4) fail.push(`${file}/${mode}: Engineering Depth callout/card heights do not match`);
+                  if(/APPLICATION-LED ENGINEER/i.test(audit.heroCaptionText)) fail.push(`${file}/${mode}: old clipped hero caption survived`);
+                  const autoButton=await p.locator('[data-capability="automation"]');
+                  if(await autoButton.count()){
+                    await autoButton.click(); await wait(180);
+                    const autoSrc=await p.locator('[data-capability-image]').getAttribute('src');
+                    if(String(autoSrc).includes('slotting-mc-1.webp')) fail.push(`${file}/${mode}: Automation capability still reuses hero image`);
+                  }
+                  if(w>=901){
+                    const aboutHeight=await p.locator('.about').evaluate(el=>el.getBoundingClientRect().height);
+                    if(aboutHeight<h-100) fail.push(`${file}/${mode}: Company section too short (${aboutHeight}px)`);
+                  }
                   await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
                   if(['desktop-1920','laptop-1366','tablet-768','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
                 }
-                if(file==='machines.html' && audit.references<54) fail.push(`${file}/${mode}: Experience rendered ${audit.references} references, expected 54`);
+                if(file==='machines.html'){
+                  if(audit.references<54) fail.push(`${file}/${mode}: Experience rendered ${audit.references} references, expected 54`);
+                  if(audit.mediaCards<3) fail.push(`${file}/${mode}: Experience shows only ${audit.mediaCards} verified media cards`);
+                  if(!audit.previewLoaded) fail.push(`${file}/${mode}: Experience preview media did not load`);
+                }
                 if(file==='gallery.html' && audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery rendered no project groups`);
 
                 rows.push({file,mode,w,h,audit,pageErrors,badRequests});
                 await p.close();
               }
             }
+
+            const retrofit = await browser.newPage({viewport:{width:1440,height:900}});
+            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'}); await wait(1200);
+            const activeType=await retrofit.locator('[data-type-filter="retrofit"]').evaluate(el=>el.classList.contains('is-active'));
+            const retrofitRows=await retrofit.locator('.archive-row[data-machine-id]').count();
+            if(!activeType||retrofitRows!==15) fail.push(`retrofit route: expected active Retrofit filter with 15 rows, got active=${activeType}, rows=${retrofitRows}`);
+            await retrofit.close();
 
             const redirect = await browser.newPage({viewport:{width:1440,height:900}});
             await redirect.goto(local+'projects.html',{waitUntil:'networkidle'});
