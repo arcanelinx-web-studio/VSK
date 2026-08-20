@@ -23,8 +23,8 @@
 
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
-  const galleryImage = 'media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151553.webp';
-  const galleryAlt = 'VSK Transtech spigot turning CNC machine';
+  const galleryImage = 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp';
+  const galleryAlt = 'VSK Transtech Gear hydraulic press engineering project';
 
   const ensureFinalDepthCss = () => {
     // A fresh copy is deliberately appended last so historical V16 correction files cannot win.
@@ -41,7 +41,8 @@
     if (!image) return;
     image.src = galleryImage;
     image.alt = galleryAlt;
-    image.dataset.galleryHeroSpigot = '';
+    delete image.dataset.galleryHeroSpigot;
+    image.dataset.galleryHeroHydraulic = '';
   };
 
   const applyAfterApp = () => {
