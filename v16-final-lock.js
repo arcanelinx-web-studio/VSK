@@ -143,15 +143,11 @@
         else mobile.appendChild(custom);
       }
       custom.href = 'machines.html?type=spm';
-      const customNo = custom.querySelector('span');
       custom.innerHTML = 'Custom &amp; SPM <span></span>';
-      if (customNo && !custom.querySelector('span')) custom.appendChild(customNo);
       retrofit = [...mobile.querySelectorAll('a')].find(a => a.href.includes('type=retrofit') || /retrofit/i.test(a.textContent));
       if (retrofit) {
         retrofit.href = 'machines.html?type=retrofit';
-        const span = retrofit.querySelector('span');
         retrofit.innerHTML = 'Retrofit &amp; CNC <span></span>';
-        if (span && !retrofit.querySelector('span')) retrofit.appendChild(span);
       }
       [...mobile.querySelectorAll('a')].forEach((a, index) => {
         let n = a.querySelector('span');
@@ -162,7 +158,7 @@
 
     const footerEngineering = [...document.querySelectorAll('.footer-col')].find(col => /engineering/i.test(col.querySelector(':scope > span')?.textContent || ''));
     if (footerEngineering) {
-      let retrofit = [...footerEngineering.querySelectorAll('a')].find(a => a.href.includes('type=retrofit'));
+      const retrofit = [...footerEngineering.querySelectorAll('a')].find(a => a.href.includes('type=retrofit'));
       let custom = footerEngineering.querySelector('[data-v16-route="spm"]');
       if (!custom) {
         custom = makeNavLink('Custom & SPM', 'machines.html?type=spm', 'spm');
@@ -194,16 +190,16 @@
   const normalizeExperienceTaxonomy = () => {
     if (page !== 'machines') return;
     const heroCopy = document.querySelector('.archive-hero p');
-    if (heroCopy) heroCopy.textContent = 'Search VSK’s Custom & SPM and Retrofit & CNC experience by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
+    if (heroCopy && !heroCopy.textContent.includes('Retrofit & CNC')) heroCopy.textContent = 'Search VSK’s Custom & SPM and Retrofit & CNC experience by process, machine type, application, customer or control platform. For photo-first browsing of actual project media, use the Gallery.';
 
     const facts = document.querySelectorAll('.archive-hero-facts span');
-    if (facts[0]) facts[0].innerHTML = '<strong>39</strong> CUSTOM / SPM';
-    if (facts[1]) facts[1].innerHTML = '<strong>15</strong> RETROFIT &amp; CNC';
+    if (facts[0] && !/CUSTOM \/ SPM/i.test(facts[0].textContent)) facts[0].innerHTML = '<strong>39</strong> CUSTOM / SPM';
+    if (facts[1] && !/RETROFIT & CNC/i.test(facts[1].textContent)) facts[1].innerHTML = '<strong>15</strong> RETROFIT &amp; CNC';
 
     const spm = document.querySelector('[data-type-filter="spm"]');
     const retrofit = document.querySelector('[data-type-filter="retrofit"]');
-    if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
-    if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
+    if (spm && !/Custom & SPM/i.test(spm.textContent)) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
+    if (retrofit && !/Retrofit & CNC/i.test(retrofit.textContent)) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
     const active = document.querySelector('[data-active-filters]');
     if (active && /^retrofit$/i.test(active.textContent.trim())) active.textContent = 'Retrofit & CNC';
@@ -317,10 +313,10 @@
   }, { once: true });
 
   if (page === 'machines') {
-    const observer = new MutationObserver(() => normalizeExperienceTaxonomy());
-    document.addEventListener('DOMContentLoaded', () => {
-      const root = document.querySelector('.archive-browser') || document.querySelector('#main');
-      if (root) observer.observe(root, {childList:true,subtree:true,characterData:true});
-    }, { once:true });
+    document.addEventListener('click', e => {
+      if (e.target.closest('[data-type-filter],[data-machine-id],[data-archive-preview-open],[data-dossier-next],[data-dossier-prev]')) {
+        setTimeout(normalizeExperienceTaxonomy, 0);
+      }
+    });
   }
 })();
