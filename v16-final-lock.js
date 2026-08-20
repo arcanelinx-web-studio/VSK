@@ -6,12 +6,12 @@
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
   /* The three polish layers are already imported synchronously by v16-final-lock.css.
-     Register matching link elements before app.js runs so it does not append the same
-     stylesheets again after first paint. */
+     Register matching link elements before app.js runs so it does not append older
+     stylesheet versions after first paint. */
   [
-    ['v16-user-polish.css', 'v16-user-polish.css?v=16.32'],
-    ['v16-release-polish.css', 'v16-release-polish.css?v=16.32'],
-    ['v16-corrections.css', 'v16-corrections.css?v=16.32']
+    ['v16-user-polish.css', 'v16-user-polish.css?v=16.33'],
+    ['v16-release-polish.css', 'v16-release-polish.css?v=16.33'],
+    ['v16-corrections.css', 'v16-corrections.css?v=16.33']
   ].forEach(([prefix, href]) => {
     if (document.querySelector(`link[href^="${prefix}"]`)) return;
     const link = document.createElement('link');
@@ -25,7 +25,7 @@
   if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'v16-review-authority.css?v=16.32';
+    css.href = 'v16-review-authority.css?v=16.33';
     document.head.appendChild(css);
   }
 
@@ -64,7 +64,7 @@
 
     if (!document.querySelector('script[data-v16-gallery-categories]')) {
       const script = document.createElement('script');
-      script.src = 'gallery-categories.js?v=16.32';
+      script.src = 'gallery-categories.js?v=16.33';
       script.async = false;
       script.dataset.v16GalleryCategories = '';
       document.body.appendChild(script);
