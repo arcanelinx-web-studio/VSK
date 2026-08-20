@@ -1,0 +1,77 @@
+name: V16 Reviewed Visual Guards
+on:
+  push:
+    branches:
+      - client-review-v16-blue-refinement
+  workflow_dispatch:
+
+jobs:
+  reviewed-guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: client-review-v16-blue-refinement
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+      - run: |
+          python3 -m http.server 4173 >/tmp/vsk-reviewed.log 2>&1 &
+          sleep 2
+      - name: Check reviewed presentation fixes
+        run: |
+          cat > reviewed-guards.cjs <<'JS'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const fail=[];
+            const page=await browser.newPage({viewport:{width:1680,height:1050}});
+
+            await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            await page.waitForTimeout(2200);
+            const selected=await page.locator('[data-home-projects] .project-card').evaluateAll(cards=>cards.map(el=>({
+              cls:el.className,
+              r:(()=>{const r=el.getBoundingClientRect();return{x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)}})()
+            })));
+            if(selected.length!==5)fail.push(`Selected Experience has ${selected.length} cards`);
+            if(selected.some(x=>/project-layout-/.test(x.cls)))fail.push('Legacy project-layout classes survived on Selected Experience');
+            if(selected.length){
+              const ys=selected.map(x=>x.r.y),ws=selected.map(x=>x.r.w),hs=selected.map(x=>x.r.h);
+              if(Math.max(...ys)-Math.min(...ys)>2)fail.push('Selected Experience is not one row');
+              if(Math.max(...ws)-Math.min(...ws)>2)fail.push('Selected Experience widths differ');
+              if(Math.max(...hs)-Math.min(...hs)>2)fail.push('Selected Experience heights differ');
+            }
+            await page.locator('.selected-projects-strip').screenshot({path:'selected-experience-final.png'});
+
+            await page.goto('http://127.0.0.1:4173/machines.html',{waitUntil:'networkidle'});
+            await page.waitForTimeout(2200);
+            const button=page.locator('[data-archive-preview-open]');
+            const cta=await button.evaluate(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{text:el.textContent.trim(),h:r.height,w:r.width,font:s.fontSize,bg:s.backgroundColor,color:s.color}});
+            if(cta.h<44)fail.push(`Experience preview CTA too small (${cta.h}px)`);
+            if(!/View this experience/i.test(cta.text))fail.push(`Experience preview CTA text is ${cta.text}`);
+            if(await page.locator('[data-archive-visual-view]').evaluate(el=>el.offsetParent!==null))fail.push('Gallery-style Experience wall is visible');
+            if(await page.locator('.archive-row[data-machine-id]').count()!==54)fail.push('Experience index does not contain 54 rows');
+            await page.locator('.archive-sticky-preview').screenshot({path:'experience-preview-final.png'});
+
+            await page.goto('http://127.0.0.1:4173/gallery.html',{waitUntil:'networkidle'});
+            await page.waitForTimeout(2200);
+            const last=await page.locator('.gallery-hero-strip img').last().getAttribute('src');
+            if(!String(last).includes('single-spindle-u-drill-machine'))fail.push(`Gallery hero last image is ${last}`);
+            await page.locator('.gallery-hero').screenshot({path:'gallery-hero-final.png'});
+
+            console.log(JSON.stringify({fail},null,2));
+            await browser.close();
+            if(fail.length)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node reviewed-guards.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v16-reviewed-visual-guards
+          path: |
+            selected-experience-final.png
+            experience-preview-final.png
+            gallery-hero-final.png
+          retention-days: 14
