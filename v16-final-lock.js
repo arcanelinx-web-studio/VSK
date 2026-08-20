@@ -9,7 +9,7 @@
   if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'v16-review-authority.css?v=16.30';
+    css.href = 'v16-review-authority.css?v=16.32';
     document.head.appendChild(css);
   }
 
@@ -23,12 +23,36 @@
     });
   }
 
-  if (page === 'gallery' && !document.querySelector('script[data-v16-gallery-categories]')) {
-    const script = document.createElement('script');
-    script.src = 'gallery-categories.js?v=1.1';
-    script.defer = true;
-    script.dataset.v16GalleryCategories = '';
-    document.body.appendChild(script);
+  /* Gallery only hides its local filter strip while the five category controls are built.
+     This prevents the legacy 34-project control list from flashing; it is not a page loader. */
+  if (page === 'gallery') {
+    if (!document.getElementById('v16-gallery-first-paint-guard')) {
+      const guard = document.createElement('style');
+      guard.id = 'v16-gallery-first-paint-guard';
+      guard.textContent = `
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{
+          min-height:146px!important;
+          visibility:hidden!important;
+          opacity:0!important;
+          pointer-events:none!important;
+        }
+        body.v8.v13.v14[data-page="gallery"].gallery-categories-ready .gallery-controls{
+          visibility:visible!important;
+          opacity:1!important;
+          pointer-events:auto!important;
+          transition:opacity .16s ease!important;
+        }
+      `;
+      document.head.appendChild(guard);
+    }
+
+    if (!document.querySelector('script[data-v16-gallery-categories]')) {
+      const script = document.createElement('script');
+      script.src = 'gallery-categories.js?v=16.32';
+      script.async = false;
+      script.dataset.v16GalleryCategories = '';
+      document.body.appendChild(script);
+    }
   }
 
   const applyMechanicalImage = () => {
