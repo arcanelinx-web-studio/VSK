@@ -9,11 +9,11 @@
     if(page!=='home') return;
     const grid=$('[data-home-projects]');
     if(!grid) return;
-    grid.classList.remove('project-grid-editorial');
-    grid.classList.add('selected-experience-grid');
+    if(grid.classList.contains('project-grid-editorial')) grid.classList.remove('project-grid-editorial');
+    if(!grid.classList.contains('selected-experience-grid')) grid.classList.add('selected-experience-grid');
     [...grid.children].forEach(card=>{
       [...card.classList].filter(c=>/^project-layout-\d+$/.test(c)).forEach(c=>card.classList.remove(c));
-      card.classList.add('selected-experience-card');
+      if(!card.classList.contains('selected-experience-card')) card.classList.add('selected-experience-card');
     });
   }
 
@@ -24,7 +24,7 @@
     if(!last) return;
     const desired='media/v16/images/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210359.webp';
     if(last.getAttribute('src')!==desired) last.setAttribute('src',desired);
-    last.setAttribute('alt','VSK U Drill special purpose machine');
+    if(last.getAttribute('alt')!=='VSK U Drill special purpose machine') last.setAttribute('alt','VSK U Drill special purpose machine');
   }
 
   function lockExperienceCopy(){
@@ -39,11 +39,13 @@
     lockExperienceCopy();
   }
 
+  // Bounded initialisation only. No global MutationObserver: the site remains fully interactive.
   apply();
-  addEventListener('DOMContentLoaded',apply,{once:true});
-  addEventListener('load',()=>{apply();setTimeout(apply,350);setTimeout(apply,1100);setTimeout(apply,2400);},{once:true});
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true});
+  else apply();
 
-  const observer=new MutationObserver(()=>apply());
-  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src','class']});
-  setTimeout(()=>observer.disconnect(),7000);
+  addEventListener('load',()=>{
+    apply();
+    [250,700,1400,2400].forEach(delay=>setTimeout(apply,delay));
+  },{once:true});
 })();
