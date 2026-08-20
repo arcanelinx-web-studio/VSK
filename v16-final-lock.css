@@ -1,0 +1,255 @@
+/* V16 FINAL RENDER LOCK
+   Loaded directly after every historical V16 stylesheet.
+   This file owns the reviewed homepage proof layouts and Experience preview CTA. */
+
+/* Selected Engineering Experience — five compact peers, no masonry hierarchy. */
+body.v8.v13.v14 .selected-projects-strip{
+  padding:32px 0 64px!important;
+  background:#0D1824!important;
+  border-top:1px solid #26384A!important;
+}
+body.v8.v13.v14 .selected-projects-strip .project-collection-head{
+  width:var(--shell)!important;
+  margin:0 auto 18px!important;
+  min-height:38px!important;
+}
+body.v8.v13.v14 .selected-projects-strip .selected-experience-grid,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+  width:var(--shell)!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-template-rows:244px!important;
+  grid-auto-rows:244px!important;
+  gap:14px!important;
+}
+body.v8.v13.v14 .selected-projects-strip .selected-experience-card,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card{
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  height:244px!important;
+  min-height:244px!important;
+  max-height:244px!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image,
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
+  width:100%!important;
+  height:100%!important;
+}
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-image img{
+  object-fit:cover!important;
+  padding:0!important;
+}
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy{
+  inset:auto 16px 15px!important;
+  padding:0!important;
+}
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy strong{
+  font-size:18px!important;
+  line-height:1.08!important;
+}
+body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card .project-copy small{
+  font-size:7.5px!important;
+  letter-spacing:.08em!important;
+}
+
+/* Engineering Depth — four matched compact proof cards. */
+body.v8.v13.v14 .engineering-depth{
+  padding:66px 0 70px!important;
+  background:#FAFAF7!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-head{
+  width:var(--shell)!important;
+  padding:0!important;
+  margin:0 auto 26px!important;
+  align-items:end!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-grid{
+  width:var(--shell)!important;
+  max-width:none!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  background:transparent!important;
+  border:0!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-stack{display:contents!important}
+body.v8.v13.v14 .engineering-depth .metric-card,
+body.v8.v13.v14 .engineering-depth .archive-callout{
+  width:100%!important;
+  height:208px!important;
+  min-height:208px!important;
+  max-height:208px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card{
+  position:relative!important;
+  padding:20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  background:#fff!important;
+  border:1px solid #D3DAE0!important;
+  text-align:left!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-number{
+  margin:0!important;
+  font-size:62px!important;
+  line-height:.88!important;
+  letter-spacing:-.06em!important;
+  color:#0D1824!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-number span{
+  margin-left:6px!important;
+  font-size:9px!important;
+  letter-spacing:0!important;
+  color:#164A9C!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{
+  margin-top:auto!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card small{
+  display:block!important;
+  margin-bottom:6px!important;
+  font-size:8px!important;
+  line-height:1.25!important;
+  letter-spacing:.11em!important;
+  color:#164A9C!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card strong{
+  display:block!important;
+  max-width:185px!important;
+  font-size:14px!important;
+  line-height:1.24!important;
+  color:#164A9C!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card>i{
+  top:17px!important;
+  right:17px!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout{
+  padding:18px 20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  background:#0D1824!important;
+  border:1px solid #263B4E!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout .kicker{
+  margin:0!important;
+  font-size:7.5px!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-number{
+  margin:8px 0 4px!important;
+  font-size:46px!important;
+  line-height:.84!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout h3{
+  margin:0!important;
+  max-width:260px!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout>p{
+  margin:6px 0 7px!important;
+  max-width:280px!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout-split{display:none!important}
+body.v8.v13.v14 .engineering-depth .archive-callout .btn{
+  height:32px!important;
+  min-height:32px!important;
+  margin-top:auto!important;
+  padding:0 11px!important;
+  font-size:7.5px!important;
+}
+
+/* Experience — keep index + preview. Give the preview action a real CTA treatment. */
+body.v8.v13.v14[data-page="machines"] [data-archive-visual-view],
+body.v8.v13.v14[data-page="machines"] .experience-visual-grid{
+  display:none!important;
+}
+body.v8.v13.v14[data-page="machines"] [data-archive-index-view]{
+  display:grid!important;
+}
+body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archive-preview-open]{
+  width:100%!important;
+  min-height:48px!important;
+  margin-top:14px!important;
+  padding:0 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  border:1px solid #164A9C!important;
+  background:#164A9C!important;
+  color:#fff!important;
+  font-family:Inter,sans-serif!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+  box-shadow:0 8px 18px rgba(22,74,156,.14)!important;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease!important;
+}
+body.v8.v13.v14[data-page="machines"] .archive-sticky-preview>button[data-archive-preview-open]:hover{
+  background:#167BC4!important;
+  border-color:#167BC4!important;
+  transform:translateY(-1px)!important;
+  box-shadow:0 10px 22px rgba(22,123,196,.18)!important;
+}
+
+@media (max-width:1500px){
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-grid,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+    grid-template-rows:226px!important;
+    grid-auto-rows:226px!important;
+  }
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-card,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card{
+    height:226px!important;min-height:226px!important;max-height:226px!important;
+  }
+}
+
+@media (max-width:1180px){
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-grid,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:none!important;
+    grid-auto-rows:240px!important;
+  }
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-card,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card{
+    height:240px!important;min-height:240px!important;max-height:240px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media (max-width:720px){
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-grid,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]{
+    grid-template-columns:1fr!important;
+    grid-auto-rows:250px!important;
+  }
+  body.v8.v13.v14 .selected-projects-strip .selected-experience-card,
+  body.v8.v13.v14 .selected-projects-strip [data-home-projects]>.project-card{
+    height:250px!important;min-height:250px!important;max-height:250px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important;gap:10px!important}
+  body.v8.v13.v14 .engineering-depth .metric-card,
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:172px!important;min-height:172px!important;max-height:172px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout{height:auto!important;max-height:none!important;min-height:190px!important}
+}
