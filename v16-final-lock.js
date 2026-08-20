@@ -1,7 +1,8 @@
 (() => {
   'use strict';
 
-  // Static large-desktop geometry layer. One-time load only.
+  const page = document.body.dataset.page || 'home';
+
   if (!document.querySelector('link[data-v16-wide-final]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -26,111 +27,85 @@
   const galleryImage = 'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094310.webp';
   const galleryAlt = 'VSK Transtech Gear hydraulic press engineering project';
 
-  const ensureFinalDepthCss = () => {
-    // A fresh copy is deliberately appended last so historical V16 correction files cannot win.
-    document.querySelectorAll('link[data-v16-engineering-depth-final]').forEach(link => link.remove());
-    const depthCss = document.createElement('link');
-    depthCss.rel = 'stylesheet';
-    depthCss.href = 'v16-engineering-depth-final.css?v=16.21';
-    depthCss.dataset.v16EngineeringDepthFinal = '';
-    document.head.appendChild(depthCss);
+  const ensureReviewAuthority = () => {
+    document.querySelectorAll('link[data-v16-review-authority]').forEach(link => link.remove());
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'v16-review-authority.css?v=16.23';
+    css.dataset.v16ReviewAuthority = '';
+    document.head.appendChild(css);
   };
 
-  const setGalleryHero = () => {
-    const image = document.querySelector('.gallery-hero-strip img:last-child');
-    if (!image) return;
-    image.src = galleryImage;
-    image.alt = galleryAlt;
-    delete image.dataset.galleryHeroSpigot;
-    image.dataset.galleryHeroHydraulic = '';
-  };
-
-  const applyAfterApp = () => {
-    ensureFinalDepthCss();
-
-    // Mechanical Engineering uses one real machine photograph in initial and interactive states.
+  const applyMechanicalImage = () => {
     if (typeof capabilityData !== 'undefined' && capabilityData?.mechanical) {
       capabilityData.mechanical.image = mechanicalImage;
       capabilityData.mechanical.alt = mechanicalAlt;
     }
-    const capabilityImage = document.querySelector('[data-capability-image]');
-    const mechanicalRow = document.querySelector('[data-capability="mechanical"]');
-    if (capabilityImage && mechanicalRow?.classList.contains('is-active')) {
-      capabilityImage.src = mechanicalImage;
-      capabilityImage.alt = mechanicalAlt;
+    const image = document.querySelector('[data-capability-image]');
+    const row = document.querySelector('[data-capability="mechanical"]');
+    if (image && row?.classList.contains('is-active')) {
+      image.src = mechanicalImage;
+      image.alt = mechanicalAlt;
     }
-
-    // Keep final proof copy in the DOM itself; no generated duplicate text.
-    const depthCopy = document.querySelector('.engineering-depth .depth-head > p');
-    if (depthCopy) {
-      depthCopy.textContent = 'Three measured references show the precision and cycle focus VSK can engineer around. Use Experience to find the machine, process or control platform closest to your requirement.';
-    }
-
-    const proofs = {
-      zcut: {
-        machine: 'Z-CUT MACHINE', value: '0.02', unit: 'mm',
-        title: 'Tolerance reference',
-        copy: 'A documented application reference showing the level of precision VSK can engineer around.'
-      },
-      wheel: {
-        machine: 'GRINDING WHEEL UNIT', value: '20', unit: 'μm',
-        title: 'Alignment reference',
-        copy: 'A measured face-out reference used in grinding-wheel alignment and machine setup.'
-      },
-      facing: {
-        machine: 'METAL FACING MACHINE', value: '12', unit: 'sec',
-        title: 'Cycle reference',
-        copy: 'A recorded production-cycle reference from a dedicated metal-facing application.'
-      }
-    };
-
-    Object.entries(proofs).forEach(([id, proof]) => {
-      const card = document.querySelector(`.engineering-depth .metric-card[data-feature-open="${id}"]`);
-      if (!card) return;
-      card.setAttribute('aria-label', `${proof.machine}: ${proof.value} ${proof.unit} ${proof.title}`);
-      card.innerHTML = `
-        <small class="metric-machine">${proof.machine}</small>
-        <div class="metric-number">${proof.value}<span>${proof.unit}</span></div>
-        <div class="metric-proof"><strong>${proof.title}</strong><p>${proof.copy}</p></div>
-        <i aria-hidden="true">↗</i>`;
-    });
-
-    const experienceCard = document.querySelector('.engineering-depth .archive-callout');
-    if (experienceCard) {
-      const kicker = experienceCard.querySelector('.kicker');
-      const title = experienceCard.querySelector('h3');
-      const copy = experienceCard.querySelector(':scope > p');
-      const cta = experienceCard.querySelector('.btn');
-      if (kicker) kicker.textContent = 'PROVEN EXPERIENCE';
-      if (title) title.textContent = 'Find work relevant to your requirement.';
-      if (copy) copy.textContent = 'Search 54 documented VSK references by process, machine type, customer need or control platform before you start the discussion.';
-      if (cta) cta.innerHTML = 'Search relevant experience <span>→</span>';
-    }
-
-    // Homepage direct-contact block matches the shared footer.
-    const contactDirect = document.querySelector('.contact-direct');
-    if (contactDirect && !contactDirect.querySelector('a[href="tel:+917353100095"]')) {
-      const primary = contactDirect.querySelector('a[href^="tel:"]');
-      const secondary = document.createElement('a');
-      secondary.href = 'tel:+917353100095';
-      secondary.textContent = '+91 73531 00095';
-      if (primary?.nextSibling) contactDirect.insertBefore(secondary, primary.nextSibling);
-      else contactDirect.appendChild(secondary);
-    }
-
-    setGalleryHero();
   };
 
-  // One initial pass. No MutationObserver and no continuous layout loop.
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(applyAfterApp), { once: true });
-  } else {
-    requestAnimationFrame(applyAfterApp);
-  }
+  const lockGalleryHeroOnce = () => {
+    if (page !== 'gallery') return;
+    const image = document.querySelector('.gallery-hero-strip img:last-child');
+    if (!image) return;
 
-  // Gallery media is refreshed asynchronously by app.js. These bounded checks only protect
-  // the intentionally curated fourth banner panel from being replaced by that media refresh.
-  window.addEventListener('load', setGalleryHero, { once: true });
-  setTimeout(setGalleryHero, 900);
-  setTimeout(setGalleryHero, 2200);
+    const apply = () => {
+      if (image.getAttribute('src') !== galleryImage) image.setAttribute('src', galleryImage);
+      image.alt = galleryAlt;
+      delete image.dataset.galleryHeroSpigot;
+      image.dataset.galleryHeroHydraulic = '';
+    };
+
+    apply();
+
+    // app.js refreshes Gallery media asynchronously once. Observe only this image's src,
+    // restore the curated banner if that refresh replaces it, then disconnect immediately.
+    const observer = new MutationObserver(() => {
+      if (image.getAttribute('src') !== galleryImage) {
+        apply();
+        queueMicrotask(() => observer.disconnect());
+      }
+    });
+    observer.observe(image, { attributes: true, attributeFilter: ['src'] });
+    setTimeout(() => observer.disconnect(), 6000);
+  };
+
+  const ensureRetrofitRoute = () => {
+    if (page !== 'machines') return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('type') !== 'retrofit') return;
+    const retrofit = document.querySelector('[data-type-filter="retrofit"]');
+    if (retrofit && !retrofit.classList.contains('is-active')) retrofit.click();
+  };
+
+  const ensureContactNumber = () => {
+    const contactDirect = document.querySelector('.contact-direct');
+    if (!contactDirect || contactDirect.querySelector('a[href="tel:+917353100095"]')) return;
+    const primary = contactDirect.querySelector('a[href^="tel:"]');
+    const secondary = document.createElement('a');
+    secondary.href = 'tel:+917353100095';
+    secondary.textContent = '+91 73531 00095';
+    if (primary?.nextSibling) contactDirect.insertBefore(secondary, primary.nextSibling);
+    else contactDirect.appendChild(secondary);
+  };
+
+  const applyAfterScripts = () => {
+    ensureReviewAuthority();
+    applyMechanicalImage();
+    ensureContactNumber();
+    lockGalleryHeroOnce();
+    ensureRetrofitRoute();
+    setTimeout(ensureRetrofitRoute, 700);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(applyAfterScripts), { once: true });
+  } else {
+    requestAnimationFrame(applyAfterScripts);
+  }
 })();
