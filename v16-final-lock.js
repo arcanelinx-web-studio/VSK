@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  // Keep the large-desktop geometry layer. This is static and one-time only.
+  // Static large-desktop geometry layer. One-time load only.
   if (!document.querySelector('link[data-v16-wide-final]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -10,8 +10,7 @@
     document.head.appendChild(link);
   }
 
-  // Curate Selected Engineering Experience before the home cards are rendered.
-  // Rod Boring owns Featured Engineering and Kellenberg owns the dedicated Retrofit chapter.
+  // Curated homepage peer set. Rod Boring and Kellenberg already own dedicated features.
   if (typeof siteProjects !== 'undefined' && Array.isArray(siteProjects)) {
     const preferred = ['zcut', 'vertical', 'jig', 'udrill', 'slotting'];
     const rank = new Map(preferred.map((id, index) => [id, index]));
@@ -22,21 +21,33 @@
     });
   }
 
-  const applyAfterApp = () => {
-    // This stylesheet is intentionally appended after app.js has injected all historical
-    // V16 correction layers. It is therefore the real final authority for Engineering Depth.
-    if (!document.querySelector('link[data-v16-engineering-depth-final]')) {
-      const depthCss = document.createElement('link');
-      depthCss.rel = 'stylesheet';
-      depthCss.href = 'v16-engineering-depth-final.css?v=16.19';
-      depthCss.dataset.v16EngineeringDepthFinal = '';
-      document.head.appendChild(depthCss);
-    }
+  const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
+  const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
+  const galleryImage = 'media/v16/images/spm-cnc-machines/transtech-spigot-turning-cnc/20230331-151553.webp';
+  const galleryAlt = 'VSK Transtech spigot turning CNC machine';
 
-    // Mechanical Engineering: one real VSK machine photograph in the initial state and
-    // in every hover/focus/click state. app.js previously reset this after the earlier helper ran.
-    const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
-    const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
+  const ensureFinalDepthCss = () => {
+    // A fresh copy is deliberately appended last so historical V16 correction files cannot win.
+    document.querySelectorAll('link[data-v16-engineering-depth-final]').forEach(link => link.remove());
+    const depthCss = document.createElement('link');
+    depthCss.rel = 'stylesheet';
+    depthCss.href = 'v16-engineering-depth-final.css?v=16.21';
+    depthCss.dataset.v16EngineeringDepthFinal = '';
+    document.head.appendChild(depthCss);
+  };
+
+  const setGalleryHero = () => {
+    const image = document.querySelector('.gallery-hero-strip img:last-child');
+    if (!image) return;
+    image.src = galleryImage;
+    image.alt = galleryAlt;
+    image.dataset.galleryHeroSpigot = '';
+  };
+
+  const applyAfterApp = () => {
+    ensureFinalDepthCss();
+
+    // Mechanical Engineering uses one real machine photograph in initial and interactive states.
     if (typeof capabilityData !== 'undefined' && capabilityData?.mechanical) {
       capabilityData.mechanical.image = mechanicalImage;
       capabilityData.mechanical.alt = mechanicalAlt;
@@ -48,8 +59,7 @@
       capabilityImage.alt = mechanicalAlt;
     }
 
-    // Engineering Depth: use final copy in the DOM itself instead of layering generated text
-    // over the old "Recorded ... reference" labels.
+    // Keep final proof copy in the DOM itself; no generated duplicate text.
     const depthCopy = document.querySelector('.engineering-depth .depth-head > p');
     if (depthCopy) {
       depthCopy.textContent = 'Three measured references show the precision and cycle focus VSK can engineer around. Use Experience to find the machine, process or control platform closest to your requirement.';
@@ -96,7 +106,7 @@
       if (cta) cta.innerHTML = 'Search relevant experience <span>→</span>';
     }
 
-    // The direct contact block and footer should expose both customer contact numbers.
+    // Homepage direct-contact block matches the shared footer.
     const contactDirect = document.querySelector('.contact-direct');
     if (contactDirect && !contactDirect.querySelector('a[href="tel:+917353100095"]')) {
       const primary = contactDirect.querySelector('a[href^="tel:"]');
@@ -106,12 +116,20 @@
       if (primary?.nextSibling) contactDirect.insertBefore(secondary, primary.nextSibling);
       else contactDirect.appendChild(secondary);
     }
+
+    setGalleryHero();
   };
 
-  // Run exactly once after the parser and app.js have completed their synchronous setup.
+  // One initial pass. No MutationObserver and no continuous layout loop.
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(applyAfterApp), { once: true });
   } else {
     requestAnimationFrame(applyAfterApp);
   }
+
+  // Gallery media is refreshed asynchronously by app.js. These bounded checks only protect
+  // the intentionally curated fourth banner panel from being replaced by that media refresh.
+  window.addEventListener('load', setGalleryHero, { once: true });
+  setTimeout(setGalleryHero, 900);
+  setTimeout(setGalleryHero, 2200);
 })();
