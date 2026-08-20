@@ -1,0 +1,306 @@
+/* V16 corrections — final customer-facing fixes after rendered review.
+   This layer only corrects regressions found in the live V16 refinement. */
+
+/* HERO — keep the engineering-board idea, remove clipped micro-copy and make the machine read faster. */
+body.v8.v13.v14 .hero-board-main img{
+  transform:scale(1.20)!important;
+  object-position:48% 46%!important;
+}
+body.v8.v13.v14 .hero-board-main figcaption{
+  left:16px!important;
+  right:auto!important;
+  bottom:14px!important;
+  width:auto!important;
+  max-width:calc(100% - 32px)!important;
+  display:grid!important;
+  justify-content:start!important;
+  gap:3px!important;
+  padding:7px 9px!important;
+  background:rgba(250,250,247,.92)!important;
+  color:#31485d!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  box-shadow:0 5px 14px rgba(13,24,36,.06)!important;
+}
+body.v8.v13.v14 .hero-board-main figcaption span:last-child{
+  color:#164A9C!important;
+  font-size:7px!important;
+  letter-spacing:.09em!important;
+}
+body.v8.v13.v14 .hero-board-photo::after{content:"ACTUAL MACHINE VIEW"!important}
+
+/* MULTI-DISCIPLINARY ENGINEERING — every capability uses one consistent visual frame. */
+body.v8.v13.v14 .capability-media .media-frame{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:16/10!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14 .capability-media .media-frame img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+/* ENGINEERING DEPTH — compact, useful proof instead of oversized empty boxes. */
+body.v8.v13.v14 .engineering-depth{
+  padding-block:clamp(72px,5.4vw,96px)!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-head{
+  margin-bottom:26px!important;
+  align-items:end!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-head h2{
+  font-size:clamp(50px,3.45vw,66px)!important;
+  line-height:.95!important;
+}
+body.v8.v13.v14 .engineering-depth .depth-grid{
+  grid-template-columns:minmax(0,1fr) minmax(360px,420px)!important;
+  gap:18px!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-stack{
+  height:320px!important;
+  min-height:320px!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  border:1px solid #D6DCE1!important;
+  background:#fff!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card{
+  position:relative!important;
+  height:320px!important;
+  min-height:320px!important;
+  padding:28px 28px 26px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  border:0!important;
+  border-right:1px solid #D6DCE1!important;
+  background:#fff!important;
+  text-align:left!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card:last-child{border-right:0!important}
+body.v8.v13.v14 .engineering-depth .metric-number{
+  margin:18px 0 0!important;
+  font-size:clamp(64px,4.4vw,84px)!important;
+  line-height:.86!important;
+  letter-spacing:-.065em!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-number span{
+  font-size:10px!important;
+  margin-left:7px!important;
+  letter-spacing:0!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{
+  margin-top:auto!important;
+  align-self:stretch!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card small{
+  display:block!important;
+  margin-bottom:7px!important;
+  font-size:8.5px!important;
+  line-height:1.3!important;
+  letter-spacing:.13em!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card strong{
+  display:block!important;
+  max-width:210px!important;
+  font-size:15px!important;
+  line-height:1.28!important;
+}
+body.v8.v13.v14 .engineering-depth .metric-card>i{
+  right:20px!important;
+  top:18px!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout{
+  height:320px!important;
+  min-height:320px!important;
+  padding:26px 28px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+body.v8.v13.v14 .engineering-depth .archive-callout .kicker{margin:0!important}
+body.v8.v13.v14 .archive-callout-number{
+  font-size:62px!important;
+  line-height:.84!important;
+  margin:13px 0 8px!important;
+}
+body.v8.v13.v14 .archive-callout h3{
+  font-size:23px!important;
+  line-height:1.08!important;
+  margin:0!important;
+}
+body.v8.v13.v14 .archive-callout>p{
+  font-size:12.5px!important;
+  line-height:1.45!important;
+  margin:10px 0 12px!important;
+}
+body.v8.v13.v14 .archive-callout-split{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin:0!important;
+}
+body.v8.v13.v14 .archive-callout-split span{
+  min-height:48px!important;
+  padding:10px 12px!important;
+}
+body.v8.v13.v14 .archive-callout .btn{
+  min-height:44px!important;
+  margin-top:auto!important;
+  font-size:9px!important;
+}
+
+/* COMPANY — a clean chapter at desktop anchor positions; no strip of the next dark section. */
+@media (min-width:901px){
+  body.v8.v13.v14 .about{
+    min-height:calc(100svh - 96px)!important;
+    display:grid!important;
+    align-items:center!important;
+    padding-block:clamp(64px,5vw,88px)!important;
+    scroll-margin-top:96px!important;
+  }
+  body.v8.v13.v14 .about-v8-grid{align-items:center!important}
+}
+
+/* EXPERIENCE — actual verified media is visible before the searchable list. */
+body.v8.v13.v14[data-page="machines"] .experience-media-showcase{
+  padding:66px 0 72px!important;
+  background:#FAFAF7!important;
+  border-bottom:1px solid #D6DCE1!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.1fr) minmax(360px,.7fr)!important;
+  gap:56px!important;
+  align-items:end!important;
+  margin-bottom:30px!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-head h2{
+  margin:10px 0 0!important;
+  font-family:"Space Grotesk",sans-serif!important;
+  font-size:clamp(42px,3.2vw,58px)!important;
+  line-height:.96!important;
+  letter-spacing:-.05em!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-head p{
+  max-width:560px!important;
+  justify-self:end!important;
+  margin:0!important;
+  color:#657789!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card{
+  position:relative!important;
+  padding:0!important;
+  border:1px solid #D6DCE1!important;
+  background:#fff!important;
+  color:#0D1824!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  overflow:hidden!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card img{
+  width:100%!important;
+  aspect-ratio:16/10!important;
+  object-fit:cover!important;
+  transition:transform .35s ease!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card:hover img{transform:scale(1.02)!important}
+body.v8.v13.v14[data-page="machines"] .experience-media-card div{
+  padding:17px 18px 19px!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card span{
+  display:block!important;
+  color:#164A9C!important;
+  font:500 8px/1.3 "IBM Plex Mono",monospace!important;
+  letter-spacing:.1em!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card strong{
+  display:block!important;
+  margin-top:7px!important;
+  font:600 21px/1.08 "Space Grotesk",sans-serif!important;
+}
+body.v8.v13.v14[data-page="machines"] .experience-media-card small{
+  display:block!important;
+  margin-top:8px!important;
+  color:#657789!important;
+  font-size:11px!important;
+}
+body.v8.v13.v14[data-page="machines"] .archive-preview-media{
+  min-height:250px!important;
+  background:#E9ECEF!important;
+}
+body.v8.v13.v14[data-page="machines"] .archive-preview-media img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+
+@media (max-width:1180px){
+  body.v8.v13.v14 .engineering-depth .depth-grid{grid-template-columns:1fr!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    height:auto!important;
+    min-height:0!important;
+    display:grid!important;
+    grid-template-columns:90px minmax(0,1fr) minmax(250px,320px)!important;
+    grid-template-rows:auto auto auto!important;
+    align-items:center!important;
+    gap:10px 24px!important;
+    padding:24px 26px!important;
+  }
+  body.v8.v13.v14 .engineering-depth .archive-callout .kicker{grid-column:1/-1!important}
+  body.v8.v13.v14 .archive-callout-number{grid-column:1!important;grid-row:2/4!important;margin:0!important}
+  body.v8.v13.v14 .archive-callout h3{grid-column:2!important;grid-row:2!important}
+  body.v8.v13.v14 .archive-callout>p{grid-column:2!important;grid-row:3!important;margin:4px 0!important}
+  body.v8.v13.v14 .archive-callout-split{display:none!important}
+  body.v8.v13.v14 .archive-callout .btn{grid-column:3!important;grid-row:2/4!important;margin:0!important}
+}
+
+@media (max-width:900px){
+  body.v8.v13.v14 .capability-media .media-frame{aspect-ratio:16/10!important;height:auto!important}
+  body.v8.v13.v14[data-page="machines"] .experience-media-head{grid-template-columns:1fr!important;gap:18px!important}
+  body.v8.v13.v14[data-page="machines"] .experience-media-head p{justify-self:start!important;max-width:680px!important}
+  body.v8.v13.v14[data-page="machines"] .experience-media-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media (max-width:640px){
+  body.v8.v13.v14 .hero-board-main figcaption{font-size:6.5px!important;padding:6px 7px!important}
+  body.v8.v13.v14 .engineering-depth{padding-block:58px!important}
+  body.v8.v13.v14 .engineering-depth .metric-stack{
+    height:auto!important;
+    min-height:0!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-card{
+    height:auto!important;
+    min-height:150px!important;
+    padding:22px 20px!important;
+    border:1px solid #D6DCE1!important;
+  }
+  body.v8.v13.v14 .engineering-depth .metric-number{font-size:58px!important;margin:4px 0 18px!important}
+  body.v8.v13.v14 .engineering-depth .metric-card>div:last-of-type{margin-top:0!important}
+  body.v8.v13.v14 .engineering-depth .archive-callout{
+    display:flex!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:26px 22px!important;
+  }
+  body.v8.v13.v14 .archive-callout-split{display:grid!important}
+  body.v8.v13.v14 .archive-callout .btn{margin-top:18px!important}
+  body.v8.v13.v14[data-page="machines"] .experience-media-showcase{padding:52px 0 58px!important}
+  body.v8.v13.v14[data-page="machines"] .experience-media-grid{grid-template-columns:1fr!important}
+}
