@@ -6,11 +6,15 @@
   const allButton = document.querySelector('.gallery-filter');
   const grid = document.querySelector('[data-gallery-grid]');
   const status = document.querySelector('[data-gallery-status]');
+  const browserKicker = document.querySelector('.gallery-browser-head .kicker');
+  const browserCopy = document.querySelector('.gallery-browser-head > p');
   if (!list || !allButton || !grid) return;
+
+  if (browserKicker) browserKicker.textContent = 'PROJECT CATEGORIES';
+  if (browserCopy) browserCopy.textContent = 'Choose the engineering category closest to your requirement, then open the individual project groups to inspect machine construction, controls, mechanisms and process detail.';
 
   let manifest = null;
   let activeCategory = 'all';
-  let forcingAll = false;
 
   const slug = value => String(value || 'Other')
     .toLowerCase()
@@ -28,6 +32,14 @@
     return raw.replace(/\bAnd\b/g, '&');
   };
 
+  const categoryOrder = new Map([
+    ['New Projects', 0],
+    ['SPM / CNC Machines', 1],
+    ['SPM · PLC / HMI / Servo', 2],
+    ['Hydraulics & Pressing', 3],
+    ['Retrofit & Service', 4]
+  ]);
+
   const categories = () => {
     const map = new Map();
     (manifest?.groups || []).forEach(group => {
@@ -35,7 +47,7 @@
       if (!map.has(key)) map.set(key, { key, label: categoryLabel(group.category), groups: [] });
       map.get(key).groups.push(group);
     });
-    return [...map.values()];
+    return [...map.values()].sort((a, b) => (categoryOrder.get(a.label) ?? 99) - (categoryOrder.get(b.label) ?? 99));
   };
 
   const updateSummary = () => {
@@ -105,7 +117,6 @@
   });
 
   allButton.addEventListener('click', () => {
-    if (forcingAll) return;
     activeCategory = 'all';
     requestAnimationFrame(() => {
       buildCategoryButtons();
@@ -119,6 +130,8 @@
     applyCategory();
   };
 
+  /* app-v14 replaces the filter list once when the full manifest arrives. Watch only the
+     Gallery controls/grid during that short boot window, then disconnect permanently. */
   const observer = new MutationObserver(syncAfterLegacyRender);
   observer.observe(list, { childList: true });
   observer.observe(grid, { childList: true });
