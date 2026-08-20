@@ -134,12 +134,24 @@ jobs:
                 }
                 if(file==='gallery.html'){
                   if(audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery has no visible project groups`);
-                  if(!String(audit.galleryHeroLast).includes('transtech-spigot-turning-cnc/20230331-151553.webp')) fail.push(`${file}/${mode}: Gallery banner fourth panel is not the Spigot Turning CNC image`);
+                  if(!String(audit.galleryHeroLast).includes('hydraulic-press-transtech-gear/20230216-094310.webp')) fail.push(`${file}/${mode}: Gallery banner fourth panel is not the Hydraulic Press image`);
                 }
                 report.push({file,mode,w,h,audit,pageErrors});
                 await p.close();
               }
             }
+
+            const retrofit=await browser.newPage({viewport:{width:1440,height:900}});
+            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1600);
+            const retrofitAudit=await retrofit.evaluate(()=>({
+              active:document.querySelector('[data-type-filter="retrofit"]')?.classList.contains('is-active')||false,
+              count:[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(x=>x.offsetParent!==null).length,
+              title:document.querySelector('.archive-hero h1')?.innerText||''
+            }));
+            if(!retrofitAudit.active) fail.push('retrofit route: Retrofit filter is not active');
+            if(retrofitAudit.count!==15) fail.push(`retrofit route: expected 15 retrofit references, got ${retrofitAudit.count}`);
+            if(!/Recover capability/i.test(retrofitAudit.title)) fail.push('retrofit route: retrofit-specific hero did not load');
+            await retrofit.close();
 
             const interaction=await browser.newPage({viewport:{width:1440,height:900}});
             await interaction.goto(local+'index.html',{waitUntil:'networkidle'});await wait(1000);
