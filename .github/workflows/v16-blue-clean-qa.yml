@@ -41,6 +41,7 @@ jobs:
 
           (async()=>{
             const browser = await chromium.launch({headless:true});
+            const bannerByMode={};
             for (const file of pages) {
               for (const [mode,w,h] of viewports) {
                 const page = await browser.newPage({viewport:{width:w,height:h}});
@@ -65,6 +66,7 @@ jobs:
                     const selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible);
                     const depth=document.querySelector('.engineering-depth');
                     const depthGrid=document.querySelector('.engineering-depth .depth-grid');
+                    const metricStack=document.querySelector('.engineering-depth .metric-stack');
                     const metrics=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible);
                     const callout=document.querySelector('.engineering-depth .archive-callout');
                     result.selectedCount=selected.length;
@@ -75,16 +77,24 @@ jobs:
                     result.depthGridRect=rect(depthGrid);
                     result.metricAlign=metrics.map(x=>getComputedStyle(x).textAlign);
                     result.metricPadding=metrics.map(x=>parseFloat(getComputedStyle(x).paddingLeft)||0);
+                    result.metricStackGap=metricStack?getComputedStyle(metricStack).columnGap:'';
+                    result.metricStackTop=metricStack?getComputedStyle(metricStack).borderTopColor:'';
                     result.metricProofCounts=metrics.map(x=>({
                       tolerance:(x.innerText.match(/Tolerance reference/g)||[]).length,
                       alignment:(x.innerText.match(/Alignment reference/g)||[]).length,
                       cycle:(x.innerText.match(/Cycle reference/g)||[]).length
                     }));
-                    result.calloutBg=callout?`${getComputedStyle(callout).backgroundImage} ${getComputedStyle(callout).backgroundColor}`:'';
+                    result.calloutBg=callout?getComputedStyle(callout).backgroundColor:'';
+                    result.calloutImage=callout?getComputedStyle(callout).backgroundImage:'';
+                    result.calloutBefore=callout?getComputedStyle(callout,'::before').content:'';
+                    result.calloutAfter=callout?getComputedStyle(callout,'::after').content:'';
                     result.calloutClipped=!!callout&&(callout.scrollHeight>callout.clientHeight+3||callout.scrollWidth>callout.clientWidth+3);
                   }
 
                   if(file==='machines.html'){
+                    const hero=document.querySelector('.archive-hero');
+                    result.heroBg=hero?getComputedStyle(hero).backgroundColor:'';
+                    result.heroHeight=hero?Math.round(hero.getBoundingClientRect().height):0;
                     result.indexVisible=visible(document.querySelector('[data-archive-index-view]'));
                     result.references=[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(visible).length;
                   }
@@ -122,22 +132,29 @@ jobs:
                     if(Math.abs(left-right)>3) fail.push(`${file}/${mode}: Engineering Depth gutters asymmetric (${left}/${right})`);
                   }
                   if(audit.metricAlign.some(v=>v!=='left')) fail.push(`${file}/${mode}: Engineering Depth proof cards are not left aligned`);
-                  if(audit.metricPadding.some(v=>v<20)) fail.push(`${file}/${mode}: Engineering Depth proof content is too close to card edge`);
+                  if(audit.metricPadding.some(v=>v<28)) fail.push(`${file}/${mode}: Engineering Depth proof content needs more breathing room`);
+                  if(w>=1180&&audit.metricStackGap!=='0px') fail.push(`${file}/${mode}: measured proof board is not the connected three-cell presentation`);
                   if(audit.calloutClipped) fail.push(`${file}/${mode}: 54 Experience card content is clipped`);
-                  if(!/linear-gradient/i.test(audit.calloutBg)) fail.push(`${file}/${mode}: 54 Experience card is not using the blue treatment`);
+                  if(audit.calloutBg!=='rgb(13, 24, 36)') fail.push(`${file}/${mode}: 54 card does not use Experience navy (${audit.calloutBg})`);
+                  if(audit.calloutImage!=='none') fail.push(`${file}/${mode}: 54 card still has a gradient/image treatment`);
+                  if(!['none','normal'].includes(audit.calloutBefore)||!['none','normal'].includes(audit.calloutAfter)) fail.push(`${file}/${mode}: 54 card still has decorative pseudo-elements`);
                   if(audit.metricProofCounts.some(x=>x.tolerance>1||x.alignment>1||x.cycle>1)) fail.push(`${file}/${mode}: duplicate Engineering Depth copy detected`);
                   if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await page.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
                 }
 
                 if(file==='machines.html'){
+                  bannerByMode[`machines-${mode}`]={height:audit.heroHeight,bg:audit.heroBg};
                   if(!audit.indexVisible) fail.push(`${file}/${mode}: Experience index is not visible`);
                   if(audit.references!==54) fail.push(`${file}/${mode}: expected 54 Experience references, got ${audit.references}`);
+                  if(w>=1180&&audit.heroHeight!==500) fail.push(`${file}/${mode}: Experience hero is not exactly 500px (${audit.heroHeight}px)`);
+                  if(audit.heroBg!=='rgb(13, 24, 36)') fail.push(`${file}/${mode}: Experience hero background mismatch (${audit.heroBg})`);
                 }
 
                 if(file==='gallery.html'){
+                  bannerByMode[`gallery-${mode}`]={height:audit.heroHeight,bg:audit.heroBg};
                   if(audit.heroStripVisible) fail.push(`${file}/${mode}: old Gallery image collage is visible`);
                   if(audit.heroBg!=='rgb(13, 24, 36)') fail.push(`${file}/${mode}: Gallery hero does not match Experience dark navy (${audit.heroBg})`);
-                  if(w>=1180&&(audit.heroHeight<460||audit.heroHeight>530)) fail.push(`${file}/${mode}: Gallery hero height is outside final banner range (${audit.heroHeight}px)`);
+                  if(w>=1180&&audit.heroHeight!==500) fail.push(`${file}/${mode}: Gallery hero is not exactly 500px (${audit.heroHeight}px)`);
                   if(audit.categoryButtons.length!==5) fail.push(`${file}/${mode}: expected 5 Gallery project categories, got ${audit.categoryButtons.length}`);
                   if(audit.categoryButtons.some(t=>!/project/i.test(t))) fail.push(`${file}/${mode}: Gallery category buttons do not show project counts`);
                   if(audit.legacyGroupButtons) fail.push(`${file}/${mode}: long individual project-name filters are still visible`);
@@ -147,6 +164,12 @@ jobs:
                 report.push({file,mode,audit,pageErrors});
                 await page.close();
               }
+            }
+
+            for (const [mode] of viewports) {
+              const e=bannerByMode[`machines-${mode}`],g=bannerByMode[`gallery-${mode}`];
+              if(e&&g&&Math.abs(e.height-g.height)>1) fail.push(`${mode}: Experience/Gallery hero heights differ (${e.height}/${g.height})`);
+              if(e&&g&&e.bg!==g.bg) fail.push(`${mode}: Experience/Gallery hero backgrounds differ (${e.bg}/${g.bg})`);
             }
 
             const retrofit=await browser.newPage({viewport:{width:1440,height:900}});
