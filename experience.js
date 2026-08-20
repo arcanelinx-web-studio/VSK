@@ -7,6 +7,16 @@
   const archive = typeof machineArchive !== 'undefined' && Array.isArray(machineArchive) ? machineArchive : [];
   if (!archive.length) return;
 
+  /* app-v14 still references this node internally. Keep it hidden for compatibility;
+     Experience itself deliberately exposes only the searchable index. */
+  if (!$('[data-archive-visual-view]')) {
+    const legacyVisual = document.createElement('div');
+    legacyVisual.hidden = true;
+    legacyVisual.setAttribute('data-archive-visual-view', '');
+    legacyVisual.className = 'shell archive-visual-grid';
+    $('.archive-browser')?.appendChild(legacyVisual);
+  }
+
   const categoryLabels = {
     handling: 'Automation & handling',
     turning: 'Turning & boring',
