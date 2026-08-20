@@ -25,7 +25,13 @@
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-release-polish.css?v=16.8'; document.head.appendChild(css);
   }
   if (!document.querySelector('link[href^="v16-corrections.css"]')) {
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.11'; document.head.appendChild(css);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.12'; document.head.appendChild(css);
+  }
+  if (!document.querySelector('link[href^="v16-final-lock.css"]')) {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-final-lock.css?v=16.12'; document.head.appendChild(css);
+  }
+  if (!document.querySelector('script[src^="v16-final-lock.js"]')) {
+    const script = document.createElement('script'); script.src = 'v16-final-lock.js?v=16.12'; script.defer = true; document.body.appendChild(script);
   }
 
   const nativeFetch = window.fetch.bind(window);
@@ -149,11 +155,11 @@
     const selectedSection = document.querySelector('.selected-projects-strip');
     if (selectedSection) selectedSection.setAttribute('aria-label','Selected VSK engineering experience');
 
-    setText('.engineering-depth .depth-head > p','Three documented figures show the precision and cycle focus VSK works around. Use Experience to find the machine, process or control platform closest to your requirement.');
-    setText('.archive-callout .kicker','ENGINEERING EXPERIENCE');
-    setText('.archive-callout h3','Search 54 documented machine references.');
-    setText('.archive-callout > p','Filter by process, machine type or control platform to find the closest VSK experience.');
-    setHTML('.archive-callout .btn','Search Experience <span>→</span>');
+    setText('.engineering-depth .depth-head > p','Three measured examples show the level of precision and cycle focus VSK works around. Use Experience to find the machine or process closest to your own requirement.');
+    setText('.archive-callout .kicker','PROVEN EXPERIENCE');
+    setText('.archive-callout h3','Find work relevant to your requirement.');
+    setText('.archive-callout > p','Search VSK experience by process, machine type, customer need or control platform before you start the discussion.');
+    setHTML('.archive-callout .btn','Find relevant experience <span>→</span>');
 
     setText('.retrofit-inner > p','Keep a sound mechanical platform productive for longer. VSK combines machine reconditioning with modern CNC, PLC, drive and electrical systems to recover capability, reliability and serviceability.');
     const retrofitAll = document.querySelector('.retrofit-actions a[href*="machines.html"]');
@@ -167,22 +173,22 @@
 
   if (page === 'machines') {
     document.title = isRetrofitExperience ? 'CNC Retrofit & Reconditioning Experience — VSK Electro-Mech Solutions' : 'Engineering Experience — VSK Electro-Mech Solutions';
-    setMeta('description',isRetrofitExperience ? 'Explore VSK CNC, PLC, HMI, servo, drive and machine-tool retrofit experience for grinding, turning, machining and other production equipment.' : 'Search VSK machine-building, special purpose machine and CNC retrofit experience by process, machine type, application or control platform.');
+    setMeta('description',isRetrofitExperience ? 'Explore VSK CNC, PLC, HMI, servo, drive and machine-tool retrofit experience for grinding, turning, machining and other production equipment.' : 'Find VSK machine-building, special purpose machine and CNC retrofit experience relevant to your process, machine type, application or control platform.');
     if (isRetrofitExperience) {
       setText('.archive-hero .kicker','CNC RETROFIT & RECONDITIONING');
       setText('.archive-hero-number small','RETROFIT EXPERIENCE');
       setHTML('.archive-hero h1','Recover capability.<br><em>Modernise what is worth keeping.</em>');
-      setText('.archive-hero p','Explore VSK retrofit and reconditioning experience across CNC, PLC, HMI, servo, drive and machine-tool systems. Use the index to find comparable work, then open the closest reference for detail.');
+      setText('.archive-hero p','Explore VSK retrofit and reconditioning work across CNC, PLC, HMI, servo, drive and machine-tool systems, then compare the closest machines with what you need to recover or upgrade.');
     } else {
       setText('.archive-hero .kicker','VSK ENGINEERING EXPERIENCE');
-      setText('.archive-hero-number small','SEARCHABLE EXPERIENCE');
+      setText('.archive-hero-number small','MACHINE-BUILDING EXPERIENCE');
       setHTML('.archive-hero h1','Find experience<br><em>close to your requirement.</em>');
-      setText('.archive-hero p','Use this structured index to search VSK experience by process, machine type, application or control platform. For photo-first browsing of actual project media, use the Gallery.');
+      setText('.archive-hero p','Search VSK machine-building and retrofit experience by process, machine type, application or control platform, then open the closest examples to discuss your own requirement.');
     }
     setText('.archive-search span','Find relevant experience');
     const search = document.querySelector('[data-archive-search]');
     if (search) search.placeholder = 'Machine, process, customer, control…';
-    setText('.archive-status a','Browse the Gallery for photos & videos ↗');
+    setText('.archive-status a','See actual machine photos & videos ↗');
     setHTML('.archive-note h2','Found something similar?<br><em>Let’s discuss what you need.</em>');
     setText('.archive-note p','Share your part, target cycle, tolerance, control platform or existing-machine details. VSK can start from comparable experience and focus the discussion on your production objective.');
   }
@@ -197,7 +203,7 @@
     const galleryStatusLink = document.querySelector('.gallery-status a');
     if (galleryStatusLink) galleryStatusLink.href = 'machines.html';
     setHTML('.gallery-policy h2','Seen something relevant?<br><em>Bring us your requirement.</em>');
-    setText('.gallery-policy p','Use the Gallery to inspect VSK workmanship, then use Experience to search by machine, process or control platform and start a discussion around your own production need.');
+    setText('.gallery-policy p','Use the gallery to inspect VSK workmanship, then search Experience by machine, process or control platform and start a discussion around your own production need.');
   }
 
   const mediaMap = {
@@ -226,13 +232,15 @@
     const manifest = cleanManifest(rawManifest,validSet);
     if (typeof siteProjects !== 'undefined') {
       siteProjects.forEach(project => { if (mediaMap[project.id] && (!validSet || validSet.has(mediaMap[project.id]))) project.cover = mediaMap[project.id]; });
-      /* Rod Boring is already Featured Engineering; Kellenberg already owns the dedicated retrofit chapter. */
+      /* Rod Boring is already the Featured Engineering case and Kellenberg has its own
+         dedicated retrofit chapter. Keep both available for dossiers, but move Kellenberg
+         out of the five-card Selected Experience slice so the homepage does not repeat itself. */
       const kellenbergIndex = siteProjects.findIndex(project => project.id === 'kellenberg');
       if (kellenbergIndex >= 0) siteProjects.push(...siteProjects.splice(kellenbergIndex,1));
     }
     if (typeof featureData !== 'undefined') Object.entries(mediaMap).forEach(([id,src]) => { if (featureData[id] && (!validSet || validSet.has(src))) featureData[id].media = [src,...featureData[id].media.filter(x=>x!==src)]; });
     const galleryHero = document.querySelectorAll('.gallery-hero-strip img');
-    [mediaMap.kellenberg,mediaMap.jig,mediaMap.airleak,mediaMap.slotting].filter(src=>src&&(!validSet||validSet.has(src))).forEach((src,i)=>{if(galleryHero[i])galleryHero[i].src=src;});
+    [mediaMap.kellenberg,mediaMap.jig,mediaMap.airleak,mediaMap.udrill].filter(src=>src&&(!validSet||validSet.has(src))).forEach((src,i)=>{if(galleryHero[i])galleryHero[i].src=src;});
     const summary = manifest?.summary || {};
     const groups=document.querySelector('[data-gallery-group-count]'),images=document.querySelector('[data-gallery-image-count]'),videos=document.querySelector('[data-gallery-video-count]');
     if(groups&&Number.isFinite(summary.groups))groups.textContent=`${summary.groups} project groups`;
