@@ -6,7 +6,6 @@
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
   const galleryCapabilityCategories = [
-    ['New Projects', 'new-project'],
     ['SPM / CNC Machines', 'spm-cnc-machines'],
     ['SPM · PLC / HMI / Servo', 'spm-machines-plc-hmi-and-servo-controlled'],
     ['Hydraulics & Pressing', 'hydraulic-systems-and-pressing-units'],
@@ -19,10 +18,17 @@
     if (!list || list.dataset.galleryLinked === 'true') return;
 
     list.innerHTML = galleryCapabilityCategories.map(([label, key], index) => `
-      <a class="capability-row${index === 0 ? ' is-active' : ''}" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
+      <a class="capability-row" href="gallery.html?category=${encodeURIComponent(key)}" data-gallery-capability>
         <span>${String(index + 1).padStart(2, '0')}</span><strong>${label}</strong><i>→</i>
       </a>`).join('');
     list.dataset.galleryLinked = 'true';
+
+    if (!document.querySelector('.capability-gallery-cta')) {
+      list.insertAdjacentHTML('afterend', `
+        <a class="capability-gallery-cta" href="gallery.html">
+          <span>Explore the complete VSK gallery</span><i>→</i>
+        </a>`);
+    }
 
     const introCopy = document.querySelector('.capabilities .section-intro > p');
     if (introCopy) introCopy.textContent = 'Choose the engineering category closest to your requirement, then open the corresponding VSK project groups, machine photos and engineering detail in Gallery.';
@@ -45,15 +51,51 @@
           color:inherit!important;
           cursor:pointer!important;
         }
-        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible{
+        body.v8.v13.v14[data-page="home"] .capability-list a.capability-row:focus-visible,
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:focus-visible{
           outline:2px solid #1e56aa!important;
           outline-offset:3px!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+          width:100%!important;
+          box-sizing:border-box!important;
+          margin:20px 0 0!important;
+          padding:20px 4px 13px!important;
+          border-top:1px solid #cbd5df!important;
+          display:flex!important;
+          align-items:center!important;
+          justify-content:flex-end!important;
+          gap:14px!important;
+          color:#102333!important;
+          text-decoration:none!important;
+          font:600 12px/1.35 "IBM Plex Mono",monospace!important;
+          letter-spacing:.055em!important;
+          transition:color .18s ease,border-color .18s ease!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{
+          font-style:normal!important;
+          color:#1e56aa!important;
+          font-size:15px!important;
+          transition:transform .18s ease!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{
+          color:#1e56aa!important;
+          border-color:#1e56aa!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(4px)!important}
+        @media (max-width:760px){
+          body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+            justify-content:space-between!important;
+            padding:17px 2px 11px!important;
+            font-size:11px!important;
+          }
         }
       `;
       document.head.appendChild(style);
     }
   };
 
+  /* Tiny final spacing adjustment for the Engineering Depth Experience CTA. */
   if (page === 'home' && !document.getElementById('v16-experience-cta-breathing')) {
     const breathing = document.createElement('style');
     breathing.id = 'v16-experience-cta-breathing';
@@ -65,6 +107,9 @@
     document.head.appendChild(breathing);
   }
 
+  /* The three polish layers are already imported synchronously by v16-final-lock.css.
+     Register matching link elements before app.js runs so it does not append older
+     stylesheet versions after first paint. */
   [
     ['v16-user-polish.css', 'v16-user-polish.css?v=16.33'],
     ['v16-release-polish.css', 'v16-release-polish.css?v=16.33'],
@@ -78,6 +123,7 @@
     document.head.appendChild(link);
   });
 
+  /* Fallback only for older pages that do not already link the current review CSS. */
   if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
@@ -95,6 +141,8 @@
     });
   }
 
+  /* Gallery only hides its local filter strip while the five category controls are built.
+     This prevents the legacy 34-project control list from flashing; it is not a page loader. */
   if (page === 'gallery') {
     if (!document.getElementById('v16-gallery-first-paint-guard')) {
       const guard = document.createElement('style');
