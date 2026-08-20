@@ -5,15 +5,16 @@
   if (!document.querySelector('link[data-v16-wide-final]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'v16-wide-final.css?v=16.17';
+    link.href = 'v16-wide-final.css?v=16.18';
     link.dataset.v16WideFinal = '';
     document.head.appendChild(link);
   }
 
-  // Keep Mechanical Engineering on one consistent VSK machine-build image
-  // before and after capability hover/focus/click interactions.
-  const mechanicalImage = 'media/v16/images/new-project/cnc-thread-cutting-machine/20241017-202129.webp';
-  const mechanicalAlt = 'VSK CNC thread cutting machine — mechanical engineering and machine build';
+  // Mechanical Engineering must show one real VSK machine photograph in every state.
+  // This replaces the previous SolidWorks/CAD screenshot and is also written into
+  // capabilityData so hover/focus/click cannot swap back to a different image.
+  const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
+  const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
   if (typeof capabilityData !== 'undefined' && capabilityData?.mechanical) {
     capabilityData.mechanical.image = mechanicalImage;
     capabilityData.mechanical.alt = mechanicalAlt;
