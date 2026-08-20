@@ -25,7 +25,7 @@
     const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-release-polish.css?v=16.8'; document.head.appendChild(css);
   }
   if (!document.querySelector('link[href^="v16-corrections.css"]')) {
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.9'; document.head.appendChild(css);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'v16-corrections.css?v=16.10'; document.head.appendChild(css);
   }
 
   const nativeFetch = window.fetch.bind(window);
@@ -54,7 +54,7 @@
         if (item.type === 'video') {
           const mp4 = validPath(validSet, item.src_mp4), webm = validPath(validSet, item.src_webm), generic = validPath(validSet, item.web, item.src);
           if (!mp4 && !webm && !generic) return null;
-          return { ...item, src_mp4: mp4 || undefined, src_webm: webm || mp4 || webm, web: generic || mp4 || webm, src: generic || mp4 || webm };
+          return { ...item, src_mp4: mp4 || undefined, src_webm: webm || undefined, web: generic || mp4 || webm, src: generic || mp4 || webm };
         }
         return null;
       }).filter(Boolean);
@@ -224,7 +224,14 @@
     validMediaSetPromise
   ]).then(([rawManifest,validSet]) => {
     const manifest = cleanManifest(rawManifest,validSet);
-    if (typeof siteProjects !== 'undefined') siteProjects.forEach(project => { if (mediaMap[project.id] && (!validSet || validSet.has(mediaMap[project.id]))) project.cover = mediaMap[project.id]; });
+    if (typeof siteProjects !== 'undefined') {
+      siteProjects.forEach(project => { if (mediaMap[project.id] && (!validSet || validSet.has(mediaMap[project.id]))) project.cover = mediaMap[project.id]; });
+      /* Rod Boring is already the Featured Engineering case and Kellenberg has its own
+         dedicated retrofit chapter. Keep both available for dossiers, but move Kellenberg
+         out of the five-card Selected Experience slice so the homepage does not repeat itself. */
+      const kellenbergIndex = siteProjects.findIndex(project => project.id === 'kellenberg');
+      if (kellenbergIndex >= 0) siteProjects.push(...siteProjects.splice(kellenbergIndex,1));
+    }
     if (typeof featureData !== 'undefined') Object.entries(mediaMap).forEach(([id,src]) => { if (featureData[id] && (!validSet || validSet.has(src))) featureData[id].media = [src,...featureData[id].media.filter(x=>x!==src)]; });
     const galleryHero = document.querySelectorAll('.gallery-hero-strip img');
     [mediaMap.kellenberg,mediaMap.jig,mediaMap.airleak,mediaMap.slotting].filter(src=>src&&(!validSet||validSet.has(src))).forEach((src,i)=>{if(galleryHero[i])galleryHero[i].src=src;});
