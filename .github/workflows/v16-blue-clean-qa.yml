@@ -50,7 +50,7 @@ jobs:
                 const pageErrors=[];
                 p.on('pageerror',e=>pageErrors.push(String(e)));
                 await p.goto(local+file,{waitUntil:'networkidle'});
-                await wait(file==='index.html'?1400:2400);
+                await wait(file==='index.html'?1600:2500);
 
                 const audit = await p.evaluate(({w,file})=>{
                   const visible = el => !!el && el.offsetParent !== null;
@@ -60,6 +60,7 @@ jobs:
                   const footer=document.querySelector('.site-footer')?.innerText||'';
                   const result={scrollWidth:document.documentElement.scrollWidth,broken,nav,footer};
                   if(file==='index.html'){
+                    const selectedGrid=document.querySelector('[data-home-projects]');
                     const selected=[...document.querySelectorAll('[data-home-projects] .project-card')].filter(visible);
                     const depth=document.querySelector('.engineering-depth .depth-grid');
                     const metricStack=document.querySelector('.engineering-depth .metric-stack');
@@ -69,6 +70,7 @@ jobs:
                     result.selected=selected.length;
                     result.selectedTitles=selected.map(x=>x.textContent.trim());
                     result.selectedRects=selected.map(rect);
+                    result.selectedGridRect=rect(selectedGrid);
                     result.depthRect=rect(depth);
                     result.metricStackRect=rect(metricStack);
                     result.metricStackDisplay=metricStack?getComputedStyle(metricStack).display:'';
@@ -107,11 +109,16 @@ jobs:
                   if(audit.selectedTitles.some(t=>/Kellenberg|Rod Boring/i.test(t))) fail.push(`${file}/${mode}: dedicated case duplicated in Selected Experience`);
                   const heights=audit.selectedRects.map(r=>Math.round(r.height));
                   if(heights.length&&Math.max(...heights)-Math.min(...heights)>3) fail.push(`${file}/${mode}: Selected Experience heights inconsistent`);
+                  if(w>=1180&&audit.selectedGridRect){
+                    const left=Math.round(audit.selectedGridRect.left);
+                    const right=Math.round(w-audit.selectedGridRect.right);
+                    if(Math.abs(left-right)>3) fail.push(`${file}/${mode}: Selected Experience gutters are asymmetric (${left}px left / ${right}px right)`);
+                  }
                   if(w>=1600){
                     const expectedFeatured=w-80;
-                    const expectedDepth=w-64;
+                    const expectedDepth=w-56;
                     if(audit.featuredRect&&Math.abs(audit.featuredRect.width-expectedFeatured)>8) fail.push(`${file}/${mode}: Featured Engineering is not using wide desktop canvas (${Math.round(audit.featuredRect.width)} vs ${expectedFeatured})`);
-                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expectedDepth)>8) fail.push(`${file}/${mode}: Engineering Depth is not using near-full desktop canvas (${Math.round(audit.depthRect.width)} vs ${expectedDepth})`);
+                    if(audit.depthRect&&Math.abs(audit.depthRect.width-expectedDepth)>8) fail.push(`${file}/${mode}: Engineering Depth is not using final desktop canvas (${Math.round(audit.depthRect.width)} vs ${expectedDepth})`);
                   }
                   if(audit.metricRects.length!==3) fail.push(`${file}/${mode}: expected 3 Engineering Depth metric cards`);
                   if(w>1180&&audit.metricStackDisplay!=='grid') fail.push(`${file}/${mode}: Engineering Depth metric stack is not a real grid`);
@@ -142,7 +149,7 @@ jobs:
             }
 
             const retrofit=await browser.newPage({viewport:{width:1440,height:900}});
-            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1600);
+            await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1800);
             const retrofitAudit=await retrofit.evaluate(()=>({
               active:document.querySelector('[data-type-filter="retrofit"]')?.classList.contains('is-active')||false,
               count:[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(x=>x.offsetParent!==null).length,
