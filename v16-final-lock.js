@@ -5,9 +5,9 @@
   const mechanicalImage = 'media/v16/images/spm-cnc-machines/transtech-motor-flange-facing-cnc-mc/20230327-120458.webp';
   const mechanicalAlt = 'VSK motor flange facing CNC machine — mechanical engineering and machine build';
 
-  /* The final review stylesheet is linked directly in each page head for first-paint stability.
-     Only add it here as a fallback for an older bookmark/page that does not contain the link. */
-  if (!document.querySelector('link[href^="v16-review-authority.css"]')) {
+  /* v16-final-lock.css imports the final review authority during CSS loading.
+     This fallback only protects older pages that do not contain the current CSS link. */
+  if (!document.querySelector('link[href^="v16-review-authority.css"]') && !document.querySelector('link[href^="v16-final-lock.css"]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = 'v16-review-authority.css?v=16.25';
@@ -22,6 +22,14 @@
       const br = rank.has(b.id) ? rank.get(b.id) : preferred.length + 1;
       return ar - br;
     });
+  }
+
+  if (page === 'gallery' && !document.querySelector('script[data-v16-gallery-categories]')) {
+    const script = document.createElement('script');
+    script.src = 'gallery-categories.js?v=1.0';
+    script.defer = true;
+    script.dataset.v16GalleryCategories = '';
+    document.body.appendChild(script);
   }
 
   const applyMechanicalImage = () => {
