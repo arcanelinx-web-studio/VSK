@@ -75,7 +75,7 @@ jobs:
                     result.selectedRects=selected.map(rect);
                     result.depthCards=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible).length;
                     result.depthGrid=rect(document.querySelector('.engineering-depth .depth-grid'));
-                    result.metric=rect(document.querySelector('.engineering-depth .metric-card'));
+                    result.metricRects=[...document.querySelectorAll('.engineering-depth .metric-card')].filter(visible).map(rect);
                     result.callout=rect(document.querySelector('.engineering-depth .archive-callout'));
                     result.depthHead=rect(document.querySelector('.engineering-depth .depth-head'));
                     result.heroCaptionText=document.querySelector('.hero-board-main figcaption')?.innerText||'';
@@ -83,11 +83,15 @@ jobs:
                     result.featureIntro=rect(document.querySelector('.projects-showcase .section-intro'));
                   }
                   if(file==='machines.html'){
-                    const cards=[...document.querySelectorAll('.experience-visual-card')].filter(visible);
-                    result.references=cards.length;
-                    result.mediaCards=cards.length;
-                    result.mediaBadges=[...document.querySelectorAll('.experience-media-badge')].filter(visible).length;
-                    result.exactCards=[...document.querySelectorAll('.experience-media-badge.is-exact')].filter(visible).length;
+                    const indexLayout=document.querySelector('[data-archive-index-view]');
+                    const visualLayout=document.querySelector('[data-archive-visual-view]');
+                    const preview=document.querySelector('[data-archive-preview-media] img');
+                    result.indexVisible=visible(indexLayout);
+                    result.visualVisible=visible(visualLayout);
+                    result.references=[...document.querySelectorAll('.archive-row[data-machine-id]')].filter(visible).length;
+                    result.previewLoaded=!!(preview&&preview.complete&&preview.naturalWidth>0);
+                    result.previewBadge=!!document.querySelector('.archive-preview-badge');
+                    result.preview=rect(document.querySelector('.archive-sticky-preview'));
                   }
                   if(file==='gallery.html') result.galleryGroups=[...document.querySelectorAll('[data-gallery-grid] > *')].filter(visible).length;
                   return result;
@@ -115,26 +119,42 @@ jobs:
 
                 if(file==='index.html'){
                   if(audit.selected!==5) fail.push(`${file}/${mode}: Selected Experience rendered ${audit.selected} cards, expected 5`);
-                  if(audit.selectedTitles.some(t=>/Kellenberg/i.test(t))) fail.push(`${file}/${mode}: Kellenberg is duplicated inside Selected Experience`);
+                  if(audit.selectedTitles.some(t=>/Kellenberg|Rod Boring/i.test(t))) fail.push(`${file}/${mode}: a dedicated/featured machine is duplicated inside Selected Experience`);
                   const heights=audit.selectedRects.map(r=>Math.round(r.height));
                   if(heights.length&&Math.max(...heights)-Math.min(...heights)>2) fail.push(`${file}/${mode}: Selected Experience card heights are inconsistent ${heights.join(',')}`);
+                  if(w>1180){
+                    const widths=audit.selectedRects.map(r=>Math.round(r.width));
+                    if(widths.length&&Math.max(...widths)-Math.min(...widths)>2) fail.push(`${file}/${mode}: Selected Experience card widths are inconsistent ${widths.join(',')}`);
+                    const tops=audit.selectedRects.map(r=>Math.round(r.top));
+                    if(tops.length&&Math.max(...tops)-Math.min(...tops)>2) fail.push(`${file}/${mode}: Selected Experience is not a single aligned row`);
+                  }
                   if(audit.depthCards!==3) fail.push(`${file}/${mode}: Engineering Depth has ${audit.depthCards} proof cards, expected 3`);
                   if(audit.depthGrid&&(audit.depthGrid.left<-2||audit.depthGrid.right>w+2)) fail.push(`${file}/${mode}: Engineering Depth grid exceeds viewport`);
                   if(audit.depthHead&&audit.depthGrid&&Math.abs(audit.depthHead.left-audit.depthGrid.left)>3) fail.push(`${file}/${mode}: Engineering Depth heading/grid left edges do not align`);
-                  if(w>=1180&&audit.metric?.height>360) fail.push(`${file}/${mode}: Engineering Depth proof card is too tall (${audit.metric.height}px)`);
-                  if(w>=1180&&audit.callout&&Math.abs(audit.callout.height-audit.metric.height)>4) fail.push(`${file}/${mode}: Engineering Depth callout/card heights do not match`);
+                  if(w>=1180){
+                    const proof=[...audit.metricRects,audit.callout].filter(Boolean);
+                    const proofHeights=proof.map(r=>Math.round(r.height));
+                    const proofWidths=proof.map(r=>Math.round(r.width));
+                    if(proofHeights.length&&Math.max(...proofHeights)-Math.min(...proofHeights)>3) fail.push(`${file}/${mode}: Engineering Depth proof heights differ ${proofHeights.join(',')}`);
+                    if(proofWidths.length&&Math.max(...proofWidths)-Math.min(...proofWidths)>4) fail.push(`${file}/${mode}: Engineering Depth proof widths differ ${proofWidths.join(',')}`);
+                    if(audit.metricRects.some(r=>r.height>250)) fail.push(`${file}/${mode}: Engineering Depth proof card is too tall`);
+                  }
                   if(/APPLICATION-LED ENGINEER/i.test(audit.heroCaptionText)) fail.push(`${file}/${mode}: old clipped hero caption survived`);
                   if(audit.featureSection&&audit.featureIntro&&audit.featureIntro.top-audit.featureSection.top>110) fail.push(`${file}/${mode}: Featured Engineering has excessive top whitespace`);
                   const autoButton=p.locator('[data-capability="automation"]');
                   if(await autoButton.count()){await autoButton.click();await wait(180);const autoSrc=await p.locator('[data-capability-image]').getAttribute('src');if(String(autoSrc).includes('slotting-mc-1.webp')) fail.push(`${file}/${mode}: Automation capability still reuses hero image`);}
                   if(w>=901){const aboutHeight=await p.locator('.about').evaluate(el=>el.getBoundingClientRect().height);if(aboutHeight<h-100) fail.push(`${file}/${mode}: Company section too short (${aboutHeight}px)`);}
                   await p.locator('.engineering-depth').screenshot({path:`engineering-depth-${mode}.png`});
+                  await p.locator('.selected-projects-strip').screenshot({path:`selected-experience-${mode}.png`});
                   if(['desktop-1920','laptop-1366','tablet-768','mobile-390'].includes(mode)) await p.screenshot({path:`home-${mode}.png`,fullPage:true});
                 }
                 if(file==='machines.html'){
-                  if(audit.references!==54) fail.push(`${file}/${mode}: Experience rendered ${audit.references} visual references, expected 54`);
-                  if(audit.mediaCards!==audit.mediaBadges) fail.push(`${file}/${mode}: ${audit.mediaCards} Experience cards but ${audit.mediaBadges} media labels`);
-                  if(audit.exactCards<1) fail.push(`${file}/${mode}: no project-specific Experience media was identified`);
+                  if(!audit.indexVisible) fail.push(`${file}/${mode}: Experience index is not visible`);
+                  if(audit.visualVisible) fail.push(`${file}/${mode}: Experience incorrectly renders the Gallery-style visual wall`);
+                  if(audit.references!==54) fail.push(`${file}/${mode}: Experience rendered ${audit.references} index rows, expected 54`);
+                  if(!audit.previewLoaded) fail.push(`${file}/${mode}: Experience preview image did not load`);
+                  if(!audit.previewBadge) fail.push(`${file}/${mode}: Experience preview does not identify project-specific vs related VSK media`);
+                  if(['desktop-1920','desktop-1440','mobile-390'].includes(mode)) await p.screenshot({path:`experience-${mode}.png`,fullPage:true});
                 }
                 if(file==='gallery.html'&&audit.galleryGroups<1) fail.push(`${file}/${mode}: Gallery rendered no project groups`);
                 rows.push({file,mode,w,h,audit,pageErrors,badRequests});
@@ -145,8 +165,9 @@ jobs:
             const retrofit=await browser.newPage({viewport:{width:1440,height:900}});
             await retrofit.goto(local+'machines.html?type=retrofit',{waitUntil:'networkidle'});await wait(1900);
             const activeType=await retrofit.locator('[data-type-filter="retrofit"]').evaluate(el=>el.classList.contains('is-active'));
-            const retrofitCards=await retrofit.locator('.experience-visual-card').count();
-            if(!activeType||retrofitCards!==15) fail.push(`retrofit route: expected active Retrofit filter with 15 visual cards, got active=${activeType}, cards=${retrofitCards}`);
+            const retrofitRows=await retrofit.locator('.archive-row[data-machine-id]').count();
+            const retrofitVisual=await retrofit.locator('[data-archive-visual-view]').evaluate(el=>el.offsetParent!==null);
+            if(!activeType||retrofitRows!==15||retrofitVisual) fail.push(`retrofit route: expected indexed Retrofit view with 15 rows, got active=${activeType}, rows=${retrofitRows}, visual=${retrofitVisual}`);
             await retrofit.close();
 
             const redirect=await browser.newPage({viewport:{width:1440,height:900}});
@@ -168,6 +189,8 @@ jobs:
           name: v16-release-qa
           path: |
             engineering-depth-*.png
+            selected-experience-*.png
+            experience-*.png
             home-*.png
             release-qa-report.json
           retention-days: 14
