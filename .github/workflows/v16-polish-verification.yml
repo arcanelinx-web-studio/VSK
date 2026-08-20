@@ -1,4 +1,5 @@
 name: V16 Final Polish Verification
+# Final regression trigger: latest valid-media filtering
 on:
   push:
     branches: [client-review-v16-blue-refinement]
