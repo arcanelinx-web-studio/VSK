@@ -1,51 +1,5 @@
 (() => {
   'use strict';
-
-  const $ = (s,r=document) => r.querySelector(s);
-  const $$ = (s,r=document) => [...r.querySelectorAll(s)];
-  const page = document.body.dataset.page || 'home';
-
-  function lockSelectedExperience(){
-    if(page!=='home') return;
-    const grid=$('[data-home-projects]');
-    if(!grid) return;
-    if(grid.classList.contains('project-grid-editorial')) grid.classList.remove('project-grid-editorial');
-    if(!grid.classList.contains('selected-experience-grid')) grid.classList.add('selected-experience-grid');
-    [...grid.children].forEach(card=>{
-      [...card.classList].filter(c=>/^project-layout-\d+$/.test(c)).forEach(c=>card.classList.remove(c));
-      if(!card.classList.contains('selected-experience-card')) card.classList.add('selected-experience-card');
-    });
-  }
-
-  function lockGalleryHero(){
-    if(page!=='gallery') return;
-    const images=$$('.gallery-hero-strip img');
-    const last=images.at(-1);
-    if(!last) return;
-    const desired='media/v16/images/spm-machines-plc-hmi-and-servo-controlled/single-spindle-u-drill-machine/img-20170518-210359.webp';
-    if(last.getAttribute('src')!==desired) last.setAttribute('src',desired);
-    if(last.getAttribute('alt')!=='VSK U Drill special purpose machine') last.setAttribute('alt','VSK U Drill special purpose machine');
-  }
-
-  function lockExperienceCopy(){
-    if(page!=='machines') return;
-    const button=$('[data-archive-preview-open]');
-    if(button && button.textContent.trim()!=='View this experience →') button.textContent='View this experience →';
-  }
-
-  function apply(){
-    lockSelectedExperience();
-    lockGalleryHero();
-    lockExperienceCopy();
-  }
-
-  // Bounded initialisation only. No global MutationObserver: the site remains fully interactive.
-  apply();
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true});
-  else apply();
-
-  addEventListener('load',()=>{
-    apply();
-    [250,700,1400,2400].forEach(delay=>setTimeout(apply,delay));
-  },{once:true});
+  // Intentionally empty. Final V16 layout authority is CSS-only.
+  // Keeping this file as a no-op avoids stale script references causing runtime work.
 })();
