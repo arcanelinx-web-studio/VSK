@@ -25,8 +25,6 @@
     return '';
   };
 
-  let heroOpeningStarted = false;
-
   const ensureStyles = () => {
     let style = document.getElementById('v16-navigation-consistency');
     if (!style) {
@@ -58,48 +56,8 @@
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
 
-      /* One authoritative boot. Freeze the legacy pseudo curtain and remove its
-         embedded line; the real DOM progress bar is the only visible line. */
-      @keyframes vskBootCurtainOpenFinal{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(100% 0 0 0)}}
-      @keyframes vskBootBrandOutFinal{from{opacity:1}to{opacity:0;visibility:hidden}}
-      html.vsk-boot-controlled:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
-        animation:none!important;
-        clip-path:inset(0 0 0 0)!important;
-        background:#fbfbf8!important;
-      }
-      html.vsk-boot-controlled:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
-        animation:none!important;
-        opacity:1!important;
-        visibility:visible!important;
-        transform:translateY(-50%)!important;
-        background-image:url("media/brand/vsk-logo.webp")!important;
-        background-repeat:no-repeat!important;
-        background-position:left center!important;
-        background-size:56px 56px!important;
-      }
-      html.vsk-boot-controlled.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
-        animation:vskBootCurtainOpenFinal .50s cubic-bezier(.76,0,.24,1) both!important;
-      }
-      html.vsk-boot-controlled.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
-        animation:vskBootBrandOutFinal .14s ease-out both!important;
-        transform:translateY(-50%)!important;
-        background-image:url("media/brand/vsk-logo.webp")!important;
-        background-repeat:no-repeat!important;
-        background-position:left center!important;
-        background-size:56px 56px!important;
-      }
-      html.vsk-boot-done body.v8.v13.v14[data-page="home"]::before,
-      html.vsk-boot-done body.v8.v13.v14[data-page="home"]::after{
-        content:none!important;
-        display:none!important;
-        animation:none!important;
-      }
-      @media(max-width:720px){
-        html.vsk-boot-controlled:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
-          background-size:46px 46px!important;
-        }
-      }
-
+      /* Runtime-triggered engineering opening. The prep state deliberately
+         resets any CSS animation that may have completed before first paint. */
       @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenLine{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenCopy{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
@@ -122,8 +80,9 @@
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-proof-chip,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-side-note,
-      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{animation:none!important}
-
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{
+        animation:none!important;
+      }
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
@@ -177,141 +136,17 @@
     `;
   };
 
+  /* One stylesheet owns the final review proportions and palette across pages.
+     Re-appending the existing link makes it win without re-downloading it. */
   const ensureHarmonyStyles = () => {
-    if (page === 'home' && !document.documentElement.classList.contains('vsk-boot-done')) return;
     let link = document.querySelector('link[data-v16-site-harmony]');
-    if (link) return;
-    link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.dataset.v16SiteHarmony = '1';
-    link.href = `v16-site-harmony.css?review=${harmonyToken}`;
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.dataset.v16SiteHarmony = '1';
+      link.href = `v16-site-harmony.css?review=${harmonyToken}`;
+    }
     document.head.appendChild(link);
-  };
-
-  const startHeroOpening = () => {
-    if (page !== 'home' || heroOpeningStarted) return;
-    if (!document.documentElement.classList.contains('vsk-boot-done')) return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-
-    const hero = document.querySelector('.hero.hero-blue');
-    const machineImage = document.querySelector('.hero-board-main img');
-    if (!hero) return;
-
-    const begin = () => {
-      if (heroOpeningStarted) return;
-      heroOpeningStarted = true;
-      const root = document.documentElement;
-      root.classList.remove('vsk-opening-live');
-      root.classList.add('vsk-opening-prep');
-      void hero.offsetWidth;
-      requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('vsk-opening-live')));
-      setTimeout(() => root.classList.remove('vsk-opening-prep', 'vsk-opening-live'), 2850);
-    };
-
-    if (machineImage?.complete) setTimeout(begin, 80);
-    else {
-      machineImage?.addEventListener('load', () => setTimeout(begin, 60), {once:true});
-      setTimeout(begin, 700);
-    }
-  };
-
-  let bootProgressStarted = false;
-  const startBootProgress = () => {
-    if (page !== 'home' || bootProgressStarted) return;
-    const root = document.documentElement;
-
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      root.classList.add('vsk-boot-done');
-      ensureHarmonyStyles();
-      startHeroOpening();
-      return;
-    }
-
-    const track = document.querySelector('.page-progress');
-    const bar = track?.querySelector('i');
-    if (!track || !bar) {
-      root.classList.add('vsk-boot-done');
-      ensureHarmonyStyles();
-      startHeroOpening();
-      return;
-    }
-
-    bootProgressStarted = true;
-    root.classList.remove('vsk-boot-done', 'vsk-curtain-open');
-    root.classList.add('vsk-boot-controlled');
-
-    const mobile = window.matchMedia('(max-width:720px)').matches;
-    const values = mobile
-      ? {left:'84px', top:'calc(50% + 33px)', width:'calc(100vw - 106px)'}
-      : {left:'calc(clamp(26px,5vw,82px) + 76px)', top:'calc(50% + 38px)', width:'min(574px,calc(100vw - 128px))'};
-
-    const set = (el, prop, value) => el.style.setProperty(prop, value, 'important');
-    set(track, 'display', 'block');
-    set(track, 'visibility', 'visible');
-    set(track, 'opacity', '1');
-    set(track, 'animation', 'none');
-    set(track, 'position', 'fixed');
-    set(track, 'z-index', '2147483647');
-    set(track, 'left', values.left);
-    set(track, 'right', 'auto');
-    set(track, 'top', values.top);
-    set(track, 'bottom', 'auto');
-    set(track, 'width', values.width);
-    set(track, 'height', '3px');
-    set(track, 'min-height', '3px');
-    set(track, 'max-height', '3px');
-    set(track, 'margin', '0');
-    set(track, 'padding', '0');
-    set(track, 'overflow', 'hidden');
-    set(track, 'pointer-events', 'none');
-    set(track, 'background', '#d9e2e8');
-    set(track, 'transform', 'none');
-
-    set(bar, 'display', 'block');
-    set(bar, 'visibility', 'visible');
-    set(bar, 'opacity', '1');
-    set(bar, 'position', 'absolute');
-    set(bar, 'inset', '0');
-    set(bar, 'width', '100%');
-    set(bar, 'height', '100%');
-    set(bar, 'background', '#1e56aa');
-    set(bar, 'transition', 'none');
-    set(bar, 'transform', 'none');
-
-    bar.getAnimations?.().forEach(animation => animation.cancel());
-    bar.style.removeProperty('clip-path');
-    bar.style.removeProperty('-webkit-clip-path');
-
-    const progress = bar.animate(
-      [
-        {clipPath:'inset(0 100% 0 0)'},
-        {clipPath:'inset(0 0 0 0)'}
-      ],
-      {duration:980, delay:100, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
-    );
-
-    let finished = false;
-    const completeBoot = () => {
-      if (finished) return;
-      finished = true;
-      set(track, 'opacity', '0');
-      set(track, 'display', 'none');
-
-      /* Give the browser one clean white frame with no line, then reveal. */
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          root.classList.add('vsk-curtain-open');
-          setTimeout(() => {
-            root.classList.add('vsk-boot-done');
-            root.classList.remove('vsk-boot-controlled', 'vsk-curtain-open');
-            ensureHarmonyStyles();
-            startHeroOpening();
-          }, 540);
-        });
-      });
-    };
-
-    progress.finished.then(completeBoot).catch(completeBoot);
   };
 
   const normalizeNavigation = () => {
@@ -402,6 +237,7 @@
     if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
     if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
+    /* Legacy archive code expects this element even though V16 keeps visual mode hidden. */
     if (!document.querySelector('[data-visual-count]')) {
       const hiddenCount = document.createElement('span');
       hiddenCount.hidden = true;
@@ -456,35 +292,66 @@
     script.src = `gallery-categories.js?review=${Date.now()}`;
     script.dataset.v16GalleryCategories = '1';
     script.async = false;
-    script.onload = ensureHarmonyStyles;
+    script.onload = () => {
+      ensureHarmonyStyles();
+      setTimeout(ensureHarmonyStyles, 80);
+      setTimeout(ensureHarmonyStyles, 500);
+    };
     document.body.appendChild(script);
+  };
+
+  let heroOpeningStarted = false;
+  const startHeroOpening = () => {
+    if (page !== 'home' || heroOpeningStarted) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    const hero = document.querySelector('.hero.hero-blue');
+    const machineImage = document.querySelector('.hero-board-main img');
+    if (!hero) return;
+
+    const begin = () => {
+      if (heroOpeningStarted) return;
+      heroOpeningStarted = true;
+      const root = document.documentElement;
+      root.classList.remove('vsk-opening-live');
+      root.classList.add('vsk-opening-prep');
+      void hero.offsetWidth;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => root.classList.add('vsk-opening-live'));
+      });
+      setTimeout(() => {
+        root.classList.remove('vsk-opening-prep', 'vsk-opening-live');
+      }, 2850);
+    };
+
+    if (machineImage?.complete) setTimeout(begin, 120);
+    else {
+      machineImage?.addEventListener('load', () => setTimeout(begin, 80), {once:true});
+      setTimeout(begin, 850);
+    }
   };
 
   const apply = () => {
     ensureStyles();
+    ensureHarmonyStyles();
     normalizeNavigation();
     normalizeExperienceHero();
     bindExperienceStatus();
     syncExperienceStatus();
     ensureGalleryCategories();
-    if (page !== 'home') ensureHarmonyStyles();
-    startBootProgress();
     startHeroOpening();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
   else apply();
 
-  /* The script is loaded after the homepage markup, so start immediately too. */
-  if (page === 'home') {
-    ensureStyles();
-    startBootProgress();
-  }
-
   window.addEventListener('load', () => {
     apply();
     startHeroOpening();
-    if (page !== 'home') ensureHarmonyStyles();
+    setTimeout(ensureHarmonyStyles, 120);
+    setTimeout(ensureHarmonyStyles, 700);
+    setTimeout(ensureHarmonyStyles, 1800);
+    setTimeout(ensureHarmonyStyles, 3200);
     setTimeout(syncExperienceStatus, 80);
     setTimeout(syncExperienceStatus, 650);
     setTimeout(syncExperienceStatus, 1800);
