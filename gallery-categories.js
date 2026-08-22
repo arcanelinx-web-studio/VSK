@@ -10,143 +10,158 @@
   const browserCopy = document.querySelector('.gallery-browser-head > p');
   if (!list || !allButton || !grid) return;
 
-  /* Final Gallery category presentation. The legacy project-name controls are never shown. */
   if (!document.getElementById('v16-gallery-category-field')) {
     const style = document.createElement('style');
     style.id = 'v16-gallery-category-field';
     style.textContent = `
       body.v8.v13.v14[data-page="gallery"] .gallery-controls{
         display:grid!important;
-        grid-template-columns:repeat(3,minmax(0,1fr))!important;
-        gap:10px!important;
+        grid-template-columns:1.08fr repeat(4,minmax(0,1fr))!important;
+        gap:0!important;
         align-items:stretch!important;
-        margin-top:28px!important;
+        margin-top:30px!important;
+        border:1px solid #c8d4de!important;
+        background:#fff!important;
+        overflow:hidden!important;
       }
       body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{display:contents!important}
       body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list] > [data-gallery-filter]{display:none!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{
+        position:relative!important;
         box-sizing:border-box!important;
         width:100%!important;
         min-width:0!important;
-        min-height:68px!important;
+        min-height:96px!important;
         margin:0!important;
-        padding:12px 17px 11px!important;
-        display:flex!important;
-        flex-direction:column!important;
-        align-items:flex-start!important;
-        justify-content:center!important;
-        gap:5px!important;
-        border:1px solid #c9d5df!important;
+        padding:17px 18px 15px!important;
+        display:grid!important;
+        grid-template-columns:minmax(0,1fr) 24px!important;
+        grid-template-rows:auto 1fr!important;
+        column-gap:12px!important;
+        align-items:start!important;
+        border:0!important;
+        border-right:1px solid #d4dee5!important;
         background:#fff!important;
-        color:#314254!important;
+        color:#102333!important;
         text-align:left!important;
         box-shadow:none!important;
-        transition:border-color .18s ease,background .18s ease,color .18s ease!important;
+        transition:background .18s ease,color .18s ease,box-shadow .18s ease!important;
       }
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:last-child{border-right:0!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter span,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category] span{
-        display:block!important;
+        grid-column:1!important;
+        display:flex!important;
+        align-items:center!important;
+        gap:9px!important;
         color:#31567f!important;
-        font:500 10px/1.2 "IBM Plex Mono",monospace!important;
-        letter-spacing:.075em!important;
+        font:500 8px/1.2 "IBM Plex Mono",monospace!important;
+        letter-spacing:.105em!important;
         text-transform:uppercase!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls button span em{
+        color:#8ea2b3!important;
+        font-style:normal!important;
+        font-weight:500!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter b,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category] b{
+        grid-column:1!important;
+        align-self:end!important;
         display:block!important;
-        color:#314254!important;
-        font:600 15px/1.15 Inter,sans-serif!important;
-        letter-spacing:-.01em!important;
+        margin-top:11px!important;
+        color:#102333!important;
+        font:600 clamp(15px,1.05vw,18px)/1.12 "Space Grotesk",Inter,sans-serif!important;
+        letter-spacing:-.02em!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls button i{
+        grid-column:2!important;
+        grid-row:1/3!important;
+        align-self:center!important;
+        justify-self:end!important;
+        color:#9aabb9!important;
+        font-style:normal!important;
+        font-size:16px!important;
+        transition:transform .18s ease,color .18s ease!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter:hover,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{
-        border-color:#1e56aa!important;
-        background:#f7fafc!important;
+        background:#f6f9fb!important;
+      }
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls button:hover i{
+        color:#167bc4!important;
+        transform:translateX(3px)!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active{
-        background:#1e56aa!important;
-        border-color:#1e56aa!important;
-        color:#fff!important;
+        background:#eef4fa!important;
+        box-shadow:inset 0 4px 0 #1e56aa!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active span,
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active span{color:#174f9f!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active b,
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active span,
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active b{color:#fff!important}
-      body.v8.v13.v14[data-page="gallery"] .gallery-status{margin-top:22px!important}
-      @media (max-width:980px){
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-      }
-      @media (max-width:620px){
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:1fr!important;gap:8px!important}
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active b{color:#0d1824!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls button.is-active i{color:#1e56aa!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-status{margin-top:20px!important}
+      @media (max-width:1180px){
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{
+          grid-template-columns:repeat(3,minmax(0,1fr))!important;
+          gap:1px!important;
+          background:#d4dee5!important;
+        }
         body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:60px!important;padding:11px 14px!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{border-right:0!important}
+      }
+      @media (max-width:720px){
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:1fr!important}
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:76px!important;padding:14px 16px!important}
       }
     `;
     document.head.appendChild(style);
   }
 
   if (browserKicker) browserKicker.textContent = 'PROJECT CATEGORIES';
-  if (browserCopy) browserCopy.textContent = 'Choose the engineering category closest to your requirement, then open the individual project groups to inspect machine construction, controls, mechanisms and process detail.';
+  if (browserCopy) browserCopy.textContent = 'Choose one of the same four engineering categories used across the VSK website, then open individual project groups to inspect machine construction, controls, mechanisms and process detail.';
 
   let manifest = null;
   let activeCategory = 'all';
 
-  const slug = value => String(value || 'Other')
-    .toLowerCase()
-    .replace(/&/g, ' and ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+  const taxonomy = [
+    {key:'spm-cnc-machines', label:'SPM / CNC Machines', match:value => (/spm/i.test(value)&&/cnc/i.test(value)&&!/plc|hmi|servo/i.test(value)) || /^new project$/i.test(value)},
+    {key:'spm-machines-plc-hmi-and-servo-controlled', label:'SPM · PLC / HMI / Servo', match:value => /plc|hmi|servo/i.test(value)},
+    {key:'hydraulic-systems-and-pressing-units', label:'Hydraulics & Pressing', match:value => /hydraulic|press/i.test(value)},
+    {key:'retrofitting-and-service', label:'Retrofit & CNC', match:value => /retrofitting|service/i.test(value)}
+  ];
 
-  const categoryLabel = value => {
-    const raw = String(value || 'Other');
-    if (/^new project$/i.test(raw)) return 'New Projects';
-    if (/retrofitting/i.test(raw)) return 'Retrofit & Service';
-    if (/spm.*cnc/i.test(raw)) return 'SPM / CNC Machines';
-    if (/plc|hmi|servo/i.test(raw)) return 'SPM · PLC / HMI / Servo';
-    if (/hydraulic|press/i.test(raw)) return 'Hydraulics & Pressing';
-    return raw.replace(/\bAnd\b/g, '&');
-  };
+  const categoryKey = value => taxonomy.find(item => item.match(String(value || '')))?.key || 'spm-cnc-machines';
 
-  const categoryOrder = new Map([
-    ['New Projects', 0],
-    ['SPM / CNC Machines', 1],
-    ['SPM · PLC / HMI / Servo', 2],
-    ['Hydraulics & Pressing', 3],
-    ['Retrofit & Service', 4]
-  ]);
-
-  const categories = () => {
-    const map = new Map();
-    (manifest?.groups || []).forEach(group => {
-      const key = slug(group.category);
-      if (!map.has(key)) map.set(key, { key, label: categoryLabel(group.category), groups: [] });
-      map.get(key).groups.push(group);
-    });
-    return [...map.values()].sort((a, b) => (categoryOrder.get(a.label) ?? 99) - (categoryOrder.get(b.label) ?? 99));
-  };
+  const categories = () => taxonomy.map(item => ({
+    ...item,
+    groups:(manifest?.groups || []).filter(group => categoryKey(group.category) === item.key)
+  }));
 
   const updateSummary = () => {
-    const cats = categories();
     const totalGroups = manifest?.groups?.length || 0;
     const totalMedia = (manifest?.groups || []).reduce((n, group) => n + (group.items?.length || 0), 0);
     const groupCount = document.querySelector('[data-gallery-group-count]');
     const imageCount = document.querySelector('[data-gallery-image-count]');
     const videoCount = document.querySelector('[data-gallery-video-count]');
     if (groupCount) groupCount.textContent = `${totalGroups} project groups`;
-    if (imageCount) imageCount.textContent = `${cats.length} categories`;
+    if (imageCount) imageCount.textContent = '4 engineering categories';
     if (videoCount) videoCount.textContent = `${totalMedia} media items`;
   };
 
   const buildCategoryButtons = () => {
     if (!manifest?.groups?.length) return;
     const cats = categories();
-    list.innerHTML = cats.map(cat => `
+    list.innerHTML = cats.map((cat,index) => `
       <button type="button" data-gallery-category="${cat.key}" class="${cat.key === activeCategory ? 'is-active' : ''}">
-        <span>${cat.label}</span><b>${cat.groups.length} project${cat.groups.length === 1 ? '' : 's'}</b>
+        <span><em>${String(index + 1).padStart(2,'0')}</em>${cat.label}</span>
+        <b>${cat.groups.length} project${cat.groups.length === 1 ? '' : 's'}</b><i>→</i>
       </button>`).join('');
-    allButton.innerHTML = `<span>All projects</span><b>${manifest.groups.length} projects</b>`;
+    allButton.innerHTML = `<span><em>00</em>All projects</span><b>${manifest.groups.length} project groups</b><i>→</i>`;
     allButton.classList.toggle('is-active', activeCategory === 'all');
     document.body.classList.add('gallery-categories-ready');
     updateSummary();
@@ -159,7 +174,7 @@
     let visibleGroups = 0;
     sections.forEach((section, index) => {
       const group = groups[index];
-      const show = activeCategory === 'all' || slug(group?.category) === activeCategory;
+      const show = activeCategory === 'all' || categoryKey(group?.category) === activeCategory;
       section.hidden = !show;
       if (show) visibleGroups += 1;
     });
@@ -168,7 +183,7 @@
     });
     allButton.classList.toggle('is-active', activeCategory === 'all');
     if (status) {
-      if (activeCategory === 'all') status.textContent = `${manifest.groups.length} project groups · ${categories().length} engineering categories`;
+      if (activeCategory === 'all') status.textContent = `${manifest.groups.length} project groups · 4 engineering categories`;
       else {
         const cat = categories().find(item => item.key === activeCategory);
         status.textContent = `${visibleGroups} project group${visibleGroups === 1 ? '' : 's'} · ${cat?.label || 'Selected category'}`;
@@ -191,7 +206,10 @@
     selectCategory(button.dataset.galleryCategory || 'all');
   });
 
-  allButton.addEventListener('click', () => selectCategory('all'));
+  allButton.addEventListener('click', event => {
+    event.preventDefault();
+    selectCategory('all');
+  });
 
   const syncAfterLegacyRender = () => {
     if (!manifest?.groups?.length) return;
@@ -199,20 +217,18 @@
     applyCategory();
   };
 
-  /* Legacy gallery rendering can replace the filter list during initial manifest hydration.
-     Watch only this local control/grid boot window, then disconnect permanently. */
   const observer = new MutationObserver(syncAfterLegacyRender);
   observer.observe(list, { childList: true });
   observer.observe(grid, { childList: true });
   setTimeout(() => observer.disconnect(), 8000);
 
-  fetch('media/archive-manifest.json', { cache: 'no-store' })
+  fetch(`media/archive-manifest.json?review=${Date.now()}`, { cache: 'no-store' })
     .then(response => response.ok ? response.json() : null)
     .then(data => {
       if (!data?.groups?.length) return;
       manifest = data;
       const requested = new URL(location.href).searchParams.get('category');
-      const available = new Set(categories().map(cat => cat.key));
+      const available = new Set(taxonomy.map(cat => cat.key));
       activeCategory = requested && available.has(requested) ? requested : 'all';
       buildCategoryButtons();
       requestAnimationFrame(applyCategory);
