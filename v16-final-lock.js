@@ -57,6 +57,20 @@
     `;
   };
 
+  /* One stylesheet owns the final review proportions and palette across pages.
+     Re-appending the link makes it win over older runtime-injected V16 styles. */
+  const ensureHarmonyStyles = () => {
+    let link = document.querySelector('link[data-v16-site-harmony]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.dataset.v16SiteHarmony = '1';
+      document.head.appendChild(link);
+    }
+    link.href = `v16-site-harmony.css?review=${Date.now()}`;
+    document.head.appendChild(link);
+  };
+
   const normalizeNavigation = () => {
     const current = currentRoute();
     const desktop = document.querySelector('.desktop-nav');
@@ -199,11 +213,18 @@
     const script = document.createElement('script');
     script.src = `gallery-categories.js?review=${Date.now()}`;
     script.dataset.v16GalleryCategories = '1';
+    script.async = false;
+    script.onload = () => {
+      ensureHarmonyStyles();
+      setTimeout(ensureHarmonyStyles, 80);
+      setTimeout(ensureHarmonyStyles, 500);
+    };
     document.body.appendChild(script);
   };
 
   const apply = () => {
     ensureStyles();
+    ensureHarmonyStyles();
     normalizeNavigation();
     normalizeExperienceHero();
     bindExperienceStatus();
@@ -216,6 +237,10 @@
 
   window.addEventListener('load', () => {
     apply();
+    setTimeout(ensureHarmonyStyles, 120);
+    setTimeout(ensureHarmonyStyles, 700);
+    setTimeout(ensureHarmonyStyles, 1800);
+    setTimeout(ensureHarmonyStyles, 3200);
     setTimeout(syncExperienceStatus, 80);
     setTimeout(syncExperienceStatus, 650);
     setTimeout(syncExperienceStatus, 1800);
