@@ -1,29 +1,141 @@
 @import url("v16-site-harmony-base.css?v=16.46");
 
-/* V16.46 — cache-busted final authority for Featured Engineering.
-   One machine image owns the visual field. A soft enlarged backdrop fills the
-   wide desktop canvas while the complete machine remains visible in front. */
-@media (min-width:1181px){
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects{
+/* =========================================================
+   V16.50 — NARRATIVE + VISUAL RHYTHM AUTHORITY
+   The homepage now follows one deliberate story:
+   claim → credibility → capability → case → breadth → depth →
+   third-party trust → process → company → enquiry.
+   ========================================================= */
+
+/* ---------- 01 / FIXED HOMEPAGE STORY ORDER ---------- */
+html body.v8.v13.v14[data-page="home"] main#main{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.hero{order:10!important}
+html body.v8.v13.v14[data-page="home"] main#main>.credibility-band{order:20!important}
+html body.v8.v13.v14[data-page="home"] main#main>.capabilities{order:30!important}
+html body.v8.v13.v14[data-page="home"] main#main>.projects-showcase{order:40!important}
+html body.v8.v13.v14[data-page="home"] main#main>.selected-projects-strip{order:50!important}
+html body.v8.v13.v14[data-page="home"] main#main>.engineering-depth{order:60!important}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews{order:70!important}
+html body.v8.v13.v14[data-page="home"] main#main>.process{order:80!important}
+html body.v8.v13.v14[data-page="home"] main#main>.about{order:90!important}
+html body.v8.v13.v14[data-page="home"] main#main>.contact{order:100!important}
+
+/* ---------- 02 / THREE-SURFACE SYSTEM ---------- */
+html body.v8.v13.v14[data-page="home"] .credibility-band{
+  background:#f4f7f9!important;
+  color:#102333!important;
+  border-top:1px solid #d8e2e8!important;
+  border-bottom:1px solid #d8e2e8!important;
+}
+html body.v8.v13.v14[data-page="home"] .capabilities{
+  background:#fbfaf6!important;
+  color:#102333!important;
+  border-top:0!important;
+  border-bottom:1px solid #e1e5e7!important;
+}
+html body.v8.v13.v14[data-page="home"] .projects-showcase#projects{
+  background:#0d1824!important;
+  color:#f5f8fa!important;
+}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip{
+  background:#eaf1f5!important;
+  color:#102333!important;
+  border-top:1px solid #d2dee6!important;
+  border-bottom:1px solid #d2dee6!important;
+}
+html body.v8.v13.v14[data-page="home"] .engineering-depth{
+  background:#fbfaf6!important;
+  color:#102333!important;
+  border-top:1px solid #e0e5e7!important;
+  border-bottom:1px solid #e0e5e7!important;
+}
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
+  background:#fff!important;
+  color:#102333!important;
+  border-top:1px solid #dbe3e8!important;
+  border-bottom:1px solid #dbe3e8!important;
+}
+html body.v8.v13.v14[data-page="home"] .process.section-ivory{
+  background:#edf3f6!important;
+  color:#102333!important;
+  border-top:1px solid #d4e0e7!important;
+  border-bottom:1px solid #d4e0e7!important;
+}
+html body.v8.v13.v14[data-page="home"] .about#about{
+  background:#fff!important;
+  color:#102333!important;
+  border-top:1px solid #e2e8ec!important;
+  border-bottom:1px solid #dbe3e8!important;
+}
+html body.v8.v13.v14[data-page="home"] .contact.section-dark{
+  background:#0d1824!important;
+  color:#fff!important;
+}
+
+/* ---------- 03 / CAPABILITIES: LIGHT WITH ONE DARK PUNCTUATION ---------- */
+html body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+  border-color:#263b4f!important;
+  background:#0f1f2e!important;
+  color:#f5f8fa!important;
+}
+html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
+html body.v8.v13.v14 .capability-media .capability-project-link{
+  box-sizing:border-box!important;
+  width:min(100%,276px)!important;
+  min-width:250px!important;
+  min-height:54px!important;
+  height:54px!important;
+  margin-top:20px!important;
+  padding:0 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  border:1px solid #b8c9d8!important;
+  background:#fff!important;
+  color:#164a9c!important;
+  font:600 12px/1.2 "IBM Plex Mono",monospace!important;
+  letter-spacing:.05em!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+}
+html body.v8.v13.v14 .capability-media .vsk-related-projects-cta i,
+html body.v8.v13.v14 .capability-media .capability-project-link i{
+  font-size:15px!important;
+  font-style:normal!important;
+  transition:transform .22s ease!important;
+}
+html body.v8.v13.v14 .capability-media .vsk-related-projects-cta:hover i,
+html body.v8.v13.v14 .capability-media .capability-project-link:hover i{
+  transform:translateX(4px)!important;
+}
+
+/* ---------- 04 / FEATURED ENGINEERING: ONE MAJOR DARK ANCHOR ---------- */
+@media(min-width:1181px){
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects{
     position:relative!important;
     left:50%!important;
     width:100vw!important;
     max-width:100vw!important;
-    margin:0 0 0 -50vw!important;
-    padding:0!important;
-    background:#0d1824!important;
+    margin-left:-50vw!important;
+    margin-right:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
     overflow:hidden!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>.section-intro{
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>.section-intro{
     box-sizing:border-box!important;
     width:100%!important;
     max-width:none!important;
     margin:0!important;
-    padding:58px clamp(48px,4vw,76px) 28px!important;
+    padding:62px clamp(48px,4vw,76px) 30px!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>div.shell.featured-case{
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>div.shell.featured-case{
     position:static!important;
-    left:auto!important;
     width:100%!important;
     max-width:none!important;
     min-width:0!important;
@@ -39,12 +151,11 @@
     background:#0d1824!important;
     overflow:hidden!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
+  html body.v8.v13.v14[data-page="home"] .featured-case-media{
     position:relative!important;
     isolation:isolate!important;
     box-sizing:border-box!important;
     width:100%!important;
-    max-width:none!important;
     height:448px!important;
     min-height:448px!important;
     margin:0!important;
@@ -55,13 +166,13 @@
     background:#101d29!important;
     border:0!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+  html body.v8.v13.v14[data-page="home"] .featured-case-media::before{
     content:""!important;
     display:block!important;
     position:absolute!important;
     z-index:0!important;
     inset:-28px!important;
-    background-image:linear-gradient(90deg,rgba(13,24,36,.70),rgba(13,24,36,.38) 48%,rgba(13,24,36,.62)),url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
+    background-image:linear-gradient(90deg,rgba(13,24,36,.72),rgba(13,24,36,.34) 48%,rgba(13,24,36,.62)),url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
     background-size:cover!important;
     background-position:center 46%!important;
     filter:blur(14px) saturate(.72)!important;
@@ -69,47 +180,40 @@
     opacity:.88!important;
     pointer-events:none!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
+  html body.v8.v13.v14[data-page="home"] .featured-case-media::after{
     content:"AIR LEAKAGE TESTING MACHINE  /  FEATURED ENGINEERING"!important;
     display:block!important;
     position:absolute!important;
     z-index:3!important;
     left:24px!important;
-    right:auto!important;
-    top:auto!important;
     bottom:18px!important;
     padding:7px 9px!important;
-    color:rgba(255,255,255,.90)!important;
-    background:rgba(13,24,36,.72)!important;
+    color:rgba(255,255,255,.92)!important;
+    background:rgba(13,24,36,.74)!important;
     border:1px solid rgba(255,255,255,.14)!important;
-    font:500 8px/1 "IBM Plex Mono",monospace!important;
-    letter-spacing:.10em!important;
+    font:500 12px/1 "IBM Plex Mono",monospace!important;
+    letter-spacing:.08em!important;
     pointer-events:none!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
-    content:url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
+  html body.v8.v13.v14[data-page="home"] .featured-case-media>img{
     position:relative!important;
     z-index:2!important;
-    inset:auto!important;
     display:block!important;
     width:auto!important;
     max-width:min(760px,86%)!important;
     height:100%!important;
-    min-height:0!important;
     margin:auto!important;
-    padding:0!important;
     object-fit:contain!important;
-    object-position:center center!important;
+    object-position:center!important;
     background:transparent!important;
     border:0!important;
     box-shadow:0 18px 44px rgba(0,0,0,.20)!important;
     filter:none!important;
     transform:none!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy{
+  html body.v8.v13.v14[data-page="home"] .featured-case-copy{
     box-sizing:border-box!important;
     width:100%!important;
-    max-width:none!important;
     height:448px!important;
     min-height:448px!important;
     margin:0!important;
@@ -120,70 +224,39 @@
     background:#0f1e2c!important;
     border-left:1px solid #2b4053!important;
   }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy h3{
-    margin-top:15px!important;
-    font-size:clamp(30px,1.85vw,36px)!important;
-    line-height:1.02!important;
-  }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy>p{
-    max-width:305px!important;
-    margin-top:15px!important;
-    font-size:13px!important;
-    line-height:1.52!important;
-  }
-  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-facts{
-    margin-top:18px!important;
-  }
 }
 
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.selected-projects-strip .project-collection-head>a{
-  font-size:14px!important;
-  line-height:1.25!important;
-}
-
-/* =========================================================
-   V16.47 — TRUST, EXPERIENCE PROVENANCE + MOVING PROOF RAIL
-   ========================================================= */
-
-/* Related projects remains a clear CTA, but no longer dominates its caption. */
-html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
-html body.v8.v13.v14 .capability-media .capability-project-link{
-  box-sizing:border-box!important;
-  width:min(100%,292px)!important;
-  min-width:265px!important;
-  min-height:58px!important;
-  height:58px!important;
-  margin-top:22px!important;
-  padding:0 21px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:18px!important;
-  border:1px solid #b8c9d8!important;
-  background:#fff!important;
-  color:#164a9c!important;
-  font:600 13px/1.2 "IBM Plex Mono",monospace!important;
-  letter-spacing:.05em!important;
-  text-transform:uppercase!important;
-  text-decoration:none!important;
-}
-html body.v8.v13.v14 .capability-media .vsk-related-projects-cta i,
-html body.v8.v13.v14 .capability-media .capability-project-link i{
-  font-size:16px!important;
-  font-style:normal!important;
-  transition:transform .22s ease!important;
-}
-html body.v8.v13.v14 .capability-media .vsk-related-projects-cta:hover i,
-html body.v8.v13.v14 .capability-media .capability-project-link:hover i{transform:translateX(4px)!important}
-
-/* Selected Engineering becomes a slow, continuous line of proof cells. */
+/* ---------- 05 / SELECTED EXPERIENCE: COOL MOVING PORTFOLIO RAIL ---------- */
 @keyframes vskSelectedEngineeringRail{
   from{transform:translate3d(0,0,0)}
   to{transform:translate3d(-50%,0,0)}
 }
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip{
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding:38px clamp(30px,3vw,56px) 54px!important;
   overflow:hidden!important;
 }
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:1600px!important;
+  min-height:0!important;
+  margin:0 auto 18px!important;
+  padding:0!important;
+  border:0!important;
+}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head::before,
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head::after{
+  content:none!important;
+  display:none!important;
+}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>span,
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{
+  font-size:12px!important;
+}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>span{color:#31567f!important}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{color:#174f9f!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail{
   box-sizing:border-box!important;
   display:block!important;
@@ -192,6 +265,8 @@ html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-ra
   margin:0!important;
   padding:0!important;
   overflow:hidden!important;
+  background:transparent!important;
+  border:0!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-selected-track{
   display:flex!important;
@@ -219,75 +294,81 @@ html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card{
   height:292px!important;
   min-height:292px!important;
   max-height:292px!important;
+  display:grid!important;
   grid-template-rows:136px 156px!important;
+  background:#fff!important;
+  color:#102333!important;
+  border:1px solid #cbd7df!important;
+  box-shadow:0 7px 20px rgba(25,54,77,.025)!important;
+  overflow:hidden!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card figure{
   height:136px!important;
   min-height:136px!important;
+  border-bottom:1px solid #cbd7df!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card-copy{
   height:156px!important;
   min-height:156px!important;
 }
 
-/* Google Reviews reuses the same navy family already established in Featured Engineering. */
+/* ---------- 06 / ENGINEERING DEPTH: WARM PROOF + DARK EXPERIENCE CARD ---------- */
+html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{
+  background:linear-gradient(145deg,#1e56aa 0%,#123f78 100%)!important;
+  color:#fff!important;
+}
+html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{
+  background:#fff!important;
+}
+
+/* ---------- 07 / GOOGLE REVIEWS: WHITE TRUST + DARK RATING INSET ---------- */
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
   box-sizing:border-box!important;
-  padding:84px 0 88px!important;
-  background:#0d1824!important;
-  border-top:1px solid #294057!important;
-  border-bottom:1px solid #294057!important;
-  color:#f5f8fa!important;
+  padding:86px 0 90px!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-grid{
   display:grid!important;
-  grid-template-columns:minmax(0,.86fr) minmax(520px,1.14fr)!important;
-  gap:clamp(54px,6vw,104px)!important;
+  grid-template-columns:minmax(0,.84fr) minmax(520px,1.16fr)!important;
+  gap:clamp(56px,6vw,108px)!important;
   align-items:center!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{
-  color:#7fc8f3!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#1e56aa!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{
   margin:14px 0 24px!important;
-  color:#f5f8fa!important;
+  color:#102333!important;
   font-size:clamp(40px,3.1vw,58px)!important;
   line-height:.98!important;
   letter-spacing:-.045em!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em{
-  color:#9bc8ec!important;
-  font-style:normal!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em{color:#1e56aa!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-rating{
+  width:max-content!important;
+  min-width:250px!important;
+  margin:26px 0 22px!important;
+  padding:16px 18px!important;
   display:flex!important;
   align-items:center!important;
   gap:20px!important;
-  margin:26px 0 20px!important;
+  background:#102333!important;
+  border:1px solid #294057!important;
+  box-shadow:0 12px 30px rgba(16,35,51,.10)!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong{
   color:#9bc8ec!important;
   font:600 clamp(54px,4.4vw,76px)/.9 "Space Grotesk",Inter,sans-serif!important;
   letter-spacing:-.055em!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-google-rating>span{
-  display:grid!important;
-  gap:6px!important;
-}
-html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{
-  color:#72b6e3!important;
-  font-size:17px!important;
-  letter-spacing:.14em!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-rating>span{display:grid!important;gap:6px!important}
+html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#72b6e3!important;font-size:17px!important;letter-spacing:.14em!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{
-  color:#91a3b3!important;
-  font:500 11px/1.25 "IBM Plex Mono",monospace!important;
-  letter-spacing:.06em!important;
+  color:#c3d0d9!important;
+  font:500 12px/1.25 "IBM Plex Mono",monospace!important;
+  letter-spacing:.05em!important;
   text-transform:uppercase!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{
   max-width:520px!important;
-  color:#aebdca!important;
+  color:#566a7b!important;
   font-size:15px!important;
   line-height:1.62!important;
 }
@@ -299,19 +380,19 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
   display:inline-flex!important;
   align-items:center!important;
   gap:18px!important;
-  border:1px solid #466176!important;
-  background:#10263a!important;
-  color:#dbefff!important;
-  font:600 11px/1 "IBM Plex Mono",monospace!important;
-  letter-spacing:.06em!important;
+  border:1px solid #b9c9d5!important;
+  background:#f4f7f9!important;
+  color:#164a9c!important;
+  font:600 12px/1 "IBM Plex Mono",monospace!important;
+  letter-spacing:.05em!important;
   text-decoration:none!important;
   text-transform:uppercase!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  border-top:1px solid #294057!important;
-  border-bottom:1px solid #294057!important;
+  border-top:1px solid #cad6df!important;
+  border-bottom:1px solid #cad6df!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
   box-sizing:border-box!important;
@@ -321,26 +402,79 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
   flex-direction:column!important;
   justify-content:space-between!important;
   gap:42px!important;
-  background:#0f1e2c!important;
-  border-right:1px solid #294057!important;
+  background:#f4f7f9!important;
+  border-right:1px solid #cad6df!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-right:0!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{
-  color:#7fc8f3!important;
-  font:500 9.5px/1.2 "IBM Plex Mono",monospace!important;
-  letter-spacing:.1em!important;
+  color:#1e56aa!important;
+  font:500 12px/1.2 "IBM Plex Mono",monospace!important;
+  letter-spacing:.08em!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{
   margin:0!important;
-  color:#eef4f7!important;
+  color:#172b3d!important;
   font:500 clamp(19px,1.45vw,24px)/1.3 "Space Grotesk",Inter,sans-serif!important;
   letter-spacing:-.025em!important;
 }
 
-/* Experience preview: tell users whether the visual is exact or contextual. */
-html body.v8.v13.v14[data-page="machines"] .archive-preview-media{
-  position:relative!important;
+/* ---------- 08 / PROCESS: COOL TECHNICAL SURFACE ---------- */
+html body.v8.v13.v14[data-page="home"] .process-line article{
+  border-color:#c6d4de!important;
 }
+html body.v8.v13.v14[data-page="home"] .process-line article>span{
+  color:#1e56aa!important;
+}
+html body.v8.v13.v14[data-page="home"] .process-line>i{
+  background:#1e56aa!important;
+}
+
+/* ---------- 09 / COMPANY: WHITE HUMAN RESET WITH DARK PROOF INSET ---------- */
+html body.v8.v13.v14[data-page="home"] .about blockquote{
+  border-left:3px solid #1e56aa!important;
+  color:#23394b!important;
+}
+html body.v8.v13.v14[data-page="home"] .about-mini-stats{
+  box-sizing:border-box!important;
+  padding:17px 18px!important;
+  background:#102333!important;
+  border-left:3px solid #1e56aa!important;
+  color:#dce7ee!important;
+}
+html body.v8.v13.v14[data-page="home"] .about-mini-stats span{color:#c4d0d9!important}
+html body.v8.v13.v14[data-page="home"] .about-mini-stats strong{color:#fff!important}
+
+/* ---------- 10 / SMALL UTILITY TYPE: 12PX FLOOR ---------- */
+html body.v8.v13.v14 .proof-grid span,
+html body.v8.v13.v14 .customer-row>span,
+html body.v8.v13.v14 .hero-reference span,
+html body.v8.v13.v14 .hero-reference small,
+html body.v8.v13.v14 .hero-reference i,
+html body.v8.v13.v14 .scroll-cue,
+html body.v8.v13.v14 .capability-row>span,
+html body.v8.v13.v14 .capability-media figcaption>span,
+html body.v8.v13.v14 .tag-row b,
+html body.v8.v13.v14 .gallery-cta-label,
+html body.v8.v13.v14 .gallery-cta-meta,
+html body.v8.v13.v14 .v16-selected-meta,
+html body.v8.v13.v14 .v16-selected-card b,
+html body.v8.v13.v14 .metric-machine,
+html body.v8.v13.v14 .archive-callout .kicker,
+html body.v8.v13.v14 .archive-status,
+html body.v8.v13.v14 .archive-status a,
+html body.v8.v13.v14 .archive-row>span,
+html body.v8.v13.v14 .archive-sticky-preview>span,
+html body.v8.v13.v14 .archive-sticky-preview>button,
+html body.v8.v13.v14 .gallery-status,
+html body.v8.v13.v14 .gallery-status a,
+html body.v8.v13.v14 .gallery-load button,
+html body.v8.v13.v14 .vsk-image-source-badge,
+html body.v8.v13.v14 .vsk-dossier-image-source{
+  font-size:12px!important;
+}
+
+/* ---------- 11 / EXPERIENCE IMAGE PROVENANCE ---------- */
+html body.v8.v13.v14[data-page="machines"] .archive-preview-media{position:relative!important}
 html body.v8.v13.v14[data-page="machines"] .vsk-image-source-badge{
   position:absolute!important;
   z-index:8!important;
@@ -350,8 +484,10 @@ html body.v8.v13.v14[data-page="machines"] .vsk-image-source-badge{
   background:rgba(13,24,36,.88)!important;
   border:1px solid rgba(255,255,255,.18)!important;
   color:#fff!important;
-  font:600 9.5px/1 "IBM Plex Mono",monospace!important;
-  letter-spacing:.10em!important;
+  font-family:"IBM Plex Mono",monospace!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
   pointer-events:none!important;
 }
 html body.v8.v13.v14[data-page="machines"] .vsk-image-source-badge.is-exact{border-left:3px solid #2b8dd0!important}
@@ -368,14 +504,15 @@ html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source{
   background:rgba(13,24,36,.90)!important;
   border:1px solid rgba(255,255,255,.18)!important;
   color:#fff!important;
-  font:500 10.5px/1.45 "IBM Plex Mono",monospace!important;
-  letter-spacing:.025em!important;
+  font-family:"IBM Plex Mono",monospace!important;
+  line-height:1.45!important;
+  letter-spacing:.02em!important;
   pointer-events:none!important;
 }
 html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source.is-exact{border-left:3px solid #2b8dd0!important}
 html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source.is-related{border-left:3px solid #7aa6c7!important}
 
-/* Returning to Home in the same tab/session must never replay the boot or hero build. */
+/* ---------- 12 / RETURNING HOME: NEVER REPLAY BOOT ---------- */
 html.vsk-returning-session body.v8.v13.v14[data-page="home"]::before,
 html.vsk-returning-session body.v8.v13.v14[data-page="home"]::after{
   content:none!important;
@@ -412,6 +549,7 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
   mask:none!important;
 }
 
+/* ---------- 13 / RESPONSIVE ---------- */
 @media(max-width:960px){
   html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-grid{
     grid-template-columns:1fr!important;
@@ -420,6 +558,7 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{min-height:210px!important}
 }
 @media(max-width:720px){
+  html body.v8.v13.v14[data-page="home"] .selected-projects-strip{padding:34px 20px 42px!important}
   html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail{
     overflow-x:auto!important;
     overscroll-behavior-inline:contain!important;
@@ -427,10 +566,7 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
     scrollbar-width:none!important;
   }
   html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail::-webkit-scrollbar{display:none!important}
-  html body.v8.v13.v14[data-page="home"] .vsk-selected-track{
-    width:max-content!important;
-    animation:none!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .vsk-selected-track{animation:none!important}
   html body.v8.v13.v14[data-page="home"] .vsk-selected-group[aria-hidden="true"]{display:none!important}
   html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card{
     flex-basis:82vw!important;
@@ -439,18 +575,14 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
     max-width:82vw!important;
     scroll-snap-align:start!important;
   }
-  html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
-    padding:64px 0 68px!important;
-  }
-  html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
-    grid-template-columns:1fr!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{padding:64px 0 68px!important}
+  html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{grid-template-columns:1fr!important}
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
     min-height:0!important;
     padding:22px 20px!important;
     gap:30px!important;
     border-right:0!important;
-    border-bottom:1px solid #294057!important;
+    border-bottom:1px solid #cad6df!important;
   }
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-bottom:0!important}
   html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
