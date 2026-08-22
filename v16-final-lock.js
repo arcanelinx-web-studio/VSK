@@ -6,6 +6,17 @@
   const requestedType = params.get('type');
   const harmonyToken = Date.now();
 
+  let returningHome = false;
+  if (page === 'home') {
+    try {
+      returningHome = sessionStorage.getItem('vskBootSeen') === '1';
+      if (returningHome) document.documentElement.classList.add('vsk-returning-session');
+      else sessionStorage.setItem('vskBootSeen', '1');
+    } catch (_) {
+      returningHome = false;
+    }
+  }
+
   const routes = [
     ['Home', 'index.html', 'home'],
     ['Company', page === 'home' ? '#about' : 'index.html#about', 'company'],
@@ -56,8 +67,6 @@
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
 
-      /* Runtime-triggered engineering opening. The prep state deliberately
-         resets any CSS animation that may have completed before first paint. */
       @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenLine{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenCopy{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
@@ -117,6 +126,24 @@
       html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(3){animation-delay:1.92s!important}
       html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(4){animation-delay:2s!important}
 
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"]::before,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"]::after{content:none!important;display:none!important;visibility:hidden!important;opacity:0!important;animation:none!important}
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] > :not(script):not(style){animation:none!important;visibility:visible!important;opacity:1!important}
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy .hero-kicker,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy h1 span,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy h1 em,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy>p,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy .hero-actions,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy .hero-chips,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy .hero-chips span,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-engineering-board,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-board-main img,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-board-tag,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-tech-sheet,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-proof-chip,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-board-side-note,
+      html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crosshair{animation:none!important;opacity:1!important;transform:none!important;translate:none!important;clip-path:none!important;-webkit-mask:none!important;mask:none!important}
+
       @media (prefers-reduced-motion:reduce){
         html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
         html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
@@ -136,8 +163,6 @@
     `;
   };
 
-  /* One stylesheet owns the final review proportions and palette across pages.
-     Re-appending the existing link makes it win without re-downloading it. */
   const ensureHarmonyStyles = () => {
     let link = document.querySelector('link[data-v16-site-harmony]');
     if (!link) {
@@ -237,7 +262,6 @@
     if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
     if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
-    /* Legacy archive code expects this element even though V16 keeps visual mode hidden. */
     if (!document.querySelector('[data-visual-count]')) {
       const hiddenCount = document.createElement('span');
       hiddenCount.hidden = true;
@@ -302,7 +326,7 @@
 
   let heroOpeningStarted = false;
   const startHeroOpening = () => {
-    if (page !== 'home' || heroOpeningStarted) return;
+    if (page !== 'home' || heroOpeningStarted || returningHome) return;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
 
     const hero = document.querySelector('.hero.hero-blue');
