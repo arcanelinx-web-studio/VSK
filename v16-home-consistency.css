@@ -1,27 +1,35 @@
-/* V16 homepage consistency layer — final static geometry for client review. */
+/* V16 homepage consistency layer — balanced light editorial rhythm for client review. */
 
 /* =========================================================
-   LIGHT-SITE RHYTHM — keep the client-approved light direction,
-   but alternate subtle engineering tones so sections do not blur together.
+   PAGE RHYTHM — retain the client-approved light direction,
+   but alternate quiet engineering tones so the dark accents
+   feel intentional instead of isolated.
    ========================================================= */
 html body.v8.v13.v14[data-page="home"] .credibility-band{
   background:#eef3f6!important;
-  border-top:1px solid #d9e2e8!important;
-  border-bottom:1px solid #d9e2e8!important;
+  border-top:1px solid #d7e1e8!important;
+  border-bottom:1px solid #d7e1e8!important
 }
-html body.v8.v13.v14[data-page="home"] .capabilities{background:#fafaf7!important}
-html body.v8.v13.v14[data-page="home"] .engineering-depth{background:#fafaf7!important}
+html body.v8.v13.v14[data-page="home"] .capabilities{
+  background:#fbfaf6!important;
+  border-bottom:1px solid #e2e5e6!important;
+  padding-bottom:88px!important
+}
+html body.v8.v13.v14[data-page="home"] .engineering-depth{
+  background:#f8f6f0!important;
+  border-top:1px solid #e3e3df!important;
+  border-bottom:1px solid #e1e5e7!important
+}
 html body.v8.v13.v14[data-page="home"] .process.section-ivory{
-  background:#f1f5f7!important;
-  border-top:1px solid #dbe4ea!important;
-  border-bottom:1px solid #dbe4ea!important;
+  background:#edf3f6!important;
+  border-top:1px solid #d5e0e7!important;
+  border-bottom:1px solid #d5e0e7!important
 }
-html body.v8.v13.v14[data-page="home"] .about.section-light{background:#fafaf7!important}
+html body.v8.v13.v14[data-page="home"] .about.section-light{background:#fbfaf7!important}
 
 /* =========================================================
    MULTI-DISCIPLINARY ENGINEERING
    ========================================================= */
-body.v8.v13.v14[data-page="home"] .capabilities{padding-bottom:92px!important}
 body.v8.v13.v14[data-page="home"] .capability-layout{
   display:grid!important;
   grid-template-columns:minmax(420px,540px) minmax(0,1fr)!important;
@@ -56,14 +64,14 @@ body.v8.v13.v14[data-page="home"] .capability-project-link{
   font:600 9px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.06em!important;text-transform:uppercase!important
 }
 
-/* Compact Gallery gateway — dark V16 engineering strip with refined arrow motion. */
+/* Gallery gateway — one dark punctuation mark within the otherwise light section. */
 body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{display:none!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
   position:relative!important;box-sizing:border-box!important;width:var(--audit-shell,calc(100% - 80px))!important;max-width:none!important;
-  min-height:72px!important;height:72px!important;margin:30px auto 0!important;padding:0 14px 0 22px!important;
+  min-height:68px!important;height:68px!important;margin:28px auto 0!important;padding:0 14px 0 22px!important;
   display:grid!important;grid-template-columns:150px minmax(0,1fr) auto 46px!important;gap:24px!important;align-items:center!important;
   overflow:hidden!important;border:1px solid #263b4f!important;background:#0d1b29!important;color:#f5f8fa!important;text-decoration:none!important;
-  box-shadow:none!important;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease!important
+  box-shadow:0 10px 28px rgba(14,28,41,.06)!important;transition:background .2s ease,border-color .2s ease,box-shadow .2s ease!important
 }
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta::before{content:""!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;width:4px!important;background:#1e56aa!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta::after{content:""!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:2px!important;background:#248ed0!important;transform:scaleX(0)!important;transform-origin:left!important;transition:transform .28s ease!important}
@@ -71,133 +79,106 @@ body.v8.v13.v14[data-page="home"] .gallery-cta-label{color:#7f98ad!important;fon
 body.v8.v13.v14[data-page="home"] .gallery-cta-title{color:#f5f8fa!important;font:600 clamp(15px,1.15vw,18px)/1.15 "Space Grotesk",sans-serif!important;letter-spacing:-.015em!important}
 body.v8.v13.v14[data-page="home"] .gallery-cta-meta{color:#8da2b4!important;white-space:nowrap!important;font:500 8px/1.25 "IBM Plex Mono",monospace!important;letter-spacing:.1em!important;text-transform:uppercase!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{width:40px!important;height:40px!important;display:grid!important;place-items:center!important;justify-self:end!important;border:1px solid #466176!important;background:#10263a!important;color:#9bc8ec!important;font-style:normal!important;font-size:18px!important;transition:transform .22s ease,background .2s ease,color .2s ease,border-color .2s ease!important}
-body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{background:#10263a!important;border-color:#356ead!important;box-shadow:0 12px 28px rgba(13,24,36,.12)!important}
+body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{background:#10263a!important;border-color:#356ead!important;box-shadow:0 14px 30px rgba(13,24,36,.12)!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover::after{transform:scaleX(1)!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover .gallery-cta-title{color:#9fd4f3!important}
 body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(6px)!important;background:#1e56aa!important;border-color:#1e56aa!important;color:#fff!important}
 
 /* =========================================================
-   FEATURED ENGINEERING — true full desktop canvas, no dead dark gap below.
+   FEATURED ENGINEERING — genuine full-width desktop case.
+   A narrower information rail gives the machine image the canvas.
    ========================================================= */
 @media (min-width:1181px){
   html body.v8.v13.v14[data-page="home"] main#main .projects-showcase{
     box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important
   }
   html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.section-intro{
-    box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0 0 38px!important;padding:88px clamp(44px,3vw,64px) 0!important
+    box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0 0 34px!important;padding:82px clamp(44px,3vw,64px) 0!important
   }
   html body.v8.v13.v14[data-page="home"] main#main .projects-showcase>.featured-case{
-    box-sizing:border-box!important;width:100%!important;max-width:none!important;height:560px!important;min-height:560px!important;margin:0!important;
-    display:grid!important;grid-template-columns:minmax(0,1.82fr) minmax(430px,.72fr)!important;border-top:1px solid #294057!important;border-bottom:1px solid #294057!important
+    box-sizing:border-box!important;width:100%!important;max-width:none!important;height:510px!important;min-height:510px!important;margin:0!important;padding:0!important;
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(350px,390px)!important;border-top:1px solid #294057!important;border-bottom:1px solid #294057!important
   }
   html body.v8.v13.v14[data-page="home"] main#main .featured-case-media,
-  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{height:560px!important;min-height:560px!important}
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{height:510px!important;min-height:510px!important}
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-media{padding:0!important;margin:0!important}
   html body.v8.v13.v14[data-page="home"] main#main .featured-case-media img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important}
-  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{box-sizing:border-box!important;padding:50px clamp(42px,3vw,62px)!important}
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy{box-sizing:border-box!important;padding:42px 34px!important}
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy h3{font-size:clamp(34px,2.35vw,46px)!important;line-height:.98!important}
+  html body.v8.v13.v14[data-page="home"] main#main .featured-case-copy>p{font-size:13.5px!important;line-height:1.55!important}
 }
 
 /* =========================================================
-   SELECTED ENGINEERING EXPERIENCE — smaller, quieter editorial proof.
-   The section moves to a soft steel background so the homepage does not
-   become one oversized dark block after Featured Engineering.
+   SELECTED ENGINEERING EXPERIENCE — compact editorial strip.
+   Four projects read as supporting proof, not a second hero.
    ========================================================= */
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip{
-  position:relative!important;box-sizing:border-box!important;width:100%!important;
-  padding:52px clamp(34px,4vw,72px) 66px!important;background:#eef3f6!important;color:#0d1824!important;
-  border-top:1px solid #d6e0e7!important;border-bottom:1px solid #d6e0e7!important;overflow:visible!important
-}
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip::before{
-  content:""!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:3px!important;
-  background:linear-gradient(90deg,#1e56aa 0 18%,#2f8ec7 18% 26%,transparent 26%)!important
+  box-sizing:border-box!important;width:100%!important;padding:42px clamp(34px,3vw,58px) 56px!important;background:#edf3f6!important;color:#102333!important;overflow:visible!important;border-top:1px solid #d4e0e7!important;border-bottom:1px solid #d4e0e7!important
 }
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head,
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-grid-editorial{
-  box-sizing:border-box!important;width:min(1460px,100%)!important;max-width:1460px!important;margin-left:auto!important;margin-right:auto!important
+  box-sizing:border-box!important;width:100%!important;max-width:1600px!important;margin-left:auto!important;margin-right:auto!important
 }
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head{
-  min-height:auto!important;margin:0 auto 24px!important;padding:0 0 17px!important;border-bottom:1px solid #cdd9e1!important
-}
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head span{
-  color:#31567f!important;font:500 9px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.12em!important
-}
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head a{
-  color:#174f9f!important;font:600 9px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.065em!important;text-decoration:none!important
-}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head{margin:0 0 18px!important;padding:0 0 16px!important;border-bottom:1px solid #cbd7df!important}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>span{color:#31567f!important}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{color:#174f9f!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-grid-editorial{
-  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:auto!important;
-  gap:14px!important;margin-top:0!important;background:transparent!important;border:0!important
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:14px!important;margin-top:0!important;background:transparent!important;border:0!important
 }
 html body.v8.v13.v14[data-page="home"] .v16-selected-card{
-  min-width:0!important;min-height:238px!important;height:238px!important;max-height:238px!important;
-  background:#fff!important;color:#0d1824!important;text-decoration:none!important;
-  display:grid!important;grid-template-columns:minmax(0,.43fr) minmax(0,.57fr)!important;grid-template-rows:1fr!important;
-  overflow:hidden!important;border:1px solid #ccd8e1!important;box-shadow:0 8px 24px rgba(13,24,36,.035)!important;
-  transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease!important
+  min-width:0!important;min-height:326px!important;height:auto!important;max-height:none!important;background:#fff!important;color:#102333!important;text-decoration:none!important;
+  display:grid!important;grid-template-rows:164px minmax(160px,auto)!important;overflow:hidden!important;border:1px solid #c9d5de!important;
+  box-shadow:0 10px 26px rgba(25,54,77,.04)!important;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease!important
 }
-html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{
-  margin:0!important;width:100%!important;height:238px!important;min-height:238px!important;overflow:hidden!important;
-  background:#dfe6eb!important;border-right:1px solid #ccd8e1!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card img{
-  width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transition:transform .32s ease,filter .32s ease!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{
-  box-sizing:border-box!important;min-height:238px!important;height:238px!important;padding:22px 24px 20px!important;
-  display:flex!important;flex-direction:column!important;overflow:hidden!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-meta{
-  display:flex!important;justify-content:space-between!important;gap:12px!important;color:#5f82a7!important;
-  font:500 7.8px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.1em!important;text-transform:uppercase!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card h3{
-  margin:18px 0 9px!important;color:#102333!important;font:600 clamp(21px,1.35vw,26px)/1.05 "Space Grotesk",sans-serif!important;letter-spacing:-.032em!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card p{
-  display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;
-  max-width:440px!important;margin:0!important;color:#657789!important;font-size:12.2px!important;line-height:1.5!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card b{
-  margin-top:auto!important;padding-top:16px!important;color:#174f9f!important;font:600 8px/1 "IBM Plex Mono",monospace!important;letter-spacing:.07em!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card:hover{
-  transform:translateY(-2px)!important;border-color:#9fb5c7!important;box-shadow:0 15px 34px rgba(13,24,36,.08)!important
-}
-html body.v8.v13.v14[data-page="home"] .v16-selected-card:hover img{transform:scale(1.035)!important;filter:brightness(1.04)!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{margin:0!important;width:100%!important;height:164px!important;min-height:164px!important;overflow:hidden!important;background:#dfe7ec!important;border:0!important;border-bottom:1px solid #c9d5de!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transition:transform .32s ease,filter .32s ease!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{box-sizing:border-box!important;min-height:160px!important;padding:18px 19px 17px!important;display:flex!important;flex-direction:column!important;overflow:visible!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-meta{display:flex!important;justify-content:space-between!important;gap:10px!important;color:#54789b!important;font:500 7.4px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.095em!important;text-transform:uppercase!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card h3{margin:15px 0 8px!important;color:#102333!important;font:600 clamp(19px,1.2vw,24px)/1.05 "Space Grotesk",sans-serif!important;letter-spacing:-.03em!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card p{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;margin:0!important;color:#667b8d!important;font-size:12px!important;line-height:1.48!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card b{margin-top:auto!important;padding-top:13px!important;color:#1e56aa!important;font:600 7.8px/1 "IBM Plex Mono",monospace!important;letter-spacing:.065em!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card:hover{transform:translateY(-2px)!important;border-color:#91abc0!important;box-shadow:0 16px 34px rgba(25,54,77,.09)!important}
+html body.v8.v13.v14[data-page="home"] .v16-selected-card:hover img{transform:scale(1.03)!important;filter:brightness(1.035)!important}
 html body.v8.v13.v14[data-page="home"] .v16-selected-card:hover b{color:#167bc4!important}
 
-/* Engineering Depth — extra breathing room under the final CTA in the blue Experience card. */
+/* Engineering Depth — preserve the approved breathing room under the Experience CTA. */
 html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout{
   height:auto!important;min-height:452px!important;max-height:none!important;padding-bottom:42px!important
 }
 html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout .btn{margin-top:auto!important;margin-bottom:0!important}
 
+/* Process cards get definition from translucency rather than another dark block. */
+html body.v8.v13.v14[data-page="home"] .process .process-line article{background:rgba(255,255,255,.28)!important}
+html body.v8.v13.v14[data-page="home"] .process .process-line article:hover{background:rgba(255,255,255,.58)!important}
+
+@media(max-width:1360px){
+  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-grid-editorial{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card{grid-template-columns:210px minmax(0,1fr)!important;grid-template-rows:auto!important;min-height:220px!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{height:100%!important;min-height:220px!important;border-right:1px solid #c9d5de!important;border-bottom:0!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{min-height:220px!important}
+}
 @media(max-width:1180px){
   body.v8.v13.v14[data-page="home"] .capability-gallery-cta{grid-template-columns:130px minmax(0,1fr) 44px!important;gap:18px!important}
   body.v8.v13.v14[data-page="home"] .gallery-cta-meta{display:none!important}
   body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{grid-column:3!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-grid-editorial{grid-template-columns:1fr!important;max-width:920px!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head{max-width:920px!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card{height:230px!important;max-height:230px!important;min-height:230px!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card figure,
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{height:230px!important;min-height:230px!important}
 }
 @media(max-width:1050px){
   body.v8.v13.v14[data-page="home"] .capability-layout{grid-template-columns:1fr!important;gap:34px!important}
   body.v8.v13.v14[data-page="home"] .capability-media{grid-template-rows:min(52vw,420px) auto!important}
   body.v8.v13.v14[data-page="home"] .capability-media .media-frame{height:min(52vw,420px)!important}
 }
+@media(max-width:820px){
+  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-grid-editorial{grid-template-columns:1fr!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card{grid-template-columns:180px minmax(0,1fr)!important;grid-template-rows:auto!important;min-height:205px!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{height:100%!important;min-height:205px!important;border-right:1px solid #c9d5de!important;border-bottom:0!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{min-height:205px!important;padding:22px!important}
+}
 @media(max-width:720px){
   body.v8.v13.v14[data-page="home"] .capability-gallery-cta{width:calc(100% - 40px)!important;height:auto!important;min-height:66px!important;grid-template-columns:minmax(0,1fr) 40px!important;gap:12px!important;padding:12px 12px 12px 18px!important}
   body.v8.v13.v14[data-page="home"] .gallery-cta-label,body.v8.v13.v14[data-page="home"] .gallery-cta-meta{display:none!important}
   body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{grid-column:2!important;width:38px!important;height:38px!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip{padding:46px 20px 58px!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head{display:block!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head a{display:inline-block!important;margin-top:10px!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card{
-    grid-template-columns:132px minmax(0,1fr)!important;height:198px!important;min-height:198px!important;max-height:198px!important
-  }
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{height:198px!important;min-height:198px!important;border-right:1px solid #ccd8e1!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{height:198px!important;min-height:198px!important;padding:18px!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card h3{font-size:20px!important;margin:14px 0 8px!important}
-  html body.v8.v13.v14[data-page="home"] .v16-selected-card p{display:none!important}
+  html body.v8.v13.v14[data-page="home"] .selected-projects-strip{padding:40px 20px 52px!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card{grid-template-columns:1fr!important;grid-template-rows:188px auto!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card figure{height:188px!important;min-height:188px!important;border-right:0!important;border-bottom:1px solid #c9d5de!important}
+  html body.v8.v13.v14[data-page="home"] .v16-selected-card-copy{min-height:188px!important}
 }
