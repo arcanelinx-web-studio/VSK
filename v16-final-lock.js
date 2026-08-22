@@ -55,6 +55,84 @@
         body.v8.v13.v14 .desktop-nav{gap:11px!important}
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
+
+      /* Runtime-triggered engineering opening. The prep state deliberately
+         resets any CSS animation that may have completed before first paint. */
+      @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
+      @keyframes vskOpenLine{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
+      @keyframes vskOpenCopy{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
+      @keyframes vskOpenBoard{from{opacity:0;translate:32px 0;scale:.975}to{opacity:1;translate:0 0;scale:1}}
+      @keyframes vskOpenWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+      @keyframes vskOpenMeta{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+      @keyframes vskOpenTech{from{opacity:0}to{opacity:1}}
+      @keyframes vskOpenCross{from{opacity:0;scale:.7;rotate:-10deg}to{opacity:1;scale:1;rotate:0deg}}
+
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy>p,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-engineering-board,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-main img,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-tag,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-proof-chip,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-side-note,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{
+        animation:none!important;
+      }
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy>p,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-engineering-board,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-tag,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-proof-chip,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-side-note,
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{opacity:0!important}
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-main img{clip-path:inset(0 100% 0 0)!important}
+
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker{animation:vskOpenEyebrow .50s cubic-bezier(.2,.76,.2,1) .05s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span{animation:vskOpenLine .72s cubic-bezier(.18,.8,.2,1) .20s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em{animation:vskOpenLine .74s cubic-bezier(.18,.8,.2,1) .36s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy>p{animation:vskOpenCopy .62s cubic-bezier(.2,.74,.2,1) .62s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions{animation:vskOpenCopy .56s cubic-bezier(.2,.74,.2,1) .84s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-engineering-board{animation:vskOpenBoard .78s cubic-bezier(.18,.78,.2,1) .72s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-main img{animation:vskOpenWipe .92s cubic-bezier(.2,.8,.2,1) 1.04s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-tag{animation:vskOpenMeta .46s ease-out 1.42s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-tech-sheet{animation:vskOpenTech .52s ease-out 1.54s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-proof-chip{animation:vskOpenMeta .46s ease-out 1.66s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-side-note{animation:vskOpenMeta .44s ease-out 1.76s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-crosshair{animation:vskOpenCross .62s cubic-bezier(.2,.74,.2,1) 1.70s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips{animation:vskOpenMeta .46s ease-out 1.70s both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span{animation:vskOpenMeta .40s ease-out both!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(1){animation-delay:1.76s!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(2){animation-delay:1.84s!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(3){animation-delay:1.92s!important}
+      html.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(4){animation-delay:2s!important}
+
+      @media (prefers-reduced-motion:reduce){
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy>p,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-engineering-board,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-tag,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-proof-chip,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-side-note,
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{opacity:1!important;animation:none!important}
+        html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-main img{clip-path:none!important;animation:none!important}
+      }
     `;
   };
 
@@ -222,6 +300,37 @@
     document.body.appendChild(script);
   };
 
+  let heroOpeningStarted = false;
+  const startHeroOpening = () => {
+    if (page !== 'home' || heroOpeningStarted) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    const hero = document.querySelector('.hero.hero-blue');
+    const machineImage = document.querySelector('.hero-board-main img');
+    if (!hero) return;
+
+    const begin = () => {
+      if (heroOpeningStarted) return;
+      heroOpeningStarted = true;
+      const root = document.documentElement;
+      root.classList.remove('vsk-opening-live');
+      root.classList.add('vsk-opening-prep');
+      void hero.offsetWidth;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => root.classList.add('vsk-opening-live'));
+      });
+      setTimeout(() => {
+        root.classList.remove('vsk-opening-prep', 'vsk-opening-live');
+      }, 2850);
+    };
+
+    if (machineImage?.complete) setTimeout(begin, 120);
+    else {
+      machineImage?.addEventListener('load', () => setTimeout(begin, 80), {once:true});
+      setTimeout(begin, 850);
+    }
+  };
+
   const apply = () => {
     ensureStyles();
     ensureHarmonyStyles();
@@ -230,6 +339,7 @@
     bindExperienceStatus();
     syncExperienceStatus();
     ensureGalleryCategories();
+    startHeroOpening();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
@@ -237,6 +347,7 @@
 
   window.addEventListener('load', () => {
     apply();
+    startHeroOpening();
     setTimeout(ensureHarmonyStyles, 120);
     setTimeout(ensureHarmonyStyles, 700);
     setTimeout(ensureHarmonyStyles, 1800);
