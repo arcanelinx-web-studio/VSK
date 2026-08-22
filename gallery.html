@@ -10,6 +10,7 @@
 <meta content="Inspect VSK machine builds, retrofit work, fixtures, controls and process equipment through complete project media groups." name="description"/>
 <meta content="noindex,nofollow" name="robots"/>
 <meta content="#FAFAF7" name="theme-color"/>
+<script src="v16-prepaint.js"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="media/brand/vsk-logo.webp" rel="icon" type="image/webp"/><link href="styles.css" rel="stylesheet"/>
@@ -47,7 +48,7 @@
 <script>
 (() => {
   const reviewToken = Date.now();
-  const runtimeScripts = ['v16-final-lock.js', 'app.js'];
+  const runtimeScripts = ['v16-final-lock.js', 'app.js', 'v16-runtime-stability.js'];
   let index = 0;
   const loadNext = () => {
     if (index >= runtimeScripts.length) return;
