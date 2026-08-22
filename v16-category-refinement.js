@@ -174,3 +174,70 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
   window.addEventListener('load',applyStatic,{once:true});
 })();
+
+/* Boot synchronizer: the progress bar is the master clock. It must complete and
+   disappear before the white curtain is permitted to reveal the header. */
+(() => {
+  'use strict';
+  if (document.body.dataset.page !== 'home') return;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+  const style = document.createElement('style');
+  style.id = 'v16-boot-sequence-sync';
+  style.textContent = `
+    @keyframes vskSyncedCurtainOpen{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(100% 0 0 0)}}
+    @keyframes vskSyncedBrandOut{from{opacity:1}to{opacity:0;visibility:hidden}}
+    html:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
+      animation:none!important;clip-path:inset(0 0 0 0)!important;background:#fbfbf8!important
+    }
+    html:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+      animation:none!important;opacity:1!important;visibility:visible!important;transform:translateY(-50%)!important;
+      background-image:url("media/brand/vsk-logo.webp")!important;background-repeat:no-repeat!important;
+      background-position:left center!important;background-size:56px 56px!important
+    }
+    html.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
+      animation:vskSyncedCurtainOpen .52s cubic-bezier(.76,0,.24,1) both!important
+    }
+    html.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+      animation:vskSyncedBrandOut .18s ease-out both!important;transform:translateY(-50%)!important;
+      background-image:url("media/brand/vsk-logo.webp")!important;background-repeat:no-repeat!important;
+      background-position:left center!important;background-size:56px 56px!important
+    }
+    @media(max-width:720px){
+      html:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after,
+      html.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+        background-size:46px 46px!important
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const track = document.querySelector('.page-progress');
+  const bar = track?.querySelector('i');
+  if (!track || !bar) return;
+
+  const setImportant = (el, property, value) => el.style.setProperty(property, value, 'important');
+  setImportant(track, 'display', 'block');
+  setImportant(track, 'visibility', 'visible');
+  setImportant(track, 'opacity', '1');
+
+  bar.getAnimations?.().forEach(animation => animation.cancel());
+  bar.style.removeProperty('transform');
+  bar.style.transform = 'scaleX(0)';
+  bar.style.transformOrigin = 'left center';
+
+  const progress = bar.animate(
+    [{transform:'scaleX(0)'},{transform:'scaleX(1)'}],
+    {duration:650, delay:50, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
+  );
+
+  const openCurtain = () => {
+    setImportant(track, 'opacity', '0');
+    setImportant(track, 'display', 'none');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => document.documentElement.classList.add('vsk-curtain-open'));
+    });
+  };
+
+  progress.finished.then(openCurtain).catch(openCurtain);
+})();
