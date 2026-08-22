@@ -83,7 +83,6 @@ html body.v8.v13.v14[data-page="home"] .about.section-light{
   border-top:1px solid #dce3e7!important;
 }
 
-/* Compact Gallery gateway works as the light-to-dark bridge into Featured. */
 html body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
   margin-top:24px!important;
   min-height:60px!important;
@@ -231,7 +230,6 @@ html body.v8.v13.v14[data-page="home"] .process-line article p{
 
 /* ---------------------------------------------------------
    06 / GALLERY — COMPACT EQUAL CATEGORY RAIL
-   This intentionally wins over every older gallery-control layout.
    --------------------------------------------------------- */
 html body.v8.v13.v14[data-page="gallery"] .gallery-controls{
   display:grid!important;
@@ -361,17 +359,14 @@ html body.v8.v13.v14[data-page="gallery"] .gallery-policy{
 
 /* ---------------------------------------------------------
    09 / HERO ENGINEERING OPENING — VISIBLE FINAL-LAYER VERSION
-   This deliberately avoids opacity-dependent staging because an earlier runtime
-   prep rule used opacity:0!important. The final harmony layer wins that state
-   and reveals the actual hero through position + clipping/masking instead.
    --------------------------------------------------------- */
 @keyframes vskHarmonyEyebrow{
   0%{clip-path:inset(0 100% 0 0);translate:0 8px}
   100%{clip-path:inset(0 0 0 0);translate:0 0}
 }
 @keyframes vskHarmonyHeadline{
-  0%{clip-path:inset(100% 0 0 0);translate:0 34px}
-  100%{clip-path:inset(0 0 0 0);translate:0 0}
+  0%{clip-path:inset(100% -6% -20% -6%);translate:0 34px}
+  100%{clip-path:inset(-10% -6% -20% -6%);translate:0 0}
 }
 @keyframes vskHarmonyCopy{
   0%{clip-path:inset(100% 0 0 0);translate:0 18px}
@@ -394,7 +389,6 @@ html body.v8.v13.v14[data-page="gallery"] .gallery-policy{
   100%{clip-path:inset(0 0 0 0);translate:0 0}
 }
 
-/* Defeat the faulty prep opacity only while the staged opening is active. */
 html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
 html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
 html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
@@ -414,8 +408,11 @@ html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-main img{
   clip-path:none!important;
 }
 
-/* The harmony sheet itself arrives after the DOM exists, so these animations
-   are guaranteed to start after the hero has been painted at least once. */
+html body.v8.v13.v14[data-page="home"] .hero-blue-copy h1,
+html body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
+html body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em{
+  overflow:visible!important;
+}
 html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker{
   animation:vskHarmonyEyebrow .48s cubic-bezier(.2,.76,.2,1) .08s both!important;
 }
@@ -443,30 +440,101 @@ html body.v8.v13.v14[data-page="home"] .hero-board-main img{
   mask-position:left center!important;
   animation:vskHarmonyImageWipe .96s cubic-bezier(.2,.8,.2,1) 1.02s both!important;
 }
-html body.v8.v13.v14[data-page="home"] .hero-board-tag{
-  animation:vskHarmonyMeta .46s ease-out 1.34s both!important;
-}
-html body.v8.v13.v14[data-page="home"] .hero-tech-sheet{
-  animation:vskHarmonyTech .54s cubic-bezier(.2,.74,.2,1) 1.46s both!important;
-}
-html body.v8.v13.v14[data-page="home"] .hero-proof-chip{
-  animation:vskHarmonyMeta .46s ease-out 1.58s both!important;
-}
-html body.v8.v13.v14[data-page="home"] .hero-board-side-note{
-  animation:vskHarmonyMeta .44s ease-out 1.68s both!important;
-}
-html body.v8.v13.v14[data-page="home"] .hero-crosshair{
-  animation:vskHarmonyMeta .50s ease-out 1.72s both!important;
-}
-html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips{
-  animation:vskHarmonyMeta .46s ease-out 1.70s both!important;
-}
+html body.v8.v13.v14[data-page="home"] .hero-board-tag{animation:vskHarmonyMeta .46s ease-out 1.34s both!important}
+html body.v8.v13.v14[data-page="home"] .hero-tech-sheet{animation:vskHarmonyTech .54s cubic-bezier(.2,.74,.2,1) 1.46s both!important}
+html body.v8.v13.v14[data-page="home"] .hero-proof-chip{animation:vskHarmonyMeta .46s ease-out 1.58s both!important}
+html body.v8.v13.v14[data-page="home"] .hero-board-side-note{animation:vskHarmonyMeta .44s ease-out 1.68s both!important}
+html body.v8.v13.v14[data-page="home"] .hero-crosshair{animation:vskHarmonyMeta .50s ease-out 1.72s both!important}
+html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips{animation:vskHarmonyMeta .46s ease-out 1.70s both!important}
 html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(1){animation:vskHarmonyMeta .36s ease-out 1.74s both!important}
 html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(2){animation:vskHarmonyMeta .36s ease-out 1.82s both!important}
 html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(3){animation:vskHarmonyMeta .36s ease-out 1.90s both!important}
 html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(4){animation:vskHarmonyMeta .36s ease-out 1.98s both!important}
 
+/* ---------------------------------------------------------
+   10 / VSK BRAND BOOT — WHITE CURTAIN → HEADER → HERO
+   --------------------------------------------------------- */
+@keyframes vskBootCurtain{
+  0%,62%{clip-path:inset(0 0 0 0)}
+  100%{clip-path:inset(100% 0 0 0)}
+}
+@keyframes vskBootBrand{
+  0%{opacity:0;translate:0 10px;background-size:56px 56px,0 2px,calc(100% - 76px) 1px}
+  14%{opacity:1;translate:0 0;background-size:56px 56px,12% 2px,calc(100% - 76px) 1px}
+  62%{opacity:1;translate:0 0;background-size:56px 56px,100% 2px,calc(100% - 76px) 1px}
+  78%{opacity:1;translate:0 0;background-size:56px 56px,100% 2px,calc(100% - 76px) 1px}
+  100%{opacity:0;translate:0 -8px;background-size:56px 56px,100% 2px,calc(100% - 76px) 1px;visibility:hidden}
+}
+html body.v8.v13.v14[data-page="home"]::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:99998;
+  pointer-events:none;
+  background:#fbfbf8;
+  animation:vskBootCurtain 1.72s cubic-bezier(.76,0,.24,1) both;
+}
+html body.v8.v13.v14[data-page="home"]::after{
+  content:"VSK Electro-Mech Solutions";
+  position:fixed;
+  z-index:99999;
+  left:clamp(26px,5vw,82px);
+  top:50%;
+  width:min(650px,calc(100vw - 52px));
+  min-height:78px;
+  box-sizing:border-box;
+  padding:0 0 16px 76px;
+  display:flex;
+  align-items:center;
+  pointer-events:none;
+  color:#102333;
+  font-family:"Space Grotesk",Inter,sans-serif;
+  font-size:clamp(24px,2.4vw,36px);
+  font-weight:600;
+  letter-spacing:-.025em;
+  background-image:url("media/brand/vsk-logo.webp"),linear-gradient(#1e56aa,#1e56aa),linear-gradient(#d9e2e8,#d9e2e8);
+  background-repeat:no-repeat;
+  background-position:left center,76px 100%,76px 100%;
+  background-size:56px 56px,0 2px,calc(100% - 76px) 1px;
+  translate:0 -50%;
+  animation:vskBootBrand 1.48s cubic-bezier(.22,.72,.2,1) both;
+}
+
+/* While the runtime opening class is present, delay the engineering build until
+   the white curtain has exposed the header and upper hero. */
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker{animation:vskHarmonyEyebrow .48s cubic-bezier(.2,.76,.2,1) 1.28s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span{animation:vskHarmonyHeadline .72s cubic-bezier(.18,.8,.2,1) 1.40s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em{animation:vskHarmonyHeadline .74s cubic-bezier(.18,.8,.2,1) 1.56s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy>p{animation:vskHarmonyCopy .62s cubic-bezier(.2,.74,.2,1) 1.80s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions{animation:vskHarmonyCopy .58s cubic-bezier(.2,.74,.2,1) 2.02s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-engineering-board{animation:vskHarmonyBoard .82s cubic-bezier(.18,.78,.2,1) 1.62s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-main img{animation:vskHarmonyImageWipe .96s cubic-bezier(.2,.8,.2,1) 1.96s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-tag{animation:vskHarmonyMeta .46s ease-out 2.28s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-tech-sheet{animation:vskHarmonyTech .54s cubic-bezier(.2,.74,.2,1) 2.40s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-proof-chip{animation:vskHarmonyMeta .46s ease-out 2.52s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-board-side-note{animation:vskHarmonyMeta .44s ease-out 2.60s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-crosshair{animation:vskHarmonyMeta .50s ease-out 2.64s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips{animation:vskHarmonyMeta .46s ease-out 2.60s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(1){animation:vskHarmonyMeta .36s ease-out 2.64s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(2){animation:vskHarmonyMeta .36s ease-out 2.72s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(3){animation:vskHarmonyMeta .36s ease-out 2.80s both!important}
+html.vsk-opening-prep.vsk-opening-live body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(4){animation:vskHarmonyMeta .36s ease-out 2.88s both!important}
+
+@media (max-width:720px){
+  html body.v8.v13.v14[data-page="home"]::after{
+    left:22px;
+    width:calc(100vw - 44px);
+    min-height:68px;
+    padding-left:62px;
+    font-size:22px;
+    background-position:left center,62px 100%,62px 100%;
+    background-size:46px 46px,0 2px,calc(100% - 62px) 1px;
+  }
+}
+
 @media (prefers-reduced-motion:reduce){
+  html body.v8.v13.v14[data-page="home"]::before,
+  html body.v8.v13.v14[data-page="home"]::after{content:none!important;display:none!important;animation:none!important}
   html body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
   html body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
   html body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
