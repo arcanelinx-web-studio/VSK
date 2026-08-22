@@ -24,6 +24,21 @@
     return modeFromText(copy) || currentMode || 'related';
   };
 
+  const compactSourceBadge = badge => {
+    if (!badge || badge.dataset.vskCompactBadge === '1') return;
+    const styles = getComputedStyle(badge);
+    const px = (value, fallback = 0) => {
+      const parsed = parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    };
+    badge.style.setProperty('font-size', `${Math.max(8, px(styles.fontSize, 11) - 1)}px`, 'important');
+    badge.style.setProperty('padding-top', `${Math.max(2, px(styles.paddingTop, 6) - 1)}px`, 'important');
+    badge.style.setProperty('padding-bottom', `${Math.max(2, px(styles.paddingBottom, 6) - 1)}px`, 'important');
+    badge.style.setProperty('padding-left', `${Math.max(5, px(styles.paddingLeft, 10) - 2)}px`, 'important');
+    badge.style.setProperty('padding-right', `${Math.max(5, px(styles.paddingRight, 10) - 2)}px`, 'important');
+    badge.dataset.vskCompactBadge = '1';
+  };
+
   const syncPreviewBadge = () => {
     const media = document.querySelector('[data-archive-preview-media]');
     const copy = document.querySelector('[data-archive-preview-copy]');
@@ -46,6 +61,7 @@
     const className = `vsk-image-source-badge is-${currentMode}`;
     if (badge.textContent !== label) badge.textContent = label;
     if (badge.className !== className) badge.className = className;
+    compactSourceBadge(badge);
     media.dataset.vskImageSource = currentMode;
   };
 
