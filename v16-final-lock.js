@@ -163,6 +163,85 @@
     `;
   };
 
+  const ensureBalanceStyles = () => {
+    let style = document.getElementById('v16-user-balance-authority');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'v16-user-balance-authority';
+    }
+    style.textContent = `
+      /* Final client-review authority: these rules are always appended after harmony. */
+      html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
+      html body.v8.v13.v14 .capability-media .capability-project-link{
+        width:min(100%,276px)!important;
+        min-width:250px!important;
+        min-height:54px!important;
+        height:54px!important;
+        margin-top:20px!important;
+        padding:0 18px!important;
+        gap:16px!important;
+        font-size:12px!important;
+      }
+      html body.v8.v13.v14 .capability-media .vsk-related-projects-cta i,
+      html body.v8.v13.v14 .capability-media .capability-project-link i{font-size:15px!important}
+
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
+        background:#fff!important;
+        border-top-color:#d6e0e7!important;
+        border-bottom-color:#d6e0e7!important;
+        color:#102333!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{color:#102333!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em,
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong,
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#66798a!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{color:#566a7b!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
+        background:#eef3f6!important;
+        border-color:#b9c9d5!important;
+        color:#164a9c!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
+        border-top-color:#cad6df!important;
+        border-bottom-color:#cad6df!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
+        background:#eef3f6!important;
+        border-right-color:#cad6df!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{color:#172b3d!important}
+
+      /* The former 9px mono utility tier is now 12px throughout the site. */
+      html body.v8.v13.v14 .proof-grid span,
+      html body.v8.v13.v14 .customer-row>span,
+      html body.v8.v13.v14 .hero-reference span,
+      html body.v8.v13.v14 .hero-reference small,
+      html body.v8.v13.v14 .hero-reference i,
+      html body.v8.v13.v14 .scroll-cue,
+      html body.v8.v13.v14 .capability-media figcaption>span,
+      html body.v8.v13.v14 .archive-status,
+      html body.v8.v13.v14 .archive-status a,
+      html body.v8.v13.v14 .archive-row>span,
+      html body.v8.v13.v14 .archive-sticky-preview>span,
+      html body.v8.v13.v14 .archive-sticky-preview>button,
+      html body.v8.v13.v14 .gallery-status,
+      html body.v8.v13.v14 .gallery-status a,
+      html body.v8.v13.v14 .gallery-load button,
+      html body.v8.v13.v14[data-page="home"] .project-collection-head>span{
+        font-size:12px!important;
+      }
+      @media(max-width:720px){
+        html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{border-bottom-color:#cad6df!important}
+        html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
+        html body.v8.v13.v14 .capability-media .capability-project-link{width:100%!important;min-width:0!important}
+      }
+    `;
+    document.head.appendChild(style);
+  };
+
   const ensureHarmonyStyles = () => {
     let link = document.querySelector('link[data-v16-site-harmony]');
     if (!link) {
@@ -172,6 +251,7 @@
       link.href = `v16-site-harmony.css?review=${harmonyToken}`;
     }
     document.head.appendChild(link);
+    ensureBalanceStyles();
   };
 
   const normalizeNavigation = () => {
@@ -214,6 +294,14 @@
       }
       if (capability) capability.href = page === 'home' ? '#expertise' : 'index.html#expertise';
     }
+  };
+
+  const repositionHomeCompany = () => {
+    if (page !== 'home') return;
+    const featured = document.querySelector('main#main .projects-showcase#projects');
+    const about = document.querySelector('main#main .about#about');
+    if (!featured || !about) return;
+    if (featured.nextElementSibling !== about) featured.insertAdjacentElement('afterend', about);
   };
 
   const normalizeExperienceHero = () => {
@@ -359,6 +447,7 @@
     ensureStyles();
     ensureHarmonyStyles();
     normalizeNavigation();
+    repositionHomeCompany();
     normalizeExperienceHero();
     bindExperienceStatus();
     syncExperienceStatus();
@@ -376,6 +465,8 @@
     setTimeout(ensureHarmonyStyles, 700);
     setTimeout(ensureHarmonyStyles, 1800);
     setTimeout(ensureHarmonyStyles, 3200);
+    setTimeout(repositionHomeCompany, 80);
+    setTimeout(repositionHomeCompany, 650);
     setTimeout(syncExperienceStatus, 80);
     setTimeout(syncExperienceStatus, 650);
     setTimeout(syncExperienceStatus, 1800);
