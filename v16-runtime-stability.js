@@ -51,10 +51,19 @@
     return Promise.resolve();
   };
 
-  /* Only the three client-approved corrections live here. This runs after app.js,
+  /* Only client-approved corrections live here. This runs after app.js,
      whose older visual-balance observer otherwise writes conflicting inline styles. */
   const enforceApprovedVisuals = () => {
     if (page !== 'home') return;
+
+    /* Proof / credibility band — cool grey-blue only; no geometry changes. */
+    const credibility = document.querySelector('main#main > .credibility-band');
+    if (credibility) {
+      setImportant(credibility, 'background', '#eaf1f5');
+      setImportant(credibility, 'background-image', 'none');
+      setImportant(credibility, 'border-top-color', '#d3dfe6');
+      setImportant(credibility, 'border-bottom-color', '#d3dfe6');
+    }
 
     /* 1 / Featured Engineering — blurred field with the sharp machine exactly centered.
        On desktop the sharp image meets the top and bottom edges of the media field. */
@@ -128,9 +137,9 @@
       setImportant(title, 'color', white);
       setImportant(titleAccent, 'color', blue);
       setImportant(introCopy, 'color', muted);
-      setImportant(rating, 'background', panel);
+      setImportant(rating, 'background', 'transparent');
       setImportant(rating, 'background-image', 'none');
-      setImportant(rating, 'border-color', line);
+      setImportant(rating, 'border', '0');
       setImportant(rating, 'box-shadow', 'none');
       setImportant(ratingNumber, 'color', blue);
       setImportant(stars, 'color', cyan);
