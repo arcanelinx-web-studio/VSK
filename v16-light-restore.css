@@ -329,3 +329,162 @@ html body.v8.v13.v14[data-page="home"] main#main section.selected-projects-strip
     background:#eef3f6!important;
   }
 }
+
+/* =========================================================
+   V16.42 / POLISHED FEATURED CASE + STABLE BOOT
+   The inline first-paint boot is the only positioning authority.
+   The featured case is shorter, edge-to-edge and uses a stronger source
+   image without forcing it into an oversized engineering plate.
+   ========================================================= */
+
+/* Stop the later harmony boot layer from shifting the brand by one frame. */
+html body.v8.v13.v14[data-page="home"][data-page="home"]::before{
+  inset:0!important;
+  background:#fbfbf8!important;
+  animation:vskFirstCurtain 1.72s cubic-bezier(.76,0,.24,1) both!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+  left:clamp(26px,5vw,82px)!important;
+  top:50%!important;
+  width:min(650px,calc(100vw - 52px))!important;
+  min-height:78px!important;
+  padding:0 0 16px 76px!important;
+  transform:translateY(-50%)!important;
+  translate:none!important;
+  background-position:left center,76px 100%,76px 100%!important;
+  background-size:56px 56px,0 2px,calc(100% - 76px) 1px!important;
+  animation:vskFirstBrand 1.48s cubic-bezier(.22,.72,.2,1) both!important;
+}
+
+@media(min-width:1181px){
+  /* The whole featured section, not just its inner card, owns the viewport. */
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects{
+    position:relative!important;
+    left:50%!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    margin-left:-50vw!important;
+    margin-right:0!important;
+    padding:0!important;
+    background:#0d1824!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>.section-intro{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:64px clamp(48px,4vw,76px) 30px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>div.shell.featured-case{
+    position:static!important;
+    left:auto!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    height:430px!important;
+    min-height:430px!important;
+    margin:0!important;
+    grid-template-columns:minmax(0,1fr) 360px!important;
+    border-top:1px solid #294057!important;
+    border-bottom:1px solid #294057!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
+    position:relative!important;
+    width:100%!important;
+    max-width:none!important;
+    height:430px!important;
+    min-height:430px!important;
+    padding:0!important;
+    overflow:hidden!important;
+    background:#cfd7dc!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    z-index:2!important;
+    pointer-events:none!important;
+    background:linear-gradient(90deg,rgba(13,24,36,.08),transparent 22%,transparent 76%,rgba(13,24,36,.12))!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
+    content:"VSK / FEATURED ENGINEERING REFERENCE"!important;
+    position:absolute!important;
+    z-index:3!important;
+    left:24px!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:20px!important;
+    color:rgba(255,255,255,.9)!important;
+    padding:7px 9px!important;
+    background:rgba(13,24,36,.74)!important;
+    border:1px solid rgba(255,255,255,.16)!important;
+    font:500 8px/1 "IBM Plex Mono",monospace!important;
+    letter-spacing:.11em!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+    content:url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp")!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:#cfd7dc!important;
+    object-fit:cover!important;
+    object-position:center 48%!important;
+    filter:saturate(.94) contrast(.98)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy{
+    width:100%!important;
+    max-width:none!important;
+    height:430px!important;
+    min-height:430px!important;
+    padding:30px 30px 28px!important;
+    justify-content:center!important;
+    background:#0f1e2c!important;
+    border-left:1px solid #294057!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy h3{
+    margin-top:14px!important;
+    font-size:clamp(30px,1.85vw,36px)!important;
+    line-height:1.02!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy>p{
+    max-width:320px!important;
+    margin-top:15px!important;
+    font-size:13px!important;
+    line-height:1.52!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-facts{
+    margin-top:18px!important;
+  }
+}
+
+/* A clean blue hinge is calmer than the previous multi-stop gradient bridge. */
+html body.v8.v13.v14[data-page="home"] main#main>section.selected-projects-strip{
+  padding-top:34px!important;
+  border-top:3px solid #1e56aa!important;
+  background:#eef3f6!important;
+  box-shadow:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.selected-projects-strip .project-collection-head>a{
+  color:#164a9c!important;
+  font:500 13px/1.25 "IBM Plex Mono",monospace!important;
+  letter-spacing:.035em!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.selected-projects-strip .project-collection-head>span{
+  font-size:12px!important;
+}
+
+@media(max-width:720px){
+  html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+    left:22px!important;
+    width:calc(100vw - 44px)!important;
+    min-height:68px!important;
+    padding-left:62px!important;
+    background-position:left center,62px 100%,62px 100%!important;
+    background-size:46px 46px,0 2px,calc(100% - 62px) 1px!important;
+  }
+}
