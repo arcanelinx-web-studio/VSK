@@ -195,8 +195,7 @@ html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .metr
   border-right:1px solid #d7e1e7!important;
 }
 
-/* Featured Engineering — full-width dark editorial case study. The media is a
-   calm two-view machine dossier rather than one photograph stretched wide. */
+/* Featured Engineering — full-width dark editorial case study. */
 @media(min-width:1181px){
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects{
     position:relative!important;
@@ -242,15 +241,18 @@ html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .metr
     height:448px!important;
     min-height:448px!important;
     margin:0!important;
-    padding:0 236px 0 0!important;
+    padding:0!important;
     overflow:hidden!important;
-    background:linear-gradient(135deg,#111e2a,#172838)!important;
+    background:#111e2a!important;
     border:0!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
     content:url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
+    position:absolute!important;
+    z-index:2!important;
+    inset:0 auto 0 0!important;
     display:block!important;
-    width:100%!important;
+    width:clamp(280px,22vw,340px)!important;
     max-width:none!important;
     height:100%!important;
     min-height:0!important;
@@ -260,6 +262,7 @@ html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .metr
     object-position:center center!important;
     background:#d5dadd!important;
     border:0!important;
+    border-right:1px solid #2b4053!important;
     box-shadow:none!important;
     filter:none!important;
     transform:none!important;
@@ -267,32 +270,21 @@ html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .metr
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
     content:""!important;
     position:absolute!important;
-    z-index:2!important;
+    z-index:1!important;
     top:0!important;
     right:0!important;
     bottom:0!important;
-    width:236px!important;
-    background-image:linear-gradient(180deg,rgba(13,24,36,.03),rgba(13,24,36,.16)),url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp")!important;
+    left:clamp(280px,22vw,340px)!important;
+    width:auto!important;
+    background-image:linear-gradient(180deg,rgba(13,24,36,.02),rgba(13,24,36,.10)),url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230902-104222.webp")!important;
     background-size:cover!important;
-    background-position:center center!important;
-    border-left:1px solid #2b4053!important;
+    background-position:center 48%!important;
+    border:0!important;
     pointer-events:none!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
-    content:"PRIMARY VIEW  /  DETAIL VIEW"!important;
-    position:absolute!important;
-    z-index:3!important;
-    left:18px!important;
-    right:auto!important;
-    top:auto!important;
-    bottom:16px!important;
-    padding:7px 9px!important;
-    color:rgba(255,255,255,.92)!important;
-    background:rgba(13,24,36,.76)!important;
-    border:1px solid rgba(255,255,255,.16)!important;
-    font:500 8px/1 "IBM Plex Mono",monospace!important;
-    letter-spacing:.10em!important;
-    pointer-events:none!important;
+    content:none!important;
+    display:none!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy{
     box-sizing:border-box!important;
