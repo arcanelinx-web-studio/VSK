@@ -1,13 +1,11 @@
 @import url("v16-site-harmony-base.css?v=16.46");
 
 /* =========================================================
-   V16.50 — NARRATIVE + VISUAL RHYTHM AUTHORITY
-   The homepage now follows one deliberate story:
-   claim → credibility → capability → case → breadth → depth →
-   third-party trust → process → company → enquiry.
+   V16.51 — CLEAN CLIENT POLISH AUTHORITY
+   One narrative, one palette, no decorative duplication.
    ========================================================= */
 
-/* ---------- 01 / FIXED HOMEPAGE STORY ORDER ---------- */
+/* ---------- 01 / HOMEPAGE STORY ORDER ---------- */
 html body.v8.v13.v14[data-page="home"] main#main{
   display:flex!important;
   flex-direction:column!important;
@@ -24,7 +22,7 @@ html body.v8.v13.v14[data-page="home"] main#main>.process{order:80!important}
 html body.v8.v13.v14[data-page="home"] main#main>.about{order:90!important}
 html body.v8.v13.v14[data-page="home"] main#main>.contact{order:100!important}
 
-/* ---------- 02 / THREE-SURFACE SYSTEM ---------- */
+/* ---------- 02 / SECTION SURFACES ---------- */
 html body.v8.v13.v14[data-page="home"] .credibility-band{
   background:#f4f7f9!important;
   color:#102333!important;
@@ -34,7 +32,6 @@ html body.v8.v13.v14[data-page="home"] .credibility-band{
 html body.v8.v13.v14[data-page="home"] .capabilities{
   background:#fbfaf6!important;
   color:#102333!important;
-  border-top:0!important;
   border-bottom:1px solid #e1e5e7!important;
 }
 html body.v8.v13.v14[data-page="home"] .projects-showcase#projects{
@@ -53,8 +50,9 @@ html body.v8.v13.v14[data-page="home"] .engineering-depth{
   border-top:1px solid #e0e5e7!important;
   border-bottom:1px solid #e0e5e7!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
-  background:#fff!important;
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>.vsk-google-reviews{
+  background:#ffffff!important;
+  background-image:none!important;
   color:#102333!important;
   border-top:1px solid #dbe3e8!important;
   border-bottom:1px solid #dbe3e8!important;
@@ -66,7 +64,7 @@ html body.v8.v13.v14[data-page="home"] .process.section-ivory{
   border-bottom:1px solid #d4e0e7!important;
 }
 html body.v8.v13.v14[data-page="home"] .about#about{
-  background:#fff!important;
+  background:#ffffff!important;
   color:#102333!important;
   border-top:1px solid #e2e8ec!important;
   border-bottom:1px solid #dbe3e8!important;
@@ -76,12 +74,7 @@ html body.v8.v13.v14[data-page="home"] .contact.section-dark{
   color:#fff!important;
 }
 
-/* ---------- 03 / CAPABILITIES: LIGHT WITH ONE DARK PUNCTUATION ---------- */
-html body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
-  border-color:#263b4f!important;
-  background:#0f1f2e!important;
-  color:#f5f8fa!important;
-}
+/* ---------- 03 / CAPABILITIES CTA ---------- */
 html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
 html body.v8.v13.v14 .capability-media .capability-project-link{
   box-sizing:border-box!important;
@@ -110,127 +103,111 @@ html body.v8.v13.v14 .capability-media .capability-project-link i{
   transition:transform .22s ease!important;
 }
 html body.v8.v13.v14 .capability-media .vsk-related-projects-cta:hover i,
-html body.v8.v13.v14 .capability-media .capability-project-link:hover i{
-  transform:translateX(4px)!important;
-}
+html body.v8.v13.v14 .capability-media .capability-project-link:hover i{transform:translateX(4px)!important}
 
-/* ---------- 04 / FEATURED ENGINEERING: ONE MAJOR DARK ANCHOR ---------- */
+/* ---------- 04 / FEATURED ENGINEERING — RESTORED CLEAN CASE ---------- */
 @media(min-width:1181px){
-  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects{
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects{
     position:relative!important;
     left:50%!important;
     width:100vw!important;
     max-width:100vw!important;
     margin-left:-50vw!important;
     margin-right:0!important;
-    padding-left:0!important;
-    padding-right:0!important;
+    padding:0!important;
     overflow:hidden!important;
   }
-  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>.section-intro{
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>.section-intro{
     box-sizing:border-box!important;
     width:100%!important;
     max-width:none!important;
     margin:0!important;
-    padding:62px clamp(48px,4vw,76px) 30px!important;
+    padding:58px clamp(48px,4vw,76px) 28px!important;
   }
-  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>div.shell.featured-case{
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>div.shell.featured-case{
     position:static!important;
     width:100%!important;
     max-width:none!important;
     min-width:0!important;
-    height:448px!important;
-    min-height:448px!important;
+    height:500px!important;
+    min-height:500px!important;
     margin:0!important;
     padding:0!important;
     display:grid!important;
-    grid-template-columns:minmax(0,1fr) 350px!important;
+    grid-template-columns:minmax(0,1fr) clamp(360px,21vw,410px)!important;
     gap:0!important;
     border-top:1px solid #2b4053!important;
     border-bottom:1px solid #2b4053!important;
     background:#0d1824!important;
     overflow:hidden!important;
   }
-  html body.v8.v13.v14[data-page="home"] .featured-case-media{
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
     position:relative!important;
-    isolation:isolate!important;
+    isolation:auto!important;
     box-sizing:border-box!important;
     width:100%!important;
-    height:448px!important;
-    min-height:448px!important;
+    max-width:none!important;
+    height:500px!important;
+    min-height:500px!important;
     margin:0!important;
-    padding:18px 28px!important;
-    display:grid!important;
-    place-items:center!important;
+    padding:0!important;
+    display:block!important;
     overflow:hidden!important;
-    background:#101d29!important;
+    background:#d8dde0!important;
     border:0!important;
   }
-  html body.v8.v13.v14[data-page="home"] .featured-case-media::before{
-    content:""!important;
-    display:block!important;
-    position:absolute!important;
-    z-index:0!important;
-    inset:-28px!important;
-    background-image:linear-gradient(90deg,rgba(13,24,36,.72),rgba(13,24,36,.34) 48%,rgba(13,24,36,.62)),url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
-    background-size:cover!important;
-    background-position:center 46%!important;
-    filter:blur(14px) saturate(.72)!important;
-    transform:scale(1.06)!important;
-    opacity:.88!important;
-    pointer-events:none!important;
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before,
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
+    content:none!important;
+    display:none!important;
+    background:none!important;
+    filter:none!important;
   }
-  html body.v8.v13.v14[data-page="home"] .featured-case-media::after{
-    content:"AIR LEAKAGE TESTING MACHINE  /  FEATURED ENGINEERING"!important;
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+    position:static!important;
     display:block!important;
-    position:absolute!important;
-    z-index:3!important;
-    left:24px!important;
-    bottom:18px!important;
-    padding:7px 9px!important;
-    color:rgba(255,255,255,.92)!important;
-    background:rgba(13,24,36,.74)!important;
-    border:1px solid rgba(255,255,255,.14)!important;
-    font:500 12px/1 "IBM Plex Mono",monospace!important;
-    letter-spacing:.08em!important;
-    pointer-events:none!important;
-  }
-  html body.v8.v13.v14[data-page="home"] .featured-case-media>img{
-    position:relative!important;
-    z-index:2!important;
-    display:block!important;
-    width:auto!important;
-    max-width:min(760px,86%)!important;
+    width:100%!important;
+    max-width:none!important;
     height:100%!important;
-    margin:auto!important;
-    object-fit:contain!important;
-    object-position:center!important;
-    background:transparent!important;
+    min-height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    object-fit:cover!important;
+    object-position:center 48%!important;
+    background:#d8dde0!important;
     border:0!important;
-    box-shadow:0 18px 44px rgba(0,0,0,.20)!important;
+    box-shadow:none!important;
     filter:none!important;
     transform:none!important;
   }
-  html body.v8.v13.v14[data-page="home"] .featured-case-copy{
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-copy{
     box-sizing:border-box!important;
     width:100%!important;
-    height:448px!important;
-    min-height:448px!important;
+    max-width:none!important;
+    height:500px!important;
+    min-height:500px!important;
     margin:0!important;
-    padding:32px 30px!important;
+    padding:36px 34px!important;
     display:flex!important;
     flex-direction:column!important;
     justify-content:center!important;
     background:#0f1e2c!important;
     border-left:1px solid #2b4053!important;
   }
+  html body.v8.v13.v14[data-page="home"] .featured-case-copy h3{
+    margin:16px 0 18px!important;
+    font-size:clamp(32px,2vw,40px)!important;
+    line-height:1!important;
+  }
+  html body.v8.v13.v14[data-page="home"] .featured-case-copy>p{
+    max-width:340px!important;
+    font-size:14px!important;
+    line-height:1.58!important;
+  }
 }
 
-/* ---------- 05 / SELECTED EXPERIENCE: COOL MOVING PORTFOLIO RAIL ---------- */
-@keyframes vskSelectedEngineeringRail{
-  from{transform:translate3d(0,0,0)}
-  to{transform:translate3d(-50%,0,0)}
-}
+/* ---------- 05 / SELECTED ENGINEERING MOVING RAIL ---------- */
+@keyframes vskSelectedEngineeringRail{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip{
   box-sizing:border-box!important;
   width:100%!important;
@@ -247,18 +224,12 @@ html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collect
   border:0!important;
 }
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head::before,
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head::after{
-  content:none!important;
-  display:none!important;
-}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head::after{content:none!important;display:none!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>span,
-html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{
-  font-size:12px!important;
-}
+html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{font-size:12px!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>span{color:#31567f!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .project-collection-head>a{color:#174f9f!important}
 html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail{
-  box-sizing:border-box!important;
   display:block!important;
   width:100%!important;
   max-width:none!important;
@@ -277,9 +248,7 @@ html body.v8.v13.v14[data-page="home"] .vsk-selected-track{
   will-change:transform!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-selected-track:hover,
-html body.v8.v13.v14[data-page="home"] .vsk-selected-track:focus-within{
-  animation-play-state:paused!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-selected-track:focus-within{animation-play-state:paused!important}
 html body.v8.v13.v14[data-page="home"] .vsk-selected-group{
   display:flex!important;
   flex:0 0 auto!important;
@@ -302,26 +271,22 @@ html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card{
   box-shadow:0 7px 20px rgba(25,54,77,.025)!important;
   overflow:hidden!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card figure{
-  height:136px!important;
-  min-height:136px!important;
-  border-bottom:1px solid #cbd7df!important;
-}
-html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card-copy{
-  height:156px!important;
-  min-height:156px!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card figure{height:136px!important;min-height:136px!important;border-bottom:1px solid #cbd7df!important}
+html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card-copy{height:156px!important;min-height:156px!important}
 
-/* ---------- 06 / ENGINEERING DEPTH: WARM PROOF + DARK EXPERIENCE CARD ---------- */
+/* ---------- 06 / ENGINEERING DEPTH ---------- */
+html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{background:#fff!important}
 html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{
   background:linear-gradient(145deg,#1e56aa 0%,#123f78 100%)!important;
   color:#fff!important;
 }
-html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{
-  background:#fff!important;
-}
 
-/* ---------- 07 / GOOGLE REVIEWS: WHITE TRUST + DARK RATING INSET ---------- */
+/* ---------- 07 / GOOGLE REVIEWS — TRUE WHITE TRUST SECTION ---------- */
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>.vsk-google-reviews,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>.vsk-google-reviews>.shell{
+  background:#ffffff!important;
+  background-image:none!important;
+}
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
   box-sizing:border-box!important;
   padding:86px 0 90px!important;
@@ -353,25 +318,11 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-rating{
   border:1px solid #294057!important;
   box-shadow:0 12px 30px rgba(16,35,51,.10)!important;
 }
-html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong{
-  color:#9bc8ec!important;
-  font:600 clamp(54px,4.4vw,76px)/.9 "Space Grotesk",Inter,sans-serif!important;
-  letter-spacing:-.055em!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong{color:#9bc8ec!important;font:600 clamp(54px,4.4vw,76px)/.9 "Space Grotesk",Inter,sans-serif!important;letter-spacing:-.055em!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-rating>span{display:grid!important;gap:6px!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#72b6e3!important;font-size:17px!important;letter-spacing:.14em!important}
-html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{
-  color:#c3d0d9!important;
-  font:500 12px/1.25 "IBM Plex Mono",monospace!important;
-  letter-spacing:.05em!important;
-  text-transform:uppercase!important;
-}
-html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{
-  max-width:520px!important;
-  color:#566a7b!important;
-  font-size:15px!important;
-  line-height:1.62!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#c3d0d9!important;font:500 12px/1.25 "IBM Plex Mono",monospace!important;letter-spacing:.05em!important;text-transform:uppercase!important}
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{max-width:520px!important;color:#566a7b!important;font-size:15px!important;line-height:1.62!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
   width:max-content!important;
   min-height:52px!important;
@@ -381,7 +332,7 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
   align-items:center!important;
   gap:18px!important;
   border:1px solid #b9c9d5!important;
-  background:#f4f7f9!important;
+  background:#fff!important;
   color:#164a9c!important;
   font:600 12px/1 "IBM Plex Mono",monospace!important;
   letter-spacing:.05em!important;
@@ -402,49 +353,66 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
   flex-direction:column!important;
   justify-content:space-between!important;
   gap:42px!important;
-  background:#f4f7f9!important;
+  background:#f7f9fa!important;
   border-right:1px solid #cad6df!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-right:0!important}
-html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{
-  color:#1e56aa!important;
-  font:500 12px/1.2 "IBM Plex Mono",monospace!important;
-  letter-spacing:.08em!important;
-}
-html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{
-  margin:0!important;
-  color:#172b3d!important;
-  font:500 clamp(19px,1.45vw,24px)/1.3 "Space Grotesk",Inter,sans-serif!important;
-  letter-spacing:-.025em!important;
-}
+html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#1e56aa!important;font:500 12px/1.2 "IBM Plex Mono",monospace!important;letter-spacing:.08em!important}
+html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{margin:0!important;color:#172b3d!important;font:500 clamp(19px,1.45vw,24px)/1.3 "Space Grotesk",Inter,sans-serif!important;letter-spacing:-.025em!important}
 
-/* ---------- 08 / PROCESS: COOL TECHNICAL SURFACE ---------- */
-html body.v8.v13.v14[data-page="home"] .process-line article{
-  border-color:#c6d4de!important;
-}
-html body.v8.v13.v14[data-page="home"] .process-line article>span{
-  color:#1e56aa!important;
-}
-html body.v8.v13.v14[data-page="home"] .process-line>i{
-  background:#1e56aa!important;
-}
-
-/* ---------- 09 / COMPANY: WHITE HUMAN RESET WITH DARK PROOF INSET ---------- */
+/* ---------- 08 / PROCESS + COMPANY — BLUE ACTION LANGUAGE ---------- */
+html body.v8.v13.v14[data-page="home"] .process-line article{border-color:#c6d4de!important}
+html body.v8.v13.v14[data-page="home"] .process-line article>span{color:#1e56aa!important}
+html body.v8.v13.v14[data-page="home"] .process-line>i{background:#1e56aa!important}
 html body.v8.v13.v14[data-page="home"] .about blockquote{
   border-left:3px solid #1e56aa!important;
   color:#23394b!important;
 }
-html body.v8.v13.v14[data-page="home"] .about-mini-stats{
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats{
   box-sizing:border-box!important;
-  padding:17px 18px!important;
-  background:#102333!important;
-  border-left:3px solid #1e56aa!important;
-  color:#dce7ee!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:28px 0 22px!important;
+  padding:0!important;
+  background:#f4f7f9!important;
+  border:1px solid #d4dfe6!important;
+  border-left:1px solid #d4dfe6!important;
+  color:#102333!important;
+  box-shadow:none!important;
 }
-html body.v8.v13.v14[data-page="home"] .about-mini-stats span{color:#c4d0d9!important}
-html body.v8.v13.v14[data-page="home"] .about-mini-stats strong{color:#fff!important}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats span{
+  min-height:74px!important;
+  padding:14px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:4px!important;
+  color:#66798a!important;
+  border-right:1px solid #d4dfe6!important;
+  font-size:12px!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats span:last-child{border-right:0!important}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats strong{
+  color:#102333!important;
+  font-size:24px!important;
+}
+html body.v8.v13.v14[data-page="home"] .about-actions .text-arrow,
+html body.v8.v13.v14[data-page="home"] .about-actions a,
+html body.v8.v13.v14[data-page="home"] .customer-row a,
+html body.v8.v13.v14[data-page="home"] .project-collection-head a,
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews a{
+  color:#1e56aa!important;
+}
+html body.v8.v13.v14[data-page="home"] .about-actions .text-arrow:hover,
+html body.v8.v13.v14[data-page="home"] .about-actions a:hover,
+html body.v8.v13.v14[data-page="home"] .customer-row a:hover,
+html body.v8.v13.v14[data-page="home"] .project-collection-head a:hover,
+html body.v8.v13.v14[data-page="home"] .vsk-google-reviews a:hover{
+  color:#167bc4!important;
+}
 
-/* ---------- 10 / SMALL UTILITY TYPE: 12PX FLOOR ---------- */
+/* ---------- 09 / SMALL UTILITY TYPE — 12PX FLOOR ---------- */
 html body.v8.v13.v14 .proof-grid span,
 html body.v8.v13.v14 .customer-row>span,
 html body.v8.v13.v14 .hero-reference span,
@@ -469,11 +437,9 @@ html body.v8.v13.v14 .gallery-status,
 html body.v8.v13.v14 .gallery-status a,
 html body.v8.v13.v14 .gallery-load button,
 html body.v8.v13.v14 .vsk-image-source-badge,
-html body.v8.v13.v14 .vsk-dossier-image-source{
-  font-size:12px!important;
-}
+html body.v8.v13.v14 .vsk-dossier-image-source{font-size:12px!important}
 
-/* ---------- 11 / EXPERIENCE IMAGE PROVENANCE ---------- */
+/* ---------- 10 / EXPERIENCE IMAGE PROVENANCE ---------- */
 html body.v8.v13.v14[data-page="machines"] .archive-preview-media{position:relative!important}
 html body.v8.v13.v14[data-page="machines"] .vsk-image-source-badge{
   position:absolute!important;
@@ -512,20 +478,10 @@ html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source{
 html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source.is-exact{border-left:3px solid #2b8dd0!important}
 html body.v8.v13.v14[data-page="machines"] .vsk-dossier-image-source.is-related{border-left:3px solid #7aa6c7!important}
 
-/* ---------- 12 / RETURNING HOME: NEVER REPLAY BOOT ---------- */
+/* ---------- 11 / RETURNING HOME — NO BOOT REPLAY ---------- */
 html.vsk-returning-session body.v8.v13.v14[data-page="home"]::before,
-html.vsk-returning-session body.v8.v13.v14[data-page="home"]::after{
-  content:none!important;
-  display:none!important;
-  visibility:hidden!important;
-  opacity:0!important;
-  animation:none!important;
-}
-html.vsk-returning-session body.v8.v13.v14[data-page="home"] > :not(script):not(style){
-  animation:none!important;
-  visibility:visible!important;
-  opacity:1!important;
-}
+html.vsk-returning-session body.v8.v13.v14[data-page="home"]::after{content:none!important;display:none!important;visibility:hidden!important;opacity:0!important;animation:none!important}
+html.vsk-returning-session body.v8.v13.v14[data-page="home"] > :not(script):not(style){animation:none!important;visibility:visible!important;opacity:1!important}
 html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy .hero-kicker,
 html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy h1 span,
 html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-blue-copy h1 em,
@@ -549,47 +505,27 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
   mask:none!important;
 }
 
-/* ---------- 13 / RESPONSIVE ---------- */
+/* ---------- 12 / RESPONSIVE ---------- */
 @media(max-width:960px){
-  html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-grid{
-    grid-template-columns:1fr!important;
-    gap:44px!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-grid{grid-template-columns:1fr!important;gap:44px!important}
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{min-height:210px!important}
 }
 @media(max-width:720px){
   html body.v8.v13.v14[data-page="home"] .selected-projects-strip{padding:34px 20px 42px!important}
-  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail{
-    overflow-x:auto!important;
-    overscroll-behavior-inline:contain!important;
-    scroll-snap-type:x proximity!important;
-    scrollbar-width:none!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail{overflow-x:auto!important;overscroll-behavior-inline:contain!important;scroll-snap-type:x proximity!important;scrollbar-width:none!important}
   html body.v8.v13.v14[data-page="home"] .selected-projects-strip .vsk-selected-rail::-webkit-scrollbar{display:none!important}
   html body.v8.v13.v14[data-page="home"] .vsk-selected-track{animation:none!important}
   html body.v8.v13.v14[data-page="home"] .vsk-selected-group[aria-hidden="true"]{display:none!important}
-  html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card{
-    flex-basis:82vw!important;
-    width:82vw!important;
-    min-width:82vw!important;
-    max-width:82vw!important;
-    scroll-snap-align:start!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card{flex-basis:82vw!important;width:82vw!important;min-width:82vw!important;max-width:82vw!important;scroll-snap-align:start!important}
   html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{padding:64px 0 68px!important}
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{grid-template-columns:1fr!important}
-  html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-    min-height:0!important;
-    padding:22px 20px!important;
-    gap:30px!important;
-    border-right:0!important;
-    border-bottom:1px solid #cad6df!important;
-  }
+  html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{min-height:0!important;padding:22px 20px!important;gap:30px!important;border-right:0!important;border-bottom:1px solid #cad6df!important}
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-bottom:0!important}
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats{grid-template-columns:1fr!important}
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats span{border-right:0!important;border-bottom:1px solid #d4dfe6!important}
+  html body.v8.v13.v14[data-page="home"][data-page="home"] main#main .about#about .about-mini-stats span:last-child{border-bottom:0!important}
   html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
-  html body.v8.v13.v14 .capability-media .capability-project-link{
-    width:100%!important;
-    min-width:0!important;
-  }
+  html body.v8.v13.v14 .capability-media .capability-project-link{width:100%!important;min-width:0!important}
 }
 @media(prefers-reduced-motion:reduce){
   html body.v8.v13.v14[data-page="home"] .vsk-selected-track{animation:none!important}
