@@ -234,9 +234,9 @@ html body.v8.v13.v14[data-page="home"] .vsk-selected-group .v16-selected-card-co
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
   box-sizing:border-box!important;
   padding:84px 0 88px!important;
-  background:#fbfaf6!important;
-  border-top:1px solid #d6e0e6!important;
-  border-bottom:1px solid #d6e0e6!important;
+  background:#e8e4dc!important;
+  border-top:1px solid #cbc5ba!important;
+  border-bottom:1px solid #cbc5ba!important;
   color:#102333!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-grid{
@@ -296,8 +296,8 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
   display:inline-flex!important;
   align-items:center!important;
   gap:18px!important;
-  border:1px solid #b9c9d5!important;
-  background:#fff!important;
+  border:1px solid #bdb6aa!important;
+  background:#f8f6f1!important;
   color:#164a9c!important;
   font:600 11px/1 "IBM Plex Mono",monospace!important;
   letter-spacing:.06em!important;
@@ -307,8 +307,8 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  border-top:1px solid #cad6df!important;
-  border-bottom:1px solid #cad6df!important;
+  border-top:1px solid #c5beb2!important;
+  border-bottom:1px solid #c5beb2!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
   box-sizing:border-box!important;
@@ -318,8 +318,8 @@ html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
   flex-direction:column!important;
   justify-content:space-between!important;
   gap:42px!important;
-  background:rgba(255,255,255,.5)!important;
-  border-right:1px solid #cad6df!important;
+  background:rgba(255,255,255,.56)!important;
+  border-right:1px solid #c5beb2!important;
 }
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-right:0!important}
 html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{
@@ -447,7 +447,7 @@ html.vsk-returning-session body.v8.v13.v14[data-page="home"] #hero .hero-crossha
     padding:22px 20px!important;
     gap:30px!important;
     border-right:0!important;
-    border-bottom:1px solid #cad6df!important;
+    border-bottom:1px solid #c5beb2!important;
   }
   html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article:last-child{border-bottom:0!important}
   html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
