@@ -12,12 +12,7 @@
     link.href = `v16-home-consistency.css?review=${Date.now()}`;
   };
 
-  const removeLegacyBalanceStyles = () => {
-    document.getElementById('v16-user-balance-authority')?.remove();
-  };
-
   const ensureClientFinalStyles = () => {
-    removeLegacyBalanceStyles();
     let link = document.querySelector('link[data-v16-client-final]');
     if (!link) {
       link = document.createElement('link');
@@ -26,15 +21,16 @@
       link.href = `v16-client-final.css?review=${Date.now()}`;
     }
     document.head.appendChild(link);
-    removeLegacyBalanceStyles();
   };
 
-  const guardAgainstLegacyBalance = () => {
-    if (document.documentElement.dataset.v16LegacyBalanceGuard) return;
-    document.documentElement.dataset.v16LegacyBalanceGuard = '1';
-    const observer = new MutationObserver(() => removeLegacyBalanceStyles());
+  const keepClientFinalLast = () => {
+    if (document.documentElement.dataset.v16ClientFinalGuard) return;
+    document.documentElement.dataset.v16ClientFinalGuard = '1';
+    const observer = new MutationObserver(mutations => {
+      const legacyChanged = mutations.some(mutation => [...mutation.addedNodes].some(node => node?.id === 'v16-user-balance-authority'));
+      if (legacyChanged) requestAnimationFrame(ensureClientFinalStyles);
+    });
     observer.observe(document.head, {childList:true});
-    removeLegacyBalanceStyles();
   };
 
   const categorySpecs = [
@@ -162,7 +158,7 @@
 
   const rebuildSelected = () => {
     const grid=document.querySelector('[data-home-projects]');if(!grid)return;
-    const signature='v16-54-moving-engineering-rail';
+    const signature='v16-55-stable-six-cell-rail';
     if(grid.dataset.v16Selection===signature&&grid.querySelector('.vsk-selected-track')&&grid.querySelectorAll('.vsk-selected-group').length===2)return;
     const primary=selectedProjects.map(item=>selectedCardMarkup(item,false)).join('');
     const duplicate=selectedProjects.map(item=>selectedCardMarkup(item,true)).join('');
@@ -193,33 +189,6 @@
     if(callout)callout.textContent='Search 39 Custom & SPM and 15 Retrofit & CNC references by process, machine type, customer need or control platform before you start the discussion.';
   };
 
-  const restoreHomeOrder = () => {
-    const process=document.querySelector('main#main .process');
-    const about=document.querySelector('main#main .about#about');
-    if(process&&about&&process.nextElementSibling!==about)process.insertAdjacentElement('afterend',about);
-  };
-
-  const applyApprovedVisualState = () => {
-    removeLegacyBalanceStyles();
-    restoreHomeOrder();
-    const depth=document.querySelector('main#main .engineering-depth');
-    if(depth){
-      depth.style.setProperty('background','#eaf1f5','important');
-      depth.style.setProperty('background-image','none','important');
-    }
-    const reviews=document.querySelector('main#main .vsk-google-reviews');
-    if(reviews){
-      reviews.style.setProperty('background','#0d1824','important');
-      reviews.style.setProperty('background-image','none','important');
-      reviews.style.setProperty('color','#f5f8fa','important');
-      reviews.style.setProperty('width','100vw','important');
-      reviews.style.setProperty('max-width','100vw','important');
-      reviews.style.setProperty('margin-left','calc(50% - 50vw)','important');
-      reviews.style.setProperty('margin-right','0','important');
-    }
-    ensureClientFinalStyles();
-  };
-
   const applyStatic = () => {
     normalizeHomeNavigation();
     rebuildFeatured();
@@ -227,11 +196,11 @@
     rebuildSelected();
     buildGoogleReviews();
     normalizeCopy();
-    applyApprovedVisualState();
+    ensureClientFinalStyles();
   };
 
   const start = () => {
-    guardAgainstLegacyBalance();
+    keepClientFinalLast();
     ensureHomeStyles();
     applyStatic();
     fetch(`media/archive-manifest.json?review=${Date.now()}`,{cache:'no-store'})
@@ -244,17 +213,14 @@
       observer.observe(grid,{childList:true});
       setTimeout(()=>observer.disconnect(),10000);
     }
-    setTimeout(applyStatic,250);setTimeout(applyStatic,700);setTimeout(applyStatic,1200);setTimeout(applyStatic,1900);setTimeout(applyStatic,2600);setTimeout(applyStatic,3300);setTimeout(applyStatic,4000);
-    [80,500,900,1500,2200,3000,3800,4400].forEach(ms=>setTimeout(applyApprovedVisualState,ms));
+    setTimeout(applyStatic,250);setTimeout(applyStatic,1000);setTimeout(applyStatic,2500);
+    [80,500,1200,2400,3800].forEach(ms=>setTimeout(ensureClientFinalStyles,ms));
   };
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
   window.addEventListener('load',()=>{
     applyStatic();
-    applyApprovedVisualState();
-    setTimeout(applyApprovedVisualState,800);
-    setTimeout(applyApprovedVisualState,2000);
-    setTimeout(applyApprovedVisualState,3400);
-    setTimeout(applyApprovedVisualState,4400);
+    ensureClientFinalStyles();
+    setTimeout(ensureClientFinalStyles,3800);
   },{once:true});
 })();
