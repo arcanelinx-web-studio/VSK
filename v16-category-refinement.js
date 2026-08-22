@@ -10,6 +10,39 @@
       document.head.appendChild(link);
     }
     link.href = `v16-home-consistency.css?review=${Date.now()}`;
+
+    /* Keep Reviews inside the established VSK palette. This style is appended
+       after the harmony layer so an old cached one-off mineral tone cannot win. */
+    let palette = document.getElementById('v16-review-palette-balance');
+    if (!palette) {
+      palette = document.createElement('style');
+      palette.id = 'v16-review-palette-balance';
+      document.head.appendChild(palette);
+    }
+    palette.textContent = `
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
+        background:#fbfaf6!important;
+        border-top-color:#d6e0e6!important;
+        border-bottom-color:#d6e0e6!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
+        background:#fff!important;
+        border-color:#b9c9d5!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
+        border-top-color:#cad6df!important;
+        border-bottom-color:#cad6df!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
+        background:rgba(255,255,255,.62)!important;
+        border-right-color:#cad6df!important;
+      }
+      @media(max-width:720px){
+        html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
+          border-bottom-color:#cad6df!important;
+        }
+      }
+    `;
   };
 
   const categorySpecs = [
@@ -89,7 +122,7 @@
       if(meta)meta.textContent=`GALLERY CATEGORY · ${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}`;
       if(title)title.textContent=category.label;
       if(copy)copy.textContent=category.copy;
-      if(tags)tags.innerHTML=`<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}</b><b>PHOTOS &amp; VIDEOS</b>`;
+      if(tags)tags.innerHTML=`<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'S':''}</b><b>PHOTOS &amp; VIDEOS</b>`;
       let link=media.querySelector('.capability-project-link');
       if(!link){link=document.createElement('a');link.className='capability-project-link';media.querySelector('figcaption')?.appendChild(link);}
       link.classList.add('vsk-related-projects-cta');
