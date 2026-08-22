@@ -104,19 +104,30 @@
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-gateway:hover .gallery-gateway-action i{transform:translateX(4px)!important;background:#dcecff!important}
 
-      /* Engineering Depth — approved internal breathing room from the earlier V16 review. */
-      @media (min-width:1501px){
-        body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:50px!important;padding-right:50px!important}
+      /* Engineering Depth: remove the accidental extra horizontal padding. */
+      html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{
+        padding-left:30px!important;
+        padding-right:30px!important;
       }
-      @media (min-width:1181px) and (max-width:1500px){
-        body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:clamp(38px,3vw,50px)!important;padding-right:clamp(38px,3vw,50px)!important}
+
+      /* Only the last blue Experience cell needs extra breathing room below the CTA. */
+      html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{
+        padding-bottom:56px!important;
       }
-      @media (min-width:721px) and (max-width:1180px){
-        body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:32px!important;padding-right:32px!important}
+
+      @media (max-width:1599px){
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:52px!important}
+      }
+      @media (max-width:1180px){
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:48px!important}
       }
       @media (max-width:900px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{grid-template-columns:130px minmax(0,1fr)!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-action{grid-column:1/-1!important;min-height:56px!important;border-left:0!important;border-top:1px solid #2c4154!important}
+      }
+      @media (max-width:760px){
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:26px!important;padding-right:26px!important}
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:42px!important}
       }
       @media (max-width:620px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{width:calc(100% - 40px)!important;grid-template-columns:92px minmax(0,1fr)!important;margin-top:24px!important}
