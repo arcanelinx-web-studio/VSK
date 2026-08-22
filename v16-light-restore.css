@@ -156,3 +156,176 @@ body.v8.v13.v14 .gallery-browser{background:var(--v16-light-ivory)!important}
   body.v8.v13.v14 .site-header.is-solid,
   body.v8.v13.v14 .site-header.is-scrolled{background:rgba(250,250,247,.985)!important}
 }
+
+/* =========================================================
+   V16.41 / FINAL COMPOSITION CORRECTION
+   Keep the current design, but correct three geometry problems:
+   1) Engineering Depth cell dividers reach the bottom edge.
+   2) Featured Engineering truly spans the desktop viewport.
+   3) The source photo is presented as an engineering plate instead of
+      being forced into an ultra-wide crop, and the following section
+      receives a deliberate dark-to-light transition.
+   ========================================================= */
+
+/* Engineering Depth — every proof cell owns the full board height. */
+html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .depth-grid .metric-stack{
+  align-items:stretch!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .depth-grid .metric-stack>.metric-card{
+  align-self:stretch!important;
+  height:100%!important;
+  min-height:100%!important;
+  max-height:none!important;
+  margin-bottom:0!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .depth-grid .metric-stack>.metric-card:not(:last-child){
+  border-right:1px solid #d7e1e7!important;
+}
+
+@media(min-width:1181px){
+  /* Full viewport case — override every earlier shell/gutter rule. */
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    overflow:hidden!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects>div.shell.featured-case{
+    box-sizing:border-box!important;
+    position:relative!important;
+    left:50%!important;
+    right:auto!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    min-width:100vw!important;
+    height:500px!important;
+    min-height:500px!important;
+    margin-left:-50vw!important;
+    margin-right:0!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) clamp(370px,22vw,420px)!important;
+    gap:0!important;
+    border-top:1px solid #294057!important;
+    border-bottom:0!important;
+    background:#0d1824!important;
+    overflow:hidden!important;
+  }
+
+  /* Photo becomes a controlled engineering plate. The dark technical field
+     belongs to the composition, so the image no longer looks stretched. */
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-media{
+    position:relative!important;
+    isolation:isolate!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    height:500px!important;
+    min-height:500px!important;
+    margin:0!important;
+    padding:24px 34px!important;
+    display:grid!important;
+    place-items:center!important;
+    overflow:hidden!important;
+    background:
+      linear-gradient(rgba(115,163,198,.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(115,163,198,.07) 1px,transparent 1px),
+      linear-gradient(145deg,#0b1621 0%,#101f2d 100%)!important;
+    background-size:72px 72px,72px 72px,auto!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-media::before{
+    content:"APPLICATION / MACHINE / CONTROL"!important;
+    position:absolute!important;
+    z-index:3!important;
+    left:34px!important;
+    top:22px!important;
+    color:#7ea7c5!important;
+    font:500 8px/1 "IBM Plex Mono",monospace!important;
+    letter-spacing:.14em!important;
+    pointer-events:none!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-media::after{
+    content:"VSK / FEATURED ENGINEERING REFERENCE"!important;
+    position:absolute!important;
+    z-index:3!important;
+    right:34px!important;
+    bottom:22px!important;
+    color:#6f91aa!important;
+    font:500 8px/1 "IBM Plex Mono",monospace!important;
+    letter-spacing:.11em!important;
+    pointer-events:none!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-media>img{
+    position:relative!important;
+    z-index:2!important;
+    display:block!important;
+    width:min(100%,1100px)!important;
+    max-width:1100px!important;
+    height:calc(100% - 36px)!important;
+    min-height:0!important;
+    margin:auto!important;
+    padding:0!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    background:#d7dde0!important;
+    border:1px solid #344b5e!important;
+    box-shadow:0 22px 52px rgba(0,0,0,.24)!important;
+    filter:none!important;
+    transform:none!important;
+  }
+
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-copy{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    height:500px!important;
+    min-height:500px!important;
+    margin:0!important;
+    padding:38px 34px 34px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    border-left:1px solid #294057!important;
+    background:#0f1e2c!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-copy h3{
+    margin-top:18px!important;
+    font-size:clamp(31px,2vw,39px)!important;
+    line-height:1.01!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.projects-showcase#projects .featured-case-copy>p{
+    max-width:360px!important;
+    margin-top:18px!important;
+    font-size:13.5px!important;
+    line-height:1.55!important;
+  }
+}
+
+/* Dark → light bridge into Selected Engineering. It is intentionally short:
+   enough to connect the sections without becoming another decorative band. */
+html body.v8.v13.v14[data-page="home"] main#main section.selected-projects-strip{
+  position:relative!important;
+  margin-top:0!important;
+  padding-top:54px!important;
+  background:linear-gradient(180deg,#0d1824 0,#25394b 12px,#dce6ec 34px,#eef3f6 62px,#eef3f6 100%)!important;
+  box-shadow:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main section.selected-projects-strip::before,
+html body.v8.v13.v14[data-page="home"] main#main section.selected-projects-strip::after{
+  content:none!important;
+  display:none!important;
+}
+
+@media(max-width:1180px){
+  html body.v8.v13.v14[data-page="home"] main#main section.engineering-depth .depth-grid .metric-stack>.metric-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main section.selected-projects-strip{
+    padding-top:40px!important;
+    background:#eef3f6!important;
+  }
+}
