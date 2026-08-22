@@ -5,6 +5,7 @@
   const path = location.pathname.replace(/\/+$/,'');
   const isHomePath = /(?:^|\/)index\.html$/i.test(path) || /\/VSK$/i.test(path) || path === '';
   let firstHomeVisit = false;
+  let revealPromise = null;
 
   try {
     firstHomeVisit = isHomePath && sessionStorage.getItem('vskBootSeen') !== '1';
@@ -112,23 +113,37 @@
 
   if (!firstHomeVisit) root.classList.add('vsk-page-preparing');
 
-  window.__vskRevealPage = (instant = false) => {
-    if (!root.classList.contains('vsk-page-preparing')) {
-      root.classList.add('vsk-page-ready');
-      return;
+  const waitForSettledPaint = async () => {
+    if (document.fonts?.ready) {
+      await Promise.race([
+        document.fonts.ready.catch(() => {}),
+        new Promise(resolve => setTimeout(resolve, 650))
+      ]);
     }
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  };
 
+  window.__vskRevealPage = (instant = false) => {
     if (instant) {
       root.classList.add('vsk-page-no-transition','vsk-page-ready');
       root.classList.remove('vsk-page-preparing');
       requestAnimationFrame(() => root.classList.remove('vsk-page-no-transition'));
-      return;
+      return Promise.resolve();
     }
 
-    root.classList.add('vsk-page-ready');
-    setTimeout(() => {
+    if (!root.classList.contains('vsk-page-preparing')) {
+      root.classList.add('vsk-page-ready');
+      return Promise.resolve();
+    }
+
+    if (revealPromise) return revealPromise;
+    revealPromise = (async () => {
+      await waitForSettledPaint();
+      root.classList.add('vsk-page-ready');
+      await new Promise(resolve => setTimeout(resolve, 150));
       root.classList.remove('vsk-page-preparing');
-    }, 150);
+    })();
+    return revealPromise;
   };
 
   window.addEventListener('pageshow', event => {
