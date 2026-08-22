@@ -40,12 +40,9 @@
   };
 
   const injectStyles = () => {
-    let style = document.getElementById('v16-category-refinement-style');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'v16-category-refinement-style';
-      document.head.appendChild(style);
-    }
+    document.getElementById('v16-category-refinement-style')?.remove();
+    const style = document.createElement('style');
+    style.id = 'v16-category-refinement-style';
     style.textContent = `
       body.v8.v13.v14[data-page="home"] .capability-list .capability-row[data-v16-category-row]{text-decoration:none!important}
       body.v8.v13.v14[data-page="home"] .capability-media [data-capability-index]{color:#5f7890!important}
@@ -112,12 +109,27 @@
         padding-right:30px!important;
       }
 
+      /* The blue 54 Experience card needs clear space below its CTA. */
+      html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{
+        padding-bottom:60px!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout .btn{
+        margin-bottom:0!important;
+      }
+
+      @media (max-width:1599px){
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:56px!important}
+      }
+      @media (max-width:1180px){
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:50px!important}
+      }
       @media (max-width:900px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{grid-template-columns:130px minmax(0,1fr)!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-action{grid-column:1/-1!important;min-height:56px!important;border-left:0!important;border-top:1px solid #2c4154!important}
       }
       @media (max-width:760px){
         html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:26px!important;padding-right:26px!important}
+        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:44px!important}
       }
       @media (max-width:620px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{width:calc(100% - 40px)!important;grid-template-columns:92px minmax(0,1fr)!important;margin-top:24px!important}
@@ -127,6 +139,7 @@
         body.v8.v13.v14[data-page="home"] .gallery-gateway-copy strong{font-size:19px!important}
       }
     `;
+    document.head.appendChild(style);
   };
 
   const build = manifest => {
@@ -217,6 +230,8 @@
 
   injectStyles();
   const start = () => {
+    /* Move the final refinement style to the end after other V16 runtime styles are created. */
+    injectStyles();
     fetch('media/archive-manifest.json',{cache:'no-store'})
       .then(response=>response.ok?response.json():null)
       .then(manifest=>{
@@ -230,4 +245,5 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
+  window.addEventListener('load', injectStyles, {once:true});
 })();
