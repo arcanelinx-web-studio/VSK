@@ -12,6 +12,17 @@
     link.href = `v16-home-consistency.css?review=${Date.now()}`;
   };
 
+  const ensureClientFinalStyles = () => {
+    let link = document.querySelector('link[data-v16-client-final]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.dataset.v16ClientFinal = '1';
+      link.href = `v16-client-final.css?review=${Date.now()}`;
+    }
+    document.head.appendChild(link);
+  };
+
   const categorySpecs = [
     {
       label:'SPM / CNC Machines', slug:'spm-cnc-machines',
@@ -43,7 +54,9 @@
     {code:'SPM / 07',family:'CUSTOM & SPM',title:'Vertical Turning CNC Lathe',copy:'Vertical CNC turning reference developed around a dedicated PTFE rod application.',image:'media/projects/vertical-turning.webp',href:'machines.html?q=Vertical%20Turning'},
     {code:'RTF / 09',family:'RETROFIT & CNC',title:'Hauser Jig Grinding Retrofit',copy:'Five-axis jig-grinding modernization using PLC, HMI and servo motion on three axes.',image:'media/v16/images/retrofitting-and-service/jig-grinding-machine/img-0137.webp',href:'machines.html?q=Hauser'},
     {code:'SPM / DRILLING',family:'CUSTOM & SPM',title:'U Drill Machine',copy:'Production-focused special-purpose drilling equipment built around the machining application.',image:'media/projects/u-drill.webp',href:'machines.html?q=U%20Drill'},
-    {code:'SPM / 35',family:'PROCESS EQUIPMENT',title:'Paint Agitating Machine',copy:'Dedicated process equipment showing VSK engineering beyond conventional CNC machine tools.',image:'media/legacy/paint-agitating-machine.webp',href:'machines.html?q=Paint%20Agitating'}
+    {code:'SPM / 35',family:'PROCESS EQUIPMENT',title:'Paint Agitating Machine',copy:'Dedicated process equipment showing VSK engineering beyond conventional CNC machine tools.',image:'media/legacy/paint-agitating-machine.webp',href:'machines.html?q=Paint%20Agitating'},
+    {code:'SPM / 22',family:'AUTOMATION',title:'Ring Drilling & Chamfering',copy:'Drilling and chamfering with automated pickup and unloading around the production handling sequence.',image:'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121301.webp',href:'machines.html?q=Ring%20Drilling'},
+    {code:'SPM / 05',family:'HYDRAULICS & PRESSING',title:'Hydraulic Bearing Pressing Machine',copy:'Hydraulic pressing reference engineered around controlled bearing-to-rotor-shaft assembly.',image:'media/v16/images/hydraulic-systems-and-pressing-units/hydraulic-press-transtech-gear/20230216-094120.webp',href:'machines.html?q=Hydraulic%20Bearing%20Pressing'}
   ];
 
   const normalizeHomeNavigation = () => {
@@ -135,7 +148,7 @@
 
   const rebuildSelected = () => {
     const grid=document.querySelector('[data-home-projects]');if(!grid)return;
-    const signature='v16-47-moving-engineering-rail';
+    const signature='v16-53-moving-engineering-rail';
     if(grid.dataset.v16Selection===signature&&grid.querySelector('.vsk-selected-track')&&grid.querySelectorAll('.vsk-selected-group').length===2)return;
     const primary=selectedProjects.map(item=>selectedCardMarkup(item,false)).join('');
     const duplicate=selectedProjects.map(item=>selectedCardMarkup(item,true)).join('');
@@ -173,6 +186,7 @@
     rebuildSelected();
     buildGoogleReviews();
     normalizeCopy();
+    ensureClientFinalStyles();
   };
 
   const start = () => {
@@ -189,8 +203,13 @@
       setTimeout(()=>observer.disconnect(),10000);
     }
     setTimeout(applyStatic,250);setTimeout(applyStatic,1000);setTimeout(applyStatic,2500);
+    [80,500,1200,2400,3800].forEach(ms=>setTimeout(ensureClientFinalStyles,ms));
   };
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  window.addEventListener('load',applyStatic,{once:true});
+  window.addEventListener('load',()=>{
+    applyStatic();
+    ensureClientFinalStyles();
+    setTimeout(ensureClientFinalStyles,3800);
+  },{once:true});
 })();
