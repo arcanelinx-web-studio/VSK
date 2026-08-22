@@ -16,7 +16,7 @@
     style.textContent = `
       body.v8.v13.v14[data-page="gallery"] .gallery-controls{
         display:grid!important;
-        grid-template-columns:1.08fr repeat(4,minmax(0,1fr))!important;
+        grid-template-columns:minmax(0,1fr) minmax(0,4fr)!important;
         gap:0!important;
         align-items:stretch!important;
         margin-top:30px!important;
@@ -24,7 +24,11 @@
         background:#fff!important;
         overflow:hidden!important;
       }
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{display:contents!important}
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{
+        display:grid!important;
+        grid-template-columns:repeat(4,minmax(0,1fr))!important;
+        min-width:0!important;
+      }
       body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list] > [data-gallery-filter]{display:none!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{
@@ -32,9 +36,9 @@
         box-sizing:border-box!important;
         width:100%!important;
         min-width:0!important;
-        min-height:96px!important;
+        min-height:112px!important;
         margin:0!important;
-        padding:17px 18px 15px!important;
+        padding:18px 18px 16px!important;
         display:grid!important;
         grid-template-columns:minmax(0,1fr) 24px!important;
         grid-template-rows:auto 1fr!important;
@@ -55,13 +59,15 @@
         display:flex!important;
         align-items:center!important;
         gap:9px!important;
+        min-width:0!important;
         color:#31567f!important;
-        font:500 8px/1.2 "IBM Plex Mono",monospace!important;
-        letter-spacing:.105em!important;
+        font:500 8px/1.35 "IBM Plex Mono",monospace!important;
+        letter-spacing:.1em!important;
         text-transform:uppercase!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button span em{
-        color:#8ea2b3!important;
+        flex:0 0 auto!important;
+        color:#91a3b2!important;
         font-style:normal!important;
         font-weight:500!important;
       }
@@ -70,32 +76,28 @@
         grid-column:1!important;
         align-self:end!important;
         display:block!important;
-        margin-top:11px!important;
+        margin-top:14px!important;
         color:#102333!important;
-        font:600 clamp(15px,1.05vw,18px)/1.12 "Space Grotesk",Inter,sans-serif!important;
-        letter-spacing:-.02em!important;
+        font:600 clamp(16px,1vw,18px)/1.08 "Space Grotesk",Inter,sans-serif!important;
+        letter-spacing:-.025em!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button i{
         grid-column:2!important;
         grid-row:1/3!important;
-        align-self:center!important;
+        align-self:end!important;
         justify-self:end!important;
+        margin-bottom:1px!important;
         color:#9aabb9!important;
         font-style:normal!important;
         font-size:16px!important;
         transition:transform .18s ease,color .18s ease!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter:hover,
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{
-        background:#f6f9fb!important;
-      }
-      body.v8.v13.v14[data-page="gallery"] .gallery-controls button:hover i{
-        color:#167bc4!important;
-        transform:translateX(3px)!important;
-      }
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{background:#f6f9fb!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-controls button:hover i{color:#167bc4!important;transform:translateX(4px)!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active{
-        background:#eef4fa!important;
+        background:#edf4fa!important;
         box-shadow:inset 0 4px 0 #1e56aa!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active span,
@@ -103,20 +105,23 @@
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active b,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active b{color:#0d1824!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button.is-active i{color:#1e56aa!important}
-      body.v8.v13.v14[data-page="gallery"] .gallery-status{margin-top:20px!important}
-      @media (max-width:1180px){
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls{
-          grid-template-columns:repeat(3,minmax(0,1fr))!important;
-          gap:1px!important;
-          background:#d4dee5!important;
-        }
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{border-right:0!important}
+      body.v8.v13.v14[data-page="gallery"] .gallery-status{
+        margin-top:18px!important;
+        padding-top:15px!important;
+        border-top:1px solid #dbe3e8!important;
       }
-      @media (max-width:720px){
+      @media (max-width:1120px){
         body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:1fr!important}
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter{border-right:0!important;border-bottom:1px solid #d4dee5!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:nth-child(2n){border-right:0!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:nth-child(-n+2){border-bottom:1px solid #d4dee5!important}
+      }
+      @media (max-width:680px){
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{grid-template-columns:1fr!important}
         body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:76px!important;padding:14px 16px!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:82px!important;padding:14px 16px!important;border-right:0!important;border-bottom:1px solid #d4dee5!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:last-child{border-bottom:0!important}
       }
     `;
     document.head.appendChild(style);
@@ -136,11 +141,7 @@
   ];
 
   const categoryKey = value => taxonomy.find(item => item.match(String(value || '')))?.key || 'spm-cnc-machines';
-
-  const categories = () => taxonomy.map(item => ({
-    ...item,
-    groups:(manifest?.groups || []).filter(group => categoryKey(group.category) === item.key)
-  }));
+  const categories = () => taxonomy.map(item => ({...item, groups:(manifest?.groups || []).filter(group => categoryKey(group.category) === item.key)}));
 
   const updateSummary = () => {
     const totalGroups = manifest?.groups?.length || 0;
