@@ -122,6 +122,76 @@
   const setText = (selector,text) => { const el = document.querySelector(selector); if (el) el.textContent = text; };
   const setHTML = (selector,html) => { const el = document.querySelector(selector); if (el) el.innerHTML = html; };
   const setMeta = (name,content) => { const el = document.querySelector(`meta[name="${name}"]`); if (el) el.content = content; };
+  const setImportant = (el,property,value) => el?.style?.setProperty(property,value,'important');
+
+  /* Final visual balance correction. Inline !important values deliberately sit above
+     the legacy layered styles so they cannot flip after the harmony stylesheet moves. */
+  const applyVisualBalance = () => {
+    if (page === 'home') {
+      const related = document.querySelector('.vsk-related-projects-cta,.capability-project-link');
+      if (related) {
+        setImportant(related,'width','min(100%,278px)');
+        setImportant(related,'min-width','250px');
+        setImportant(related,'height','54px');
+        setImportant(related,'min-height','54px');
+        setImportant(related,'margin-top','20px');
+        setImportant(related,'padding','0 18px');
+        setImportant(related,'gap','16px');
+        setImportant(related,'font-size','12px');
+        const arrow = related.querySelector('i');
+        setImportant(arrow,'font-size','15px');
+      }
+
+      const reviews = document.querySelector('.vsk-google-reviews');
+      if (reviews) {
+        setImportant(reviews,'background','#eef3f6');
+        setImportant(reviews,'border-top-color','#d6e0e7');
+        setImportant(reviews,'border-bottom-color','#d6e0e7');
+        setImportant(reviews,'color','#102333');
+        setImportant(reviews.querySelector('.kicker'),'color','#1e56aa');
+        setImportant(reviews.querySelector('.vsk-google-reviews-intro h2'),'color','#102333');
+        setImportant(reviews.querySelector('.vsk-google-reviews-intro h2 em'),'color','#1e56aa');
+        setImportant(reviews.querySelector('.vsk-google-rating>strong'),'color','#1e56aa');
+        setImportant(reviews.querySelector('.vsk-google-rating b'),'color','#1e56aa');
+        setImportant(reviews.querySelector('.vsk-google-rating small'),'color','#66798a');
+        setImportant(reviews.querySelector('.vsk-google-reviews-intro>p'),'color','#566a7b');
+        const reviewLink = reviews.querySelector('.vsk-google-reviews-intro>a');
+        setImportant(reviewLink,'background','#fff');
+        setImportant(reviewLink,'border-color','#b9c9d5');
+        setImportant(reviewLink,'color','#164a9c');
+        const list = reviews.querySelector('.vsk-google-review-list');
+        setImportant(list,'border-top-color','#cad6df');
+        setImportant(list,'border-bottom-color','#cad6df');
+        reviews.querySelectorAll('.vsk-google-review-list article').forEach(article => {
+          setImportant(article,'background','rgba(255,255,255,.78)');
+          setImportant(article,'border-right-color','#cad6df');
+          setImportant(article,'border-bottom-color','#cad6df');
+          setImportant(article.querySelector(':scope>span'),'color','#1e56aa');
+          setImportant(article.querySelector(':scope>p'),'color','#172b3d');
+        });
+      }
+    }
+
+    /* The screenshot utility size resolves to 9px IBM Plex Mono. Lift every instance
+       of that exact tiny utility size by 2px, across Home, Experience and Gallery. */
+    document.querySelectorAll('a,button,span,small,b,i,label,em,strong,p').forEach(el => {
+      const style = getComputedStyle(el);
+      const size = Number.parseFloat(style.fontSize || '0');
+      const family = String(style.fontFamily || '').toLowerCase();
+      if (size >= 8.8 && size <= 9.2 && family.includes('plex mono')) {
+        setImportant(el,'font-size','11px');
+      }
+    });
+  };
+
+  applyVisualBalance();
+  let balanceFrame = 0;
+  const balanceObserver = new MutationObserver(() => {
+    if (balanceFrame) cancelAnimationFrame(balanceFrame);
+    balanceFrame = requestAnimationFrame(applyVisualBalance);
+  });
+  balanceObserver.observe(document.body,{subtree:true,childList:true});
+  window.addEventListener('load',applyVisualBalance,{once:true});
 
   /* One footer source for every page. */
   setText('.footer-brand > p','Special purpose machines, CNC retrofit and automation built around demanding production requirements.');
