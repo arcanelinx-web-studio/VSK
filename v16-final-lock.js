@@ -56,8 +56,6 @@
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
 
-      /* Once the first-paint boot is complete, permanently retire all legacy
-         body pseudo-element loader layers. */
       html.vsk-boot-done body.v8.v13.v14[data-page="home"]::before,
       html.vsk-boot-done body.v8.v13.v14[data-page="home"]::after{
         content:none!important;
@@ -65,7 +63,6 @@
         animation:none!important;
       }
 
-      /* Runtime-triggered engineering opening. */
       @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenLine{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenCopy{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
@@ -144,9 +141,6 @@
     `;
   };
 
-  /* On Home, the first-paint boot owns the first 1.75 seconds. Harmony is
-     attached only after that boot has completed, so it cannot interrupt the
-     loading line or move the boot identity. On subpages it loads immediately. */
   const ensureHarmonyStyles = () => {
     if (page === 'home' && !document.documentElement.classList.contains('vsk-boot-done')) return;
     let link = document.querySelector('link[data-v16-site-harmony]');
@@ -158,10 +152,74 @@
     document.head.appendChild(link);
   };
 
+  let bootProgressStarted = false;
+  const startBootProgress = () => {
+    if (page !== 'home' || bootProgressStarted) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const track = document.querySelector('.page-progress');
+    const bar = track?.querySelector('i');
+    if (!track || !bar) return;
+    bootProgressStarted = true;
+
+    const mobile = window.matchMedia('(max-width:720px)').matches;
+    const values = mobile
+      ? {left:'84px', top:'calc(50% + 33px)', width:'calc(100vw - 106px)'}
+      : {left:'calc(clamp(26px,5vw,82px) + 76px)', top:'calc(50% + 38px)', width:'min(574px,calc(100vw - 128px))'};
+
+    const set = (el, prop, value) => el.style.setProperty(prop, value, 'important');
+    set(track, 'display', 'block');
+    set(track, 'visibility', 'visible');
+    set(track, 'opacity', '1');
+    set(track, 'animation', 'none');
+    set(track, 'position', 'fixed');
+    set(track, 'z-index', '2147483647');
+    set(track, 'left', values.left);
+    set(track, 'right', 'auto');
+    set(track, 'top', values.top);
+    set(track, 'bottom', 'auto');
+    set(track, 'width', values.width);
+    set(track, 'height', '3px');
+    set(track, 'min-height', '3px');
+    set(track, 'max-height', '3px');
+    set(track, 'margin', '0');
+    set(track, 'padding', '0');
+    set(track, 'overflow', 'hidden');
+    set(track, 'pointer-events', 'none');
+    set(track, 'background', '#d9e2e8');
+    set(track, 'transform', 'none');
+
+    set(bar, 'display', 'block');
+    set(bar, 'visibility', 'visible');
+    set(bar, 'opacity', '1');
+    set(bar, 'position', 'absolute');
+    set(bar, 'inset', '0');
+    set(bar, 'width', '100%');
+    set(bar, 'height', '100%');
+    set(bar, 'background', '#1e56aa');
+    set(bar, 'transform-origin', 'left center');
+    set(bar, 'transform', 'scaleX(0)');
+    set(bar, 'transition', 'none');
+
+    bar.getAnimations?.().forEach(animation => animation.cancel());
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bar.animate(
+          [{transform:'scaleX(0)'}, {transform:'scaleX(1)'}],
+          {duration:1120, delay:120, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
+        );
+      });
+    });
+  };
+
   const finishHomeBoot = () => {
     if (page !== 'home') return;
     setTimeout(() => {
       document.documentElement.classList.add('vsk-boot-done');
+      const track = document.querySelector('.page-progress');
+      if (track) {
+        track.style.setProperty('opacity', '0', 'important');
+        track.style.setProperty('display', 'none', 'important');
+      }
       ensureHarmonyStyles();
     }, 1780);
   };
@@ -351,12 +409,14 @@
     syncExperienceStatus();
     ensureGalleryCategories();
     if (page !== 'home') ensureHarmonyStyles();
+    startBootProgress();
     startHeroOpening();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
   else apply();
 
+  startBootProgress();
   finishHomeBoot();
 
   window.addEventListener('load', () => {
