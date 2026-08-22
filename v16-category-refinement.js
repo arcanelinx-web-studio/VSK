@@ -122,7 +122,7 @@
       if(meta)meta.textContent=`GALLERY CATEGORY · ${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}`;
       if(title)title.textContent=category.label;
       if(copy)copy.textContent=category.copy;
-      if(tags)tags.innerHTML=`<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'S':''}</b><b>PHOTOS &amp; VIDEOS</b>`;
+      if(tags)tags.innerHTML=`<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}</b><b>PHOTOS &amp; VIDEOS</b>`;
       let link=media.querySelector('.capability-project-link');
       if(!link){link=document.createElement('a');link.className='capability-project-link';media.querySelector('figcaption')?.appendChild(link);}
       link.classList.add('vsk-related-projects-cta');
