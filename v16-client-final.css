@@ -1,5 +1,5 @@
 /* =========================================================
-   V16.58 — SURGICAL CLIENT CORRECTIONS
+   V16.59 — SURGICAL CLIENT CORRECTIONS
    Keep the established V16 layout. Only explicitly approved tweaks live here.
    ========================================================= */
 
@@ -135,9 +135,9 @@ html body.v8.v13.v14[data-page="home"] main#main .vsk-google-rating small{
   color:#a6b6c3!important;
 }
 html body.v8.v13.v14[data-page="home"] main#main .vsk-google-rating{
-  background:#0f1e2c!important;
+  background:transparent!important;
   background-image:none!important;
-  border-color:#32495d!important;
+  border:0!important;
   box-shadow:none!important;
 }
 html body.v8.v13.v14[data-page="home"] main#main .vsk-google-review-list{
