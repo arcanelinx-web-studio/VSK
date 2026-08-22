@@ -139,3 +139,128 @@
   .v16-premium .gallery-tile.is-portrait,
   .v16-premium .gallery-tile.is-technical{aspect-ratio:4/3}
 }
+
+/* =========================================================
+   V16 ENGINEERING OPENING SEQUENCE
+   The hero itself is the loading experience: copy assembles first,
+   the machine view is revealed horizontally, then technical evidence
+   comes online. No overlay, spinner or fake loading screen.
+   ========================================================= */
+@keyframes vskHeroEyebrowIn{
+  from{opacity:0;translate:0 10px}
+  to{opacity:1;translate:0 0}
+}
+@keyframes vskHeroLineIn{
+  from{opacity:0;translate:0 30px}
+  to{opacity:1;translate:0 0}
+}
+@keyframes vskHeroCopyIn{
+  from{opacity:0;translate:0 18px}
+  to{opacity:1;translate:0 0}
+}
+@keyframes vskHeroBoardIn{
+  from{opacity:0;translate:22px 0;scale:.985}
+  to{opacity:1;translate:0 0;scale:1}
+}
+@keyframes vskHeroImageWipe{
+  from{clip-path:inset(0 100% 0 0)}
+  to{clip-path:inset(0 0 0 0)}
+}
+@keyframes vskHeroMetaIn{
+  from{opacity:0;translate:0 8px}
+  to{opacity:1;translate:0 0}
+}
+@keyframes vskHeroTechIn{
+  from{opacity:0;scale:.965}
+  to{opacity:1;scale:1}
+}
+@keyframes vskHeroCrosshairIn{
+  from{scale:.72;rotate:-8deg}
+  to{scale:1;rotate:0deg}
+}
+
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker{
+  animation:vskHeroEyebrowIn .46s cubic-bezier(.2,.75,.2,1) .08s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span{
+  animation:vskHeroLineIn .66s cubic-bezier(.18,.78,.2,1) .20s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em{
+  animation:vskHeroLineIn .68s cubic-bezier(.18,.78,.2,1) .31s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy>p{
+  animation:vskHeroCopyIn .58s cubic-bezier(.2,.72,.2,1) .49s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions{
+  animation:vskHeroCopyIn .52s cubic-bezier(.2,.72,.2,1) .65s both;
+}
+
+body.v8.v13.v14[data-page="home"] .hero-engineering-board{
+  animation:vskHeroBoardIn .68s cubic-bezier(.18,.75,.2,1) .58s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-board-main img{
+  animation:vskHeroImageWipe .82s cubic-bezier(.22,.78,.2,1) .78s both;
+}
+
+body.v8.v13.v14[data-page="home"] .hero-board-tag{
+  animation:vskHeroMetaIn .42s ease-out 1.12s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-tech-sheet{
+  animation:vskHeroTechIn .48s cubic-bezier(.2,.72,.2,1) 1.20s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-proof-chip{
+  animation:vskHeroMetaIn .44s ease-out 1.31s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-board-side-note{
+  animation:vskHeroMetaIn .42s ease-out 1.38s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-crosshair{
+  animation:vskHeroCrosshairIn .58s cubic-bezier(.2,.72,.2,1) 1.34s both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips{
+  animation:vskHeroMetaIn .46s ease-out 1.34s both;
+}
+
+/* Tiny stagger across the final technical chips makes the close feel engineered,
+   not like one generic fade. */
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span{
+  animation:vskHeroMetaIn .38s ease-out both;
+}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(1){animation-delay:1.38s}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(2){animation-delay:1.44s}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(3){animation-delay:1.50s}
+body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span:nth-child(4){animation-delay:1.56s}
+
+@media(max-width:760px){
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker{animation-delay:.04s}
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span{animation-delay:.13s}
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em{animation-delay:.22s}
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy>p{animation-delay:.37s}
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions{animation-delay:.50s}
+  body.v8.v13.v14[data-page="home"] .hero-engineering-board{animation-delay:.54s}
+  body.v8.v13.v14[data-page="home"] .hero-board-main img{animation-delay:.68s}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy>p,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-actions,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips,
+  body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-chips span,
+  body.v8.v13.v14[data-page="home"] .hero-engineering-board,
+  body.v8.v13.v14[data-page="home"] .hero-board-main img,
+  body.v8.v13.v14[data-page="home"] .hero-board-tag,
+  body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
+  body.v8.v13.v14[data-page="home"] .hero-proof-chip,
+  body.v8.v13.v14[data-page="home"] .hero-board-side-note,
+  body.v8.v13.v14[data-page="home"] .hero-crosshair{
+    animation:none!important;
+    opacity:1!important;
+    translate:none!important;
+    scale:1!important;
+    rotate:0deg!important;
+  }
+  body.v8.v13.v14[data-page="home"] .hero-board-main img{clip-path:none!important}
+}
