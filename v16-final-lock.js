@@ -20,7 +20,6 @@
     if (page === 'machines' && requestedType === 'spm') return 'spm';
     if (page === 'machines' && requestedType === 'retrofit') return 'retrofit';
     if (page === 'machines') return 'experience';
-    if (page === 'custom-spm') return 'spm';
     if (page === 'home') return 'home';
     return '';
   };
@@ -83,9 +82,9 @@
       .find(col => /engineering/i.test(col.querySelector(':scope > span')?.textContent || ''));
     if (engineeringCol) {
       const links = [...engineeringCol.querySelectorAll(':scope > a')];
-      let capability = links.find(a => /capabilit/i.test(a.textContent || ''));
+      const capability = links.find(a => /capabilit/i.test(a.textContent || ''));
       let spm = links.find(a => /custom/i.test(a.textContent || ''));
-      let retrofit = links.find(a => /retrofit/i.test(a.textContent || ''));
+      const retrofit = links.find(a => /retrofit/i.test(a.textContent || ''));
       if (!spm) {
         spm = document.createElement('a');
         if (retrofit) engineeringCol.insertBefore(spm, retrofit); else engineeringCol.appendChild(spm);
@@ -100,7 +99,7 @@
     }
   };
 
-  const normalizeExperience = () => {
+  const normalizeExperienceHero = () => {
     if (page !== 'machines') return;
 
     const isSpm = requestedType === 'spm';
@@ -112,18 +111,21 @@
     const copy = document.querySelector('.archive-hero p');
 
     if (isSpm) {
+      document.title = 'Custom & SPM Experience — VSK Electro-Mech Solutions';
       if (heroNumber) heroNumber.textContent = '39';
       if (heroNumberLabel) heroNumberLabel.textContent = 'CUSTOM & SPM REFERENCES';
       if (kicker) kicker.textContent = 'CUSTOM & SPM EXPERIENCE';
       if (title) title.innerHTML = 'Find custom-machine experience<br><em>close to your production need.</em>';
       if (copy) copy.textContent = 'Browse 39 VSK Custom & SPM references across purpose-built machines, CNC applications, servo systems, hydraulics, testing, handling and process equipment.';
     } else if (isRetrofit) {
+      document.title = 'Retrofit & CNC Experience — VSK Electro-Mech Solutions';
       if (heroNumber) heroNumber.textContent = '15';
       if (heroNumberLabel) heroNumberLabel.textContent = 'RETROFIT & CNC REFERENCES';
       if (kicker) kicker.textContent = 'RETROFIT & CNC EXPERIENCE';
       if (title) title.innerHTML = 'Modernise a sound machine.<br><em>Recover capability and control.</em>';
       if (copy) copy.textContent = 'Explore 15 VSK Retrofit & CNC references across CNC, PLC, HMI, servo, drive, electrical and machine-tool systems, then compare the closest work with your upgrade requirement.';
     } else {
+      document.title = 'Engineering Experience — VSK Electro-Mech Solutions';
       if (heroNumber) heroNumber.textContent = '54';
       if (heroNumberLabel) heroNumberLabel.textContent = 'SEARCHABLE EXPERIENCE';
       if (kicker) kicker.textContent = 'VSK ENGINEERING EXPERIENCE';
@@ -143,28 +145,52 @@
     if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
     if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
-    const active = document.querySelector('[data-active-filters]');
-    if (active) {
-      const text = (active.textContent || '').trim();
-      if (/^retrofit$/i.test(text)) active.textContent = 'Retrofit & CNC';
-      if (/^custom\s*[\/&]\s*spm$/i.test(text)) active.textContent = 'Custom & SPM';
+    /* Legacy archive code expects this element even though V16 keeps visual mode hidden. */
+    if (!document.querySelector('[data-visual-count]')) {
+      const hiddenCount = document.createElement('span');
+      hiddenCount.hidden = true;
+      hiddenCount.dataset.visualCount = '';
+      hiddenCount.textContent = '54';
+      document.body.appendChild(hiddenCount);
     }
-
-    const expected = isSpm ? spm : isRetrofit ? retrofit : null;
-    if (expected && !expected.classList.contains('is-active')) expected.click();
   };
 
-  const guardExperienceLabels = () => {
+  const syncExperienceStatus = () => {
     if (page !== 'machines') return;
-    const active = document.querySelector('[data-active-filters]');
-    if (!active || active.dataset.v16ConsistencyGuard) return;
-    active.dataset.v16ConsistencyGuard = '1';
-    const observer = new MutationObserver(() => {
-      const text = (active.textContent || '').trim();
-      if (/^retrofit$/i.test(text)) active.textContent = 'Retrofit & CNC';
-      else if (/^custom\s*[\/&]\s*spm$/i.test(text)) active.textContent = 'Custom & SPM';
-    });
-    observer.observe(active, {childList:true, subtree:true, characterData:true});
+    const activeType = document.querySelector('[data-type-filter].is-active')?.dataset.typeFilter || requestedType || 'all';
+    const status = document.querySelector('[data-active-filters]');
+    const count = document.querySelector('[data-result-count]');
+    if (!status) return;
+
+    let text = (status.textContent || '').trim();
+    text = text.replace(/Custom\s*\/\s*SPM/ig, 'Custom & SPM');
+    text = text.replace(/^Retrofit(?=\s*(?:·|$))/i, 'Retrofit & CNC');
+
+    const generic = !text || /^All applications\s*·\s*All technologies$/i.test(text);
+    if (generic && activeType === 'spm') text = 'Custom & SPM · All applications · All technologies';
+    else if (generic && activeType === 'retrofit') text = 'Retrofit & CNC · All applications · All technologies';
+    else if (generic) text = 'All applications · All technologies';
+    status.textContent = text;
+
+    if (count) {
+      const n = parseInt((count.textContent || '').match(/\d+/)?.[0] || '0', 10);
+      const hasSpecificFilter = /[“”]|Fanuc|Siemens|Fagor|PLC|Servo|VFD|Automation|Turning|Hydraulics|Cutting|Testing|Finishing|Controls|Grinding/i.test(text);
+      if (!hasSpecificFilter && activeType === 'spm' && n === 39) count.textContent = '39 Custom & SPM references';
+      else if (!hasSpecificFilter && activeType === 'retrofit' && n === 15) count.textContent = '15 Retrofit & CNC references';
+      else if (!hasSpecificFilter && activeType === 'all' && n === 54) count.textContent = '54 engineering references';
+    }
+  };
+
+  const bindExperienceStatus = () => {
+    if (page !== 'machines' || document.documentElement.dataset.v16StatusBound) return;
+    document.documentElement.dataset.v16StatusBound = '1';
+    const schedule = () => setTimeout(syncExperienceStatus, 0);
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-type-filter],[data-category-filter],[data-tech-filter],[data-clear-filters]')) schedule();
+    }, false);
+    document.addEventListener('input', event => {
+      if (event.target.matches?.('[data-archive-search]')) schedule();
+    }, false);
   };
 
   const ensureGalleryCategories = () => {
@@ -179,18 +205,19 @@
   const apply = () => {
     ensureStyles();
     normalizeNavigation();
-    normalizeExperience();
-    guardExperienceLabels();
+    normalizeExperienceHero();
+    bindExperienceStatus();
+    syncExperienceStatus();
     ensureGalleryCategories();
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply, {once:true});
-  } else {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
+  else apply();
+
+  window.addEventListener('load', () => {
     apply();
-  }
-  window.addEventListener('load', apply, {once:true});
-  setTimeout(apply, 80);
-  setTimeout(apply, 500);
-  setTimeout(apply, 1300);
+    setTimeout(syncExperienceStatus, 80);
+    setTimeout(syncExperienceStatus, 650);
+    setTimeout(syncExperienceStatus, 1800);
+  }, {once:true});
 })();
