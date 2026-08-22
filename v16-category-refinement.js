@@ -175,8 +175,9 @@
   window.addEventListener('load',applyStatic,{once:true});
 })();
 
-/* Boot synchronizer: the progress bar is the master clock. It must complete and
-   disappear, leave a clean white hold, and only then permit the curtain reveal. */
+/* Boot synchronizer — V16 final-lock owns the one and only progress animation.
+   This layer never resets the bar; it simply waits for that existing animation,
+   clears the line, and then opens the white curtain. */
 (() => {
   'use strict';
   if (document.body.dataset.page !== 'home') return;
@@ -196,10 +197,10 @@
       background-position:left center!important;background-size:56px 56px!important
     }
     html.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
-      animation:vskSyncedCurtainOpen .52s cubic-bezier(.76,0,.24,1) both!important
+      animation:vskSyncedCurtainOpen .44s cubic-bezier(.76,0,.24,1) both!important
     }
     html.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
-      animation:vskSyncedBrandOut .18s ease-out both!important;transform:translateY(-50%)!important;
+      animation:vskSyncedBrandOut .14s ease-out both!important;transform:translateY(-50%)!important;
       background-image:url("media/brand/vsk-logo.webp")!important;background-repeat:no-repeat!important;
       background-position:left center!important;background-size:56px 56px!important
     }
@@ -216,32 +217,44 @@
   const bar = track?.querySelector('i');
   if (!track || !bar) return;
 
-  const setImportant = (el, property, value) => el.style.setProperty(property, value, 'important');
-  setImportant(track, 'display', 'block');
-  setImportant(track, 'visibility', 'visible');
-  setImportant(track, 'opacity', '1');
-
-  bar.getAnimations?.().forEach(animation => animation.cancel());
-  bar.style.removeProperty('transform');
-  bar.style.transform = 'scaleX(0)';
-  bar.style.transformOrigin = 'left center';
-
-  const progress = bar.animate(
-    [{transform:'scaleX(0)'},{transform:'scaleX(1)'}],
-    {duration:650, delay:50, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
-  );
-
-  let cleared = false;
+  let opened = false;
   const clearLineThenOpen = () => {
-    if (cleared) return;
-    cleared = true;
-    setImportant(track, 'opacity', '0');
-    setImportant(track, 'display', 'none');
+    if (opened) return;
+    opened = true;
+    track.style.setProperty('opacity', '0', 'important');
+    track.style.setProperty('display', 'none', 'important');
     document.documentElement.classList.add('vsk-line-cleared');
+
     setTimeout(() => {
       document.documentElement.classList.add('vsk-curtain-open');
-    }, 150);
+      setTimeout(() => {
+        document.documentElement.classList.add('vsk-boot-done');
+        let harmony = document.querySelector('link[data-v16-site-harmony]');
+        if (!harmony) {
+          harmony = document.createElement('link');
+          harmony.rel = 'stylesheet';
+          harmony.dataset.v16SiteHarmony = '1';
+          harmony.href = `v16-site-harmony.css?review=${Date.now()}`;
+          document.head.appendChild(harmony);
+        }
+      }, 470);
+    }, 70);
   };
 
-  progress.finished.then(clearLineThenOpen).catch(clearLineThenOpen);
+  let attempts = 0;
+  const attachToExistingProgress = () => {
+    const animations = bar.getAnimations?.() || [];
+    const active = animations.find(animation => animation.playState === 'running' || animation.playState === 'pending');
+    if (active) {
+      active.finished.then(clearLineThenOpen).catch(clearLineThenOpen);
+      return;
+    }
+    if (attempts++ < 24) {
+      requestAnimationFrame(attachToExistingProgress);
+      return;
+    }
+    setTimeout(clearLineThenOpen, 1050);
+  };
+
+  attachToExistingProgress();
 })();
