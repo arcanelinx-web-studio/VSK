@@ -149,16 +149,17 @@ body.v8.v13.v14 .archive-browser,
 body.v8.v13.v14 .gallery-browser{background:var(--v16-light-ivory)!important}
 
 /* =========================================================
-   V16.43 — ONE BOOT, ONE FEATURED CASE
+   V16.44 — STABLE BOOT PROGRESS + CURRENT FEATURED CASE
    ========================================================= */
 
-/* The loader brand must never move vertically. Only opacity and the loading
-   line animate; this removes the visible lower-position → centre snap. */
+/* Keep the loader brand fixed. The grey track is static; only the blue line
+   grows. Do not pin background-size with !important — that blocks keyframes. */
 @keyframes vskStableBootBrand{
-  0%{opacity:0;background-size:56px 56px,0 2px,calc(100% - 76px) 1px}
-  12%{opacity:1;background-size:56px 56px,10% 2px,calc(100% - 76px) 1px}
-  60%,78%{opacity:1;background-size:56px 56px,100% 2px,calc(100% - 76px) 1px}
-  100%{opacity:0;background-size:56px 56px,100% 2px,calc(100% - 76px) 1px;visibility:hidden}
+  0%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),0 3px,calc(100% - var(--vsk-boot-offset)) 1px}
+  12%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),0 3px,calc(100% - var(--vsk-boot-offset)) 1px}
+  18%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),4% 3px,calc(100% - var(--vsk-boot-offset)) 1px}
+  62%,80%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 3px,calc(100% - var(--vsk-boot-offset)) 1px}
+  100%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 3px,calc(100% - var(--vsk-boot-offset)) 1px;visibility:hidden}
 }
 html body.v8.v13.v14[data-page="home"][data-page="home"]::before{
   inset:0!important;
@@ -166,6 +167,8 @@ html body.v8.v13.v14[data-page="home"][data-page="home"]::before{
   animation:vskFirstCurtain 1.72s cubic-bezier(.76,0,.24,1) both!important;
 }
 html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+  --vsk-boot-logo:56px;
+  --vsk-boot-offset:76px;
   left:clamp(26px,5vw,82px)!important;
   top:50%!important;
   width:min(650px,calc(100vw - 52px))!important;
@@ -173,8 +176,7 @@ html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
   padding:0 0 16px 76px!important;
   transform:translateY(-50%)!important;
   translate:none!important;
-  background-position:left center,76px 100%,76px 100%!important;
-  background-size:56px 56px,0 2px,calc(100% - 76px) 1px!important;
+  background-position:left center,var(--vsk-boot-offset) 100%,var(--vsk-boot-offset) 100%!important;
   animation:vskStableBootBrand 1.48s cubic-bezier(.22,.72,.2,1) both!important;
 }
 
@@ -356,11 +358,12 @@ html body.v8.v13.v14[data-page="home"] main#main>section.selected-projects-strip
   body.v8.v13.v14 .site-header.is-solid,
   body.v8.v13.v14 .site-header.is-scrolled{background:rgba(250,250,247,.985)!important}
   html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+    --vsk-boot-logo:46px;
+    --vsk-boot-offset:62px;
     left:22px!important;
     width:calc(100vw - 44px)!important;
     min-height:68px!important;
     padding-left:62px!important;
-    background-position:left center,62px 100%,62px 100%!important;
-    background-size:46px 46px,0 2px,calc(100% - 62px) 1px!important;
+    background-position:left center,var(--vsk-boot-offset) 100%,var(--vsk-boot-offset) 100%!important;
   }
 }
