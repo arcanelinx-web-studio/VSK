@@ -1,5 +1,5 @@
 /* =========================================================
-   V16.62 — SURGICAL CLIENT CORRECTIONS
+   V16.63 — SURGICAL CLIENT CORRECTIONS
    Keep the established V16 layout. Only explicitly approved tweaks live here.
    ========================================================= */
 
@@ -30,6 +30,16 @@ html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-p
 html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta:hover{
   background:#e2ebf1!important;
   border-color:#afc4d2!important;
+}
+
+/* Company mini stats — same grey-blue surface, geometry untouched. */
+html body.v8.v13.v14[data-page="home"] main#main .about#about .about-mini-stats,
+html body.v8.v13.v14[data-page="home"] main#main .about#about .about-mini-stats > span{
+  background:#eaf1f5!important;
+  background-image:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .about#about .about-mini-stats > span{
+  border-color:#c6d5df!important;
 }
 
 /* Selected Engineering heading — VSK blue, no layout changes. */
