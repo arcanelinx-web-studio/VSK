@@ -176,7 +176,7 @@
 })();
 
 /* Boot synchronizer: the progress bar is the master clock. It must complete and
-   disappear before the white curtain is permitted to reveal the header. */
+   disappear, leave a clean white hold, and only then permit the curtain reveal. */
 (() => {
   'use strict';
   if (document.body.dataset.page !== 'home') return;
@@ -231,13 +231,17 @@
     {duration:650, delay:50, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
   );
 
-  const openCurtain = () => {
+  let cleared = false;
+  const clearLineThenOpen = () => {
+    if (cleared) return;
+    cleared = true;
     setImportant(track, 'opacity', '0');
     setImportant(track, 'display', 'none');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => document.documentElement.classList.add('vsk-curtain-open'));
-    });
+    document.documentElement.classList.add('vsk-line-cleared');
+    setTimeout(() => {
+      document.documentElement.classList.add('vsk-curtain-open');
+    }, 150);
   };
 
-  progress.finished.then(openCurtain).catch(openCurtain);
+  progress.finished.then(clearLineThenOpen).catch(clearLineThenOpen);
 })();
