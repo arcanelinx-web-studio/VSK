@@ -11,8 +11,8 @@
     }
     link.href = `v16-home-consistency.css?review=${Date.now()}`;
 
-    /* Keep Reviews inside the established VSK palette. This style is appended
-       after the harmony layer so an old cached one-off mineral tone cannot win. */
+    /* Keep Reviews inside the established VSK navy palette from first paint,
+       matching the final harmony layer so there is no color swap after load. */
     let palette = document.getElementById('v16-review-palette-balance');
     if (!palette) {
       palette = document.createElement('style');
@@ -21,25 +21,36 @@
     }
     palette.textContent = `
       html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
-        background:#fbfaf6!important;
-        border-top-color:#d6e0e6!important;
-        border-bottom-color:#d6e0e6!important;
+        background:#0d1824!important;
+        border-top-color:#294057!important;
+        border-bottom-color:#294057!important;
+        color:#f5f8fa!important;
       }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#7fc8f3!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{color:#f5f8fa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em,
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong{color:#9bc8ec!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#72b6e3!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#91a3b3!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{color:#aebdca!important}
       html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
-        background:#fff!important;
-        border-color:#b9c9d5!important;
+        background:#10263a!important;
+        border-color:#466176!important;
+        color:#dbefff!important;
       }
       html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
-        border-top-color:#cad6df!important;
-        border-bottom-color:#cad6df!important;
+        border-top-color:#294057!important;
+        border-bottom-color:#294057!important;
       }
       html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-        background:rgba(255,255,255,.62)!important;
-        border-right-color:#cad6df!important;
+        background:#0f1e2c!important;
+        border-right-color:#294057!important;
       }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#7fc8f3!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{color:#eef4f7!important}
       @media(max-width:720px){
         html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-          border-bottom-color:#cad6df!important;
+          border-bottom-color:#294057!important;
         }
       }
     `;
