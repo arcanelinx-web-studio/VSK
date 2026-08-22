@@ -15,9 +15,9 @@
   const style = document.createElement('style');
   style.id = 'v16-prepaint-gate';
   style.textContent = `
-    html.vsk-page-preparing{background:#0d1824!important}
+    html.vsk-page-preparing{background:#eef3f6!important}
     html.vsk-page-preparing body{opacity:0!important;visibility:hidden!important}
-    html.vsk-page-ready body{opacity:1!important;visibility:visible!important;transition:opacity .16s ease!important}
+    html.vsk-page-ready body{opacity:1!important;visibility:visible!important;transition:opacity .12s ease!important}
     html.vsk-page-ready.vsk-page-no-transition body{transition:none!important}
     @media(prefers-reduced-motion:reduce){html.vsk-page-ready body{transition:none!important}}
   `;
@@ -41,5 +41,5 @@
   });
 
   /* Fail-safe only: runtime-stability normally reveals much sooner. */
-  setTimeout(() => window.__vskRevealPage?.(), 1800);
+  setTimeout(() => window.__vskRevealPage?.(), 1200);
 })();
