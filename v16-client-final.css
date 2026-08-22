@@ -1,5 +1,5 @@
 /* =========================================================
-   V16.60 — SURGICAL CLIENT CORRECTIONS
+   V16.61 — SURGICAL CLIENT CORRECTIONS
    Keep the established V16 layout. Only explicitly approved tweaks live here.
    ========================================================= */
 
@@ -25,6 +25,22 @@ html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-p
 html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta:hover{
   background:#e2ebf1!important;
   border-color:#afc4d2!important;
+}
+
+/* Related Projects control — one step smaller only. */
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta{
+  width:min(100%,252px)!important;
+  min-width:228px!important;
+  height:50px!important;
+  min-height:50px!important;
+  padding:0 16px!important;
+  gap:14px!important;
+  font-size:11px!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link i,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta i{
+  font-size:14px!important;
 }
 
 /* Selected Engineering heading — VSK blue, no layout changes. */
