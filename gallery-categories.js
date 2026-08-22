@@ -10,25 +10,23 @@
   const browserCopy = document.querySelector('.gallery-browser-head > p');
   if (!list || !allButton || !grid) return;
 
+  /* One compact category language: All + the same four engineering families used on Home. */
   if (!document.getElementById('v16-gallery-category-field')) {
     const style = document.createElement('style');
     style.id = 'v16-gallery-category-field';
     style.textContent = `
       body.v8.v13.v14[data-page="gallery"] .gallery-controls{
         display:grid!important;
-        grid-template-columns:minmax(0,1fr) minmax(0,4fr)!important;
-        gap:0!important;
+        grid-template-columns:repeat(5,minmax(0,1fr))!important;
+        gap:1px!important;
         align-items:stretch!important;
-        margin-top:30px!important;
-        border:1px solid #c8d4de!important;
-        background:#fff!important;
-        overflow:hidden!important;
+        margin-top:26px!important;
+        padding:1px!important;
+        border:0!important;
+        background:#d3dde4!important;
+        overflow:visible!important;
       }
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{
-        display:grid!important;
-        grid-template-columns:repeat(4,minmax(0,1fr))!important;
-        min-width:0!important;
-      }
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{display:contents!important}
       body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list] > [data-gallery-filter]{display:none!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{
@@ -36,34 +34,37 @@
         box-sizing:border-box!important;
         width:100%!important;
         min-width:0!important;
-        min-height:112px!important;
+        min-height:82px!important;
+        height:82px!important;
         margin:0!important;
-        padding:18px 18px 16px!important;
+        padding:13px 14px 12px!important;
         display:grid!important;
-        grid-template-columns:minmax(0,1fr) 24px!important;
+        grid-template-columns:minmax(0,1fr) 20px!important;
         grid-template-rows:auto 1fr!important;
-        column-gap:12px!important;
+        column-gap:10px!important;
         align-items:start!important;
         border:0!important;
-        border-right:1px solid #d4dee5!important;
-        background:#fff!important;
+        background:#fbfcfc!important;
         color:#102333!important;
         text-align:left!important;
         box-shadow:none!important;
-        transition:background .18s ease,color .18s ease,box-shadow .18s ease!important;
+        overflow:hidden!important;
+        transition:background .18s ease,box-shadow .18s ease!important;
       }
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:last-child{border-right:0!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter span,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category] span{
         grid-column:1!important;
+        min-width:0!important;
         display:flex!important;
         align-items:center!important;
-        gap:9px!important;
-        min-width:0!important;
+        gap:8px!important;
+        overflow:hidden!important;
         color:#31567f!important;
-        font:500 8px/1.35 "IBM Plex Mono",monospace!important;
-        letter-spacing:.1em!important;
+        font:500 9px/1.25 "IBM Plex Mono",monospace!important;
+        letter-spacing:.075em!important;
         text-transform:uppercase!important;
+        white-space:nowrap!important;
+        text-overflow:ellipsis!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button span em{
         flex:0 0 auto!important;
@@ -76,59 +77,58 @@
         grid-column:1!important;
         align-self:end!important;
         display:block!important;
-        margin-top:14px!important;
+        margin:8px 0 0!important;
         color:#102333!important;
-        font:600 clamp(16px,1vw,18px)/1.08 "Space Grotesk",Inter,sans-serif!important;
+        font:600 16px/1.08 "Space Grotesk",Inter,sans-serif!important;
         letter-spacing:-.025em!important;
+        white-space:nowrap!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button i{
         grid-column:2!important;
         grid-row:1/3!important;
         align-self:end!important;
         justify-self:end!important;
-        margin-bottom:1px!important;
-        color:#9aabb9!important;
+        color:#94a8b8!important;
         font-style:normal!important;
-        font-size:16px!important;
+        font-size:15px!important;
         transition:transform .18s ease,color .18s ease!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter:hover,
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{background:#f6f9fb!important}
+      body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:hover{background:#f3f7f9!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button:hover i{color:#167bc4!important;transform:translateX(4px)!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active{
-        background:#edf4fa!important;
-        box-shadow:inset 0 4px 0 #1e56aa!important;
+        background:#eef4fa!important;
+        box-shadow:inset 0 3px 0 #1e56aa!important;
       }
       body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active span,
       body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active span{color:#174f9f!important}
-      body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter.is-active b,
-      body.v8.v13.v14[data-page="gallery"] [data-gallery-category].is-active b{color:#0d1824!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-controls button.is-active i{color:#1e56aa!important}
       body.v8.v13.v14[data-page="gallery"] .gallery-status{
-        margin-top:18px!important;
-        padding-top:15px!important;
-        border-top:1px solid #dbe3e8!important;
+        margin-top:14px!important;
+        padding-top:0!important;
+        min-height:30px!important;
+        border:0!important;
+        font-size:12px!important;
       }
-      @media (max-width:1120px){
+      body.v8.v13.v14[data-page="gallery"] .gallery-status::before,
+      body.v8.v13.v14[data-page="gallery"] .gallery-status::after{display:none!important;content:none!important}
+      @media (max-width:1220px){
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+      }
+      @media (max-width:760px){
         body.v8.v13.v14[data-page="gallery"] .gallery-controls{grid-template-columns:1fr!important}
-        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter{border-right:0!important;border-bottom:1px solid #d4dee5!important}
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:nth-child(2n){border-right:0!important}
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:nth-child(-n+2){border-bottom:1px solid #d4dee5!important}
-      }
-      @media (max-width:680px){
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-filter-list]{grid-template-columns:1fr!important}
         body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter,
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{min-height:82px!important;padding:14px 16px!important;border-right:0!important;border-bottom:1px solid #d4dee5!important}
-        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]:last-child{border-bottom:0!important}
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category]{height:70px!important;min-height:70px!important;padding:11px 13px!important}
+        body.v8.v13.v14[data-page="gallery"] .gallery-controls > .gallery-filter span,
+        body.v8.v13.v14[data-page="gallery"] [data-gallery-category] span{white-space:normal!important}
       }
     `;
     document.head.appendChild(style);
   }
 
   if (browserKicker) browserKicker.textContent = 'PROJECT CATEGORIES';
-  if (browserCopy) browserCopy.textContent = 'Choose one of the same four engineering categories used across the VSK website, then open individual project groups to inspect machine construction, controls, mechanisms and process detail.';
+  if (browserCopy) browserCopy.textContent = 'Choose the engineering family closest to your requirement, then inspect the individual project groups, machine construction, controls and process detail.';
 
   let manifest = null;
   let activeCategory = 'all';
@@ -160,7 +160,7 @@
     list.innerHTML = cats.map((cat,index) => `
       <button type="button" data-gallery-category="${cat.key}" class="${cat.key === activeCategory ? 'is-active' : ''}">
         <span><em>${String(index + 1).padStart(2,'0')}</em>${cat.label}</span>
-        <b>${cat.groups.length} project${cat.groups.length === 1 ? '' : 's'}</b><i>→</i>
+        <b>${cat.groups.length} ${cat.groups.length === 1 ? 'project' : 'projects'}</b><i>→</i>
       </button>`).join('');
     allButton.innerHTML = `<span><em>00</em>All projects</span><b>${manifest.groups.length} project groups</b><i>→</i>`;
     allButton.classList.toggle('is-active', activeCategory === 'all');
@@ -212,18 +212,19 @@
     selectCategory('all');
   });
 
+  /* app.js hydrates the gallery once. If it restores legacy project-name filters,
+     replace them with this one category rail, then stop observing. */
   const syncAfterLegacyRender = () => {
     if (!manifest?.groups?.length) return;
     if (list.querySelector('[data-gallery-filter]')) buildCategoryButtons();
     applyCategory();
   };
-
   const observer = new MutationObserver(syncAfterLegacyRender);
-  observer.observe(list, { childList: true });
-  observer.observe(grid, { childList: true });
-  setTimeout(() => observer.disconnect(), 8000);
+  observer.observe(list, { childList:true });
+  observer.observe(grid, { childList:true });
+  setTimeout(() => observer.disconnect(), 7000);
 
-  fetch(`media/archive-manifest.json?review=${Date.now()}`, { cache: 'no-store' })
+  fetch(`media/archive-manifest.json?review=${Date.now()}`, {cache:'no-store'})
     .then(response => response.ok ? response.json() : null)
     .then(data => {
       if (!data?.groups?.length) return;
@@ -233,8 +234,8 @@
       activeCategory = requested && available.has(requested) ? requested : 'all';
       buildCategoryButtons();
       requestAnimationFrame(applyCategory);
-      setTimeout(syncAfterLegacyRender, 500);
-      setTimeout(syncAfterLegacyRender, 1300);
+      setTimeout(syncAfterLegacyRender, 450);
+      setTimeout(syncAfterLegacyRender, 1200);
     })
     .catch(() => document.body.classList.add('gallery-categories-ready'));
 })();
