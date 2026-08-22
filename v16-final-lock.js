@@ -170,7 +170,105 @@
       style.id = 'v16-user-balance-authority';
     }
     style.textContent = `
-      /* Final client-review authority: these rules are always appended after harmony. */
+      /* ======================================================
+         FINAL HOMEPAGE SURFACE SYSTEM
+         One dark engineering anchor, one dark conversion anchor,
+         and a disciplined sequence of warm / cool / white surfaces.
+         ====================================================== */
+      html body.v8.v13.v14[data-page="home"] .credibility-band{
+        background:#f4f7f9!important;
+        border-top:1px solid #d8e2e8!important;
+        border-bottom:1px solid #d8e2e8!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .capabilities{
+        background:#fbfaf6!important;
+        border-top:0!important;
+        border-bottom:1px solid #e3e5e5!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .projects-showcase#projects{
+        background:#0d1824!important;
+        color:#f5f8fa!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .about#about{
+        background:#ffffff!important;
+        color:#102333!important;
+        border-top:1px solid #e2e8ec!important;
+        border-bottom:1px solid #dbe3e8!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .selected-projects-strip{
+        background:#eaf1f5!important;
+        color:#102333!important;
+        border-top:1px solid #d3dfe6!important;
+        border-bottom:1px solid #d3dfe6!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .engineering-depth{
+        background:#fbfaf6!important;
+        color:#102333!important;
+        border-top:1px solid #e0e5e7!important;
+        border-bottom:1px solid #e0e5e7!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .process.section-ivory{
+        background:#eaf1f5!important;
+        color:#102333!important;
+        border-top:1px solid #d3dfe6!important;
+        border-bottom:1px solid #d3dfe6!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .contact.section-dark{
+        background:#0d1824!important;
+      }
+
+      /* Small dark punctuation inside light sections gives contrast
+         without turning the whole page into alternating dark bands. */
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
+        background:#ffffff!important;
+        border-top:1px solid #dbe3e8!important;
+        border-bottom:1px solid #dbe3e8!important;
+        color:#102333!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{color:#102333!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating{
+        width:max-content!important;
+        min-width:244px!important;
+        margin:26px 0 22px!important;
+        padding:16px 18px!important;
+        background:#102333!important;
+        border:1px solid #294057!important;
+        box-shadow:0 10px 28px rgba(16,35,51,.08)!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong,
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#9bc8ec!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#c3d0d9!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{color:#566a7b!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
+        background:#f4f7f9!important;
+        border-color:#b9c9d5!important;
+        color:#164a9c!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
+        border-top-color:#cad6df!important;
+        border-bottom-color:#cad6df!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
+        background:#f4f7f9!important;
+        border-right-color:#cad6df!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#1e56aa!important}
+      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{color:#172b3d!important}
+
+      html body.v8.v13.v14[data-page="home"] .process-line article{
+        border-color:#c7d5de!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .process-line article>span{
+        color:#1e56aa!important;
+      }
+      html body.v8.v13.v14[data-page="home"] .about blockquote{
+        border-left-color:#1e56aa!important;
+        color:#23394b!important;
+      }
+
+      /* Related projects remains visible but proportionate to its caption. */
       html body.v8.v13.v14 .capability-media .vsk-related-projects-cta,
       html body.v8.v13.v14 .capability-media .capability-project-link{
         width:min(100%,276px)!important;
@@ -185,36 +283,7 @@
       html body.v8.v13.v14 .capability-media .vsk-related-projects-cta i,
       html body.v8.v13.v14 .capability-media .capability-project-link i{font-size:15px!important}
 
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
-        background:#fff!important;
-        border-top-color:#d6e0e7!important;
-        border-bottom-color:#d6e0e7!important;
-        color:#102333!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#1e56aa!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{color:#102333!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em,
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong,
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#1e56aa!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#66798a!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{color:#566a7b!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
-        background:#eef3f6!important;
-        border-color:#b9c9d5!important;
-        color:#164a9c!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
-        border-top-color:#cad6df!important;
-        border-bottom-color:#cad6df!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-        background:#eef3f6!important;
-        border-right-color:#cad6df!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#1e56aa!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{color:#172b3d!important}
-
-      /* The former 9px mono utility tier is now 12px throughout the site. */
+      /* The former tiny mono utility tier is now 12px throughout the site. */
       html body.v8.v13.v14 .proof-grid span,
       html body.v8.v13.v14 .customer-row>span,
       html body.v8.v13.v14 .hero-reference span,
