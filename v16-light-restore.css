@@ -149,17 +149,17 @@ body.v8.v13.v14 .archive-browser,
 body.v8.v13.v14 .gallery-browser{background:var(--v16-light-ivory)!important}
 
 /* =========================================================
-   V16.44 — STABLE BOOT PROGRESS + CURRENT FEATURED CASE
+   V16.45 — ORIGINAL SMOOTH BOOT + POSITION LOCK
    ========================================================= */
 
-/* Keep the loader brand fixed. The grey track is static; only the blue line
-   grows. Do not pin background-size with !important — that blocks keyframes. */
-@keyframes vskStableBootBrand{
-  0%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),0 3px,calc(100% - var(--vsk-boot-offset)) 1px}
-  12%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),0 3px,calc(100% - var(--vsk-boot-offset)) 1px}
-  18%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),4% 3px,calc(100% - var(--vsk-boot-offset)) 1px}
-  62%,80%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 3px,calc(100% - var(--vsk-boot-offset)) 1px}
-  100%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 3px,calc(100% - var(--vsk-boot-offset)) 1px;visibility:hidden}
+/* Preserve the original approved boot rhythm exactly. The only correction is
+   that transform is no longer animated, so the brand remains centred for the
+   entire sequence instead of snapping between transform coordinate systems. */
+@keyframes vskSmoothBootBrand{
+  0%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),0 2px,calc(100% - var(--vsk-boot-offset)) 1px}
+  12%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),10% 2px,calc(100% - var(--vsk-boot-offset)) 1px}
+  60%,78%{opacity:1;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 2px,calc(100% - var(--vsk-boot-offset)) 1px}
+  100%{opacity:0;background-size:var(--vsk-boot-logo) var(--vsk-boot-logo),calc(100% - var(--vsk-boot-offset)) 2px,calc(100% - var(--vsk-boot-offset)) 1px;visibility:hidden}
 }
 html body.v8.v13.v14[data-page="home"][data-page="home"]::before{
   inset:0!important;
@@ -177,7 +177,7 @@ html body.v8.v13.v14[data-page="home"][data-page="home"]::after{
   transform:translateY(-50%)!important;
   translate:none!important;
   background-position:left center,var(--vsk-boot-offset) 100%,var(--vsk-boot-offset) 100%!important;
-  animation:vskStableBootBrand 1.48s cubic-bezier(.22,.72,.2,1) both!important;
+  animation:vskSmoothBootBrand 1.48s cubic-bezier(.22,.72,.2,1) both!important;
 }
 
 /* Engineering Depth — vertical separators belong to the entire proof board. */
