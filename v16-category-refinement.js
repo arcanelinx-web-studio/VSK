@@ -10,50 +10,6 @@
       document.head.appendChild(link);
     }
     link.href = `v16-home-consistency.css?review=${Date.now()}`;
-
-    /* Keep Reviews inside the established VSK navy palette from first paint,
-       matching the final harmony layer so there is no color swap after load. */
-    let palette = document.getElementById('v16-review-palette-balance');
-    if (!palette) {
-      palette = document.createElement('style');
-      palette.id = 'v16-review-palette-balance';
-      document.head.appendChild(palette);
-    }
-    palette.textContent = `
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews{
-        background:#0d1824!important;
-        border-top-color:#294057!important;
-        border-bottom-color:#294057!important;
-        color:#f5f8fa!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews .kicker{color:#7fc8f3!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2{color:#f5f8fa!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro h2 em,
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating>strong{color:#9bc8ec!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating b{color:#72b6e3!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-rating small{color:#91a3b3!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>p{color:#aebdca!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-reviews-intro>a{
-        background:#10263a!important;
-        border-color:#466176!important;
-        color:#dbefff!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list{
-        border-top-color:#294057!important;
-        border-bottom-color:#294057!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-        background:#0f1e2c!important;
-        border-right-color:#294057!important;
-      }
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>span{color:#7fc8f3!important}
-      html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article>p{color:#eef4f7!important}
-      @media(max-width:720px){
-        html body.v8.v13.v14[data-page="home"] .vsk-google-review-list article{
-          border-bottom-color:#294057!important;
-        }
-      }
-    `;
   };
 
   const categorySpecs = [
@@ -191,12 +147,14 @@
   const buildGoogleReviews = () => {
     if(document.querySelector('.vsk-google-reviews'))return;
     const selected=document.querySelector('.selected-projects-strip');
-    if(!selected)return;
+    const depth=document.querySelector('.engineering-depth');
+    const anchor=depth||selected;
+    if(!anchor)return;
     const section=document.createElement('section');
     section.className='vsk-google-reviews';
     section.setAttribute('aria-labelledby','vsk-google-reviews-title');
     section.innerHTML=`<div class="shell vsk-google-reviews-grid"><div class="vsk-google-reviews-intro"><span class="kicker">GOOGLE REVIEWS</span><h2 id="vsk-google-reviews-title">Trusted for practical<br><em>machine engineering.</em></h2><div class="vsk-google-rating"><strong>4.9</strong><span><b aria-label="5 stars">★★★★★</b><small>14 Google reviews</small></span></div><p>Feedback from customers who have worked with VSK on machine building, retrofit and engineering support.</p><a href="https://www.google.com/maps/search/?api=1&query=VSK+Electro-Mech+Solutions+Bengaluru" target="_blank" rel="noopener">View all Google reviews <span>↗</span></a></div><div class="vsk-google-review-list"><article><span>GOOGLE REVIEW</span><p>“Good service company”</p></article><article><span>GOOGLE REVIEW</span><p>“Special purpose machines effective price”</p></article><article><span>GOOGLE REVIEW</span><p>“Custom built machines, CNC retrofit solution services provider.”</p></article></div></div>`;
-    selected.insertAdjacentElement('afterend',section);
+    anchor.insertAdjacentElement('afterend',section);
   };
 
   const normalizeCopy = () => {
