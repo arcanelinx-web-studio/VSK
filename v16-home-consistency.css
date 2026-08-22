@@ -514,3 +514,61 @@ html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-cal
   html body.v8.v13.v14[data-page="home"] .v16-selected-card h3{font-size:19px!important;margin:10px 0 6px!important}
   html body.v8.v13.v14[data-page="home"] .v16-selected-card p{font-size:12px!important;-webkit-line-clamp:2!important}
 }
+
+/* =========================================================
+   07 / FINAL LIVE OVERRIDES — CLIENT-APPROVED COLOR + LINK WEIGHT
+   High specificity is intentional: v16-final-lock.js still injects an older
+   balance style later in the lifecycle. These rules are the visual truth.
+   ========================================================= */
+html body.v8.v13.v14[data-page="home"] main#main>.credibility-band{
+  background:#fafaf7!important;
+  background-image:none!important;
+  border-top:1px solid #dfe4e6!important;
+  border-bottom:1px solid #dfe4e6!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.credibility-band .proof-grid strong{
+  color:#1e56aa!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.credibility-band .customer-row a{
+  color:#1e56aa!important;
+  font-weight:600!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews>.shell,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-reviews-grid,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-reviews-intro,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-rating,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-review-list,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-review-list article{
+  background:#fff!important;
+  background-image:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-rating{
+  border-top:1px solid #c9d6df!important;
+  border-bottom:1px solid #c9d6df!important;
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-rating>strong,
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-rating b{
+  color:#1e56aa!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-rating small{
+  color:#74879a!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.vsk-google-reviews .vsk-google-review-list article{
+  border-right-color:#cad6df!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-mini-stats strong{
+  color:#1e56aa!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions .text-arrow,
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions a{
+  color:#1e56aa!important;
+  font-weight:600!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions .text-arrow:hover,
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions a:hover{
+  color:#167bc4!important;
+}
