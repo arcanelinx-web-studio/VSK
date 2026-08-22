@@ -15,6 +15,25 @@
   --v16-light-line:#D5DCE2;
 }
 
+/* FIRST-PAINT GATE
+   This stylesheet is render-blocking in the document head. Keep every real
+   homepage element invisible beneath the white VSK boot curtain until the
+   curtain is already fully composited. Pseudo-elements on body remain visible. */
+@keyframes vskFirstPaintContentGate{
+  0%,99%{visibility:hidden;opacity:0}
+  100%{visibility:visible;opacity:1}
+}
+html body.v8.v13.v14[data-page="home"] > :not(script):not(style){
+  animation:vskFirstPaintContentGate 1.02s steps(1,end) both!important;
+}
+@media(prefers-reduced-motion:reduce){
+  html body.v8.v13.v14[data-page="home"] > :not(script):not(style){
+    animation:none!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
+
 html{background:var(--v16-light-ivory)!important}
 body.v8.v13.v14{background:var(--v16-light-ivory)!important;color:var(--v16-light-ink)!important}
 
