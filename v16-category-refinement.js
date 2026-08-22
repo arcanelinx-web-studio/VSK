@@ -15,7 +15,7 @@
   const categorySpecs = [
     {
       label:'SPM / CNC Machines', slug:'spm-cnc-machines',
-      match:c=>/spm/i.test(c)&&/cnc/i.test(c)&&!/plc|hmi|servo/i.test(c),
+      match:c=>(/spm/i.test(c)&&/cnc/i.test(c)&&!/plc|hmi|servo/i.test(c))||/^new project$/i.test(c),
       image:'media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313.webp',
       copy:'Purpose-built SPM and CNC machine applications engineered around the component, operation, workholding and cycle target.'
     },
