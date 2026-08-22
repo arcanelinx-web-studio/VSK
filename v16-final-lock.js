@@ -25,6 +25,8 @@
     return '';
   };
 
+  let heroOpeningStarted = false;
+
   const ensureStyles = () => {
     let style = document.getElementById('v16-navigation-consistency');
     if (!style) {
@@ -56,11 +58,46 @@
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
 
+      /* One authoritative boot. Freeze the legacy pseudo curtain and remove its
+         embedded line; the real DOM progress bar is the only visible line. */
+      @keyframes vskBootCurtainOpenFinal{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(100% 0 0 0)}}
+      @keyframes vskBootBrandOutFinal{from{opacity:1}to{opacity:0;visibility:hidden}}
+      html.vsk-boot-controlled:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
+        animation:none!important;
+        clip-path:inset(0 0 0 0)!important;
+        background:#fbfbf8!important;
+      }
+      html.vsk-boot-controlled:not(.vsk-curtain-open):not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+        animation:none!important;
+        opacity:1!important;
+        visibility:visible!important;
+        transform:translateY(-50%)!important;
+        background-image:url("media/brand/vsk-logo.webp")!important;
+        background-repeat:no-repeat!important;
+        background-position:left center!important;
+        background-size:56px 56px!important;
+      }
+      html.vsk-boot-controlled.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::before{
+        animation:vskBootCurtainOpenFinal .50s cubic-bezier(.76,0,.24,1) both!important;
+      }
+      html.vsk-boot-controlled.vsk-curtain-open:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+        animation:vskBootBrandOutFinal .14s ease-out both!important;
+        transform:translateY(-50%)!important;
+        background-image:url("media/brand/vsk-logo.webp")!important;
+        background-repeat:no-repeat!important;
+        background-position:left center!important;
+        background-size:56px 56px!important;
+      }
       html.vsk-boot-done body.v8.v13.v14[data-page="home"]::before,
       html.vsk-boot-done body.v8.v13.v14[data-page="home"]::after{
         content:none!important;
         display:none!important;
         animation:none!important;
+      }
+      @media(max-width:720px){
+        html.vsk-boot-controlled:not(.vsk-boot-done) body.v8.v13.v14[data-page="home"][data-page="home"]::after{
+          background-size:46px 46px!important;
+        }
       }
 
       @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
@@ -85,9 +122,8 @@
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-tech-sheet,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-proof-chip,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-board-side-note,
-      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{
-        animation:none!important;
-      }
+      html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-crosshair{animation:none!important}
+
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy .hero-kicker,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 span,
       html.vsk-opening-prep body.v8.v13.v14[data-page="home"] .hero-blue-copy h1 em,
@@ -152,14 +188,57 @@
     document.head.appendChild(link);
   };
 
+  const startHeroOpening = () => {
+    if (page !== 'home' || heroOpeningStarted) return;
+    if (!document.documentElement.classList.contains('vsk-boot-done')) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    const hero = document.querySelector('.hero.hero-blue');
+    const machineImage = document.querySelector('.hero-board-main img');
+    if (!hero) return;
+
+    const begin = () => {
+      if (heroOpeningStarted) return;
+      heroOpeningStarted = true;
+      const root = document.documentElement;
+      root.classList.remove('vsk-opening-live');
+      root.classList.add('vsk-opening-prep');
+      void hero.offsetWidth;
+      requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('vsk-opening-live')));
+      setTimeout(() => root.classList.remove('vsk-opening-prep', 'vsk-opening-live'), 2850);
+    };
+
+    if (machineImage?.complete) setTimeout(begin, 80);
+    else {
+      machineImage?.addEventListener('load', () => setTimeout(begin, 60), {once:true});
+      setTimeout(begin, 700);
+    }
+  };
+
   let bootProgressStarted = false;
   const startBootProgress = () => {
     if (page !== 'home' || bootProgressStarted) return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const root = document.documentElement;
+
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      root.classList.add('vsk-boot-done');
+      ensureHarmonyStyles();
+      startHeroOpening();
+      return;
+    }
+
     const track = document.querySelector('.page-progress');
     const bar = track?.querySelector('i');
-    if (!track || !bar) return;
+    if (!track || !bar) {
+      root.classList.add('vsk-boot-done');
+      ensureHarmonyStyles();
+      startHeroOpening();
+      return;
+    }
+
     bootProgressStarted = true;
+    root.classList.remove('vsk-boot-done', 'vsk-curtain-open');
+    root.classList.add('vsk-boot-controlled');
 
     const mobile = window.matchMedia('(max-width:720px)').matches;
     const values = mobile
@@ -196,32 +275,43 @@
     set(bar, 'width', '100%');
     set(bar, 'height', '100%');
     set(bar, 'background', '#1e56aa');
-    set(bar, 'transform-origin', 'left center');
-    set(bar, 'transform', 'scaleX(0)');
     set(bar, 'transition', 'none');
+    set(bar, 'transform', 'none');
 
     bar.getAnimations?.().forEach(animation => animation.cancel());
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        bar.animate(
-          [{transform:'scaleX(0)'}, {transform:'scaleX(1)'}],
-          {duration:1120, delay:120, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
-        );
-      });
-    });
-  };
+    bar.style.removeProperty('clip-path');
+    bar.style.removeProperty('-webkit-clip-path');
 
-  const finishHomeBoot = () => {
-    if (page !== 'home') return;
-    setTimeout(() => {
-      document.documentElement.classList.add('vsk-boot-done');
-      const track = document.querySelector('.page-progress');
-      if (track) {
-        track.style.setProperty('opacity', '0', 'important');
-        track.style.setProperty('display', 'none', 'important');
-      }
-      ensureHarmonyStyles();
-    }, 1780);
+    const progress = bar.animate(
+      [
+        {clipPath:'inset(0 100% 0 0)'},
+        {clipPath:'inset(0 0 0 0)'}
+      ],
+      {duration:980, delay:100, easing:'cubic-bezier(.22,.72,.2,1)', fill:'forwards'}
+    );
+
+    let finished = false;
+    const completeBoot = () => {
+      if (finished) return;
+      finished = true;
+      set(track, 'opacity', '0');
+      set(track, 'display', 'none');
+
+      /* Give the browser one clean white frame with no line, then reveal. */
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          root.classList.add('vsk-curtain-open');
+          setTimeout(() => {
+            root.classList.add('vsk-boot-done');
+            root.classList.remove('vsk-boot-controlled', 'vsk-curtain-open');
+            ensureHarmonyStyles();
+            startHeroOpening();
+          }, 540);
+        });
+      });
+    };
+
+    progress.finished.then(completeBoot).catch(completeBoot);
   };
 
   const normalizeNavigation = () => {
@@ -370,37 +460,6 @@
     document.body.appendChild(script);
   };
 
-  let heroOpeningStarted = false;
-  const startHeroOpening = () => {
-    if (page !== 'home' || heroOpeningStarted) return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-
-    const hero = document.querySelector('.hero.hero-blue');
-    const machineImage = document.querySelector('.hero-board-main img');
-    if (!hero) return;
-
-    const begin = () => {
-      if (heroOpeningStarted) return;
-      heroOpeningStarted = true;
-      const root = document.documentElement;
-      root.classList.remove('vsk-opening-live');
-      root.classList.add('vsk-opening-prep');
-      void hero.offsetWidth;
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => root.classList.add('vsk-opening-live'));
-      });
-      setTimeout(() => {
-        root.classList.remove('vsk-opening-prep', 'vsk-opening-live');
-      }, 2850);
-    };
-
-    if (machineImage?.complete) setTimeout(begin, 120);
-    else {
-      machineImage?.addEventListener('load', () => setTimeout(begin, 80), {once:true});
-      setTimeout(begin, 850);
-    }
-  };
-
   const apply = () => {
     ensureStyles();
     normalizeNavigation();
@@ -416,8 +475,11 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
   else apply();
 
-  startBootProgress();
-  finishHomeBoot();
+  /* The script is loaded after the homepage markup, so start immediately too. */
+  if (page === 'home') {
+    ensureStyles();
+    startBootProgress();
+  }
 
   window.addEventListener('load', () => {
     apply();
