@@ -92,6 +92,7 @@
       if(tags)tags.innerHTML=`<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}</b><b>PHOTOS &amp; VIDEOS</b>`;
       let link=media.querySelector('.capability-project-link');
       if(!link){link=document.createElement('a');link.className='capability-project-link';media.querySelector('figcaption')?.appendChild(link);}
+      link.classList.add('vsk-related-projects-cta');
       link.href=`gallery.html?category=${encodeURIComponent(category.slug)}`;
       link.innerHTML='<span>See related projects</span><i>→</i>';
     };
@@ -130,12 +131,29 @@
     if(action){action.removeAttribute('data-feature-open');action.innerHTML='Find related experience <span>→</span>';action.onclick=()=>{location.href='machines.html?q=Air%20Leakage';};}
   };
 
+  const selectedCardMarkup = (item, duplicate=false) => `<a class="v16-selected-card" href="${item.href}"${duplicate?' tabindex="-1"':''}><figure><img src="${item.image}" alt="${item.title}" loading="lazy"></figure><span class="v16-selected-card-copy"><span class="v16-selected-meta"><span>${item.code}</span><span>${item.family}</span></span><h3>${item.title}</h3><p>${item.copy}</p><b>FIND RELATED EXPERIENCE →</b></span></a>`;
+
   const rebuildSelected = () => {
     const grid=document.querySelector('[data-home-projects]');if(!grid)return;
-    const signature=selectedProjects.map(item=>item.title).join('|');
-    if(grid.dataset.v16Selection===signature&&grid.querySelectorAll('.v16-selected-card').length===selectedProjects.length)return;
+    const signature='v16-47-moving-engineering-rail';
+    if(grid.dataset.v16Selection===signature&&grid.querySelector('.vsk-selected-track')&&grid.querySelectorAll('.vsk-selected-group').length===2)return;
+    const primary=selectedProjects.map(item=>selectedCardMarkup(item,false)).join('');
+    const duplicate=selectedProjects.map(item=>selectedCardMarkup(item,true)).join('');
     grid.dataset.v16Selection=signature;
-    grid.innerHTML=selectedProjects.map(item=>`<a class="v16-selected-card" href="${item.href}"><figure><img src="${item.image}" alt="${item.title}" loading="lazy"></figure><span class="v16-selected-card-copy"><span class="v16-selected-meta"><span>${item.code}</span><span>${item.family}</span></span><h3>${item.title}</h3><p>${item.copy}</p><b>FIND RELATED EXPERIENCE →</b></span></a>`).join('');
+    grid.classList.add('vsk-selected-rail');
+    grid.innerHTML=`<div class="vsk-selected-track"><div class="vsk-selected-group">${primary}</div><div class="vsk-selected-group" aria-hidden="true">${duplicate}</div></div>`;
+  };
+
+  const buildGoogleReviews = () => {
+    if(document.querySelector('.vsk-google-reviews'))return;
+    const selected=document.querySelector('.selected-projects-strip');
+    if(!selected)return;
+    const section=document.createElement('section');
+    section.className='vsk-google-reviews';
+    section.setAttribute('aria-labelledby','vsk-google-reviews-title');
+    section.innerHTML=`<div class="shell vsk-google-reviews-grid"><div class="vsk-google-reviews-intro reveal"><span class="kicker">GOOGLE REVIEWS</span><h2 id="vsk-google-reviews-title">Trusted for practical<br><em>machine engineering.</em></h2><div class="vsk-google-rating"><strong>4.9</strong><span><b aria-label="5 stars">★★★★★</b><small>14 Google reviews</small></span></div><p>Feedback from customers who have worked with VSK on machine building, retrofit and engineering support.</p><a href="https://www.google.com/maps/search/?api=1&query=VSK+Electro-Mech+Solutions+Bengaluru" target="_blank" rel="noopener">View all Google reviews <span>↗</span></a></div><div class="vsk-google-review-list"><article><span>GOOGLE REVIEW</span><p>“Good service company”</p></article><article><span>GOOGLE REVIEW</span><p>“Special purpose machines effective price”</p></article><article><span>GOOGLE REVIEW</span><p>“Custom built machines, CNC retrofit solution services provider.”</p></article></div></div>`;
+    selected.insertAdjacentElement('afterend',section);
+    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)section.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible'));
   };
 
   const normalizeCopy = () => {
@@ -152,6 +170,7 @@
     rebuildFeatured();
     document.querySelector('.retrofit')?.remove();
     rebuildSelected();
+    buildGoogleReviews();
     normalizeCopy();
   };
 
