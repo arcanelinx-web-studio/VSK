@@ -54,54 +54,96 @@
       body.v8.v13.v14[data-page="home"] .capability-project-link{min-width:210px!important}
       body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{display:none!important}
 
+      /* Gallery gateway: editorial V16 treatment rather than a separate dark banner. */
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+        position:relative!important;
         box-sizing:border-box!important;
         width:var(--audit-shell,calc(100% - 80px))!important;
         max-width:none!important;
-        min-height:62px!important;
-        margin:28px auto 0!important;
-        padding:0!important;
+        min-height:86px!important;
+        margin:34px auto 0!important;
+        padding:0 18px 0 0!important;
         display:grid!important;
-        grid-template-columns:minmax(0,1fr) auto!important;
+        grid-template-columns:minmax(0,1fr) auto 48px!important;
         align-items:center!important;
-        gap:24px!important;
-        border:0!important;
-        border-top:1px solid #9fb0bf!important;
-        border-bottom:1px solid #cbd5df!important;
-        background:transparent!important;
+        gap:26px!important;
+        overflow:hidden!important;
+        border:1px solid #c7d2dc!important;
+        border-left:4px solid #164a9c!important;
+        background:#f7f8f6!important;
         color:#102333!important;
         text-decoration:none!important;
-        font:600 11px/1.3 "IBM Plex Mono",monospace!important;
-        letter-spacing:.055em!important;
-        text-transform:uppercase!important;
-        transition:border-color .18s ease,color .18s ease!important;
+        box-shadow:none!important;
+        transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease!important;
       }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span{
-        display:flex!important;
-        align-items:center!important;
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta::after{
+        content:""!important;
+        position:absolute!important;
+        left:0!important;right:0!important;bottom:0!important;
+        height:2px!important;
+        background:#164a9c!important;
+        transform:scaleX(0)!important;
+        transform-origin:left center!important;
+        transition:transform .28s ease!important;
+      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-copy{
         min-width:0!important;
+        padding:17px 0 17px 24px!important;
+        display:grid!important;
+        grid-template-columns:170px minmax(0,1fr)!important;
+        align-items:center!important;
+        gap:24px!important;
       }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta span::before{
-        content:"PROJECT GALLERY"!important;
-        flex:0 0 auto!important;
-        margin-right:22px!important;
-        color:#6f8396!important;
-        font-size:8px!important;
-        letter-spacing:.14em!important;
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-copy small{
+        display:block!important;
+        color:#164a9c!important;
+        font:500 8px/1.3 "IBM Plex Mono",monospace!important;
+        letter-spacing:.15em!important;
+        text-transform:uppercase!important;
+      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-copy strong{
+        display:block!important;
+        min-width:0!important;
+        color:#102333!important;
+        font:600 clamp(16px,1.2vw,20px)/1.15 "Space Grotesk",sans-serif!important;
+        letter-spacing:-.025em!important;
+        text-transform:none!important;
+      }
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-meta{
+        color:#6b7f91!important;
+        white-space:nowrap!important;
+        font:500 8px/1.3 "IBM Plex Mono",monospace!important;
+        letter-spacing:.11em!important;
+        text-transform:uppercase!important;
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{
-        min-width:42px!important;
-        text-align:right!important;
+        width:44px!important;
+        height:44px!important;
+        display:grid!important;
+        place-items:center!important;
+        justify-self:end!important;
+        border:1px solid #b7c6d2!important;
+        background:#fff!important;
         color:#164a9c!important;
         font-style:normal!important;
         font-size:18px!important;
-        transition:transform .18s ease!important;
+        line-height:1!important;
+        transition:transform .22s ease,background .2s ease,color .2s ease,border-color .2s ease!important;
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover{
-        color:#164a9c!important;
-        border-top-color:#164a9c!important;
+        background:#f0f4f7!important;
+        border-color:#9fb6c9!important;
+        border-left-color:#164a9c!important;
+        transform:translateY(-1px)!important;
+        box-shadow:0 12px 28px rgba(16,35,51,.07)!important;
       }
-      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{transform:translateX(5px)!important}
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover::after{transform:scaleX(1)!important}
+      body.v8.v13.v14[data-page="home"] .capability-gallery-cta:hover i{
+        transform:translateX(6px)!important;
+        background:#164a9c!important;
+        border-color:#164a9c!important;
+        color:#fff!important;
+      }
 
       html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{
         padding-left:30px!important;
@@ -119,12 +161,27 @@
       }
       @media (max-width:1180px){
         html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:50px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{grid-template-columns:minmax(0,1fr) 48px!important;gap:16px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-meta{display:none!important}
       }
       @media (max-width:760px){
         html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:26px!important;padding-right:26px!important}
         html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:44px!important}
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{width:calc(100% - 40px)!important;min-height:58px!important;font-size:9.5px!important}
-        body.v8.v13.v14[data-page="home"] .capability-gallery-cta span::before{display:none!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta{
+          width:calc(100% - 40px)!important;
+          min-height:78px!important;
+          margin-top:24px!important;
+          grid-template-columns:minmax(0,1fr) 42px!important;
+          gap:10px!important;
+          padding-right:12px!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-copy{
+          grid-template-columns:1fr!important;
+          gap:6px!important;
+          padding:14px 0 14px 16px!important;
+        }
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta .gallery-cta-copy strong{font-size:16px!important}
+        body.v8.v13.v14[data-page="home"] .capability-gallery-cta i{width:38px!important;height:38px!important}
       }
     `;
     document.head.appendChild(style);
@@ -203,7 +260,7 @@
       cta.href = 'gallery.html';
       layout.insertAdjacentElement('afterend', cta);
     }
-    cta.innerHTML = '<span>Explore the complete VSK project gallery</span><i>→</i>';
+    cta.innerHTML = '<span class="gallery-cta-copy"><small>Visual project archive</small><strong>Explore the complete VSK project gallery</strong></span><span class="gallery-cta-meta">Photos · Videos · Machine detail</span><i aria-hidden="true">→</i>';
 
     renderList();
     renderCategory(0);
