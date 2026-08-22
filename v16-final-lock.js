@@ -4,6 +4,7 @@
   const page = document.body.dataset.page || 'home';
   const params = new URLSearchParams(location.search);
   const requestedType = params.get('type');
+  const harmonyToken = Date.now();
 
   const routes = [
     ['Home', 'index.html', 'home'],
@@ -58,16 +59,15 @@
   };
 
   /* One stylesheet owns the final review proportions and palette across pages.
-     Re-appending the link makes it win over older runtime-injected V16 styles. */
+     Re-appending the existing link makes it win without re-downloading it. */
   const ensureHarmonyStyles = () => {
     let link = document.querySelector('link[data-v16-site-harmony]');
     if (!link) {
       link = document.createElement('link');
       link.rel = 'stylesheet';
       link.dataset.v16SiteHarmony = '1';
-      document.head.appendChild(link);
+      link.href = `v16-site-harmony.css?review=${harmonyToken}`;
     }
-    link.href = `v16-site-harmony.css?review=${Date.now()}`;
     document.head.appendChild(link);
   };
 
