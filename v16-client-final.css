@@ -1,17 +1,22 @@
 /* =========================================================
-   V16.61 — SURGICAL CLIENT CORRECTIONS
+   V16.62 — SURGICAL CLIENT CORRECTIONS
    Keep the established V16 layout. Only explicitly approved tweaks live here.
    ========================================================= */
 
-/* Credibility / proof band — the intended cool grey-blue surface. */
-html body.v8.v13.v14[data-page="home"] main#main > .credibility-band{
+/* Credibility / proof band — one continuous cool grey-blue surface. */
+html body.v8.v13.v14[data-page="home"] main#main > .credibility-band,
+html body.v8.v13.v14[data-page="home"] main#main > .credibility-band > .proof-grid,
+html body.v8.v13.v14[data-page="home"] main#main > .credibility-band > .proof-grid > article,
+html body.v8.v13.v14[data-page="home"] main#main > .credibility-band > .customer-row{
   background:#eaf1f5!important;
   background-image:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main > .credibility-band{
   border-top-color:#d3dfe6!important;
   border-bottom-color:#d3dfe6!important;
 }
 
-/* Capability summary controls — same cool grey-blue language, geometry unchanged. */
+/* Capability summary controls — same cool grey-blue language, original geometry retained. */
 html body.v8.v13.v14[data-page="home"] main#main .capability-media .tag-row b,
 html body.v8.v13.v14[data-page="home"] main#main .capability-media [data-capability-tags] b,
 html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link,
@@ -25,22 +30,6 @@ html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-p
 html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta:hover{
   background:#e2ebf1!important;
   border-color:#afc4d2!important;
-}
-
-/* Related Projects control — one step smaller only. */
-html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link,
-html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta{
-  width:min(100%,252px)!important;
-  min-width:228px!important;
-  height:50px!important;
-  min-height:50px!important;
-  padding:0 16px!important;
-  gap:14px!important;
-  font-size:11px!important;
-}
-html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link i,
-html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta i{
-  font-size:14px!important;
 }
 
 /* Selected Engineering heading — VSK blue, no layout changes. */
