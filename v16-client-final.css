@@ -1,5 +1,5 @@
 /* =========================================================
-   V16.59 — SURGICAL CLIENT CORRECTIONS
+   V16.60 — SURGICAL CLIENT CORRECTIONS
    Keep the established V16 layout. Only explicitly approved tweaks live here.
    ========================================================= */
 
@@ -9,6 +9,22 @@ html body.v8.v13.v14[data-page="home"] main#main > .credibility-band{
   background-image:none!important;
   border-top-color:#d3dfe6!important;
   border-bottom-color:#d3dfe6!important;
+}
+
+/* Capability summary controls — same cool grey-blue language, geometry unchanged. */
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .tag-row b,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media [data-capability-tags] b,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta{
+  background:#eaf1f5!important;
+  background-image:none!important;
+  border-color:#c6d5df!important;
+  color:#164a9c!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .capability-project-link:hover,
+html body.v8.v13.v14[data-page="home"] main#main .capability-media .vsk-related-projects-cta:hover{
+  background:#e2ebf1!important;
+  border-color:#afc4d2!important;
 }
 
 /* Selected Engineering heading — VSK blue, no layout changes. */
