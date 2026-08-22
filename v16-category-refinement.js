@@ -6,13 +6,15 @@
     {
       label:'SPM / CNC Machines', slug:'spm-cnc-machines',
       match:c=>/spm/i.test(c)&&/cnc/i.test(c)&&!/plc|hmi|servo/i.test(c),
-      preferred:/rod boring|vertical turning|flange facing|facing/i,
+      preferred:/twin spindle|u drill/i,
+      image:'media/v16/images/spm-cnc-machines/twin-spindle-u-drill-mc/20240921-125313.webp',
       copy:'Purpose-built SPM and CNC machine applications engineered around the component, operation, workholding and cycle target.'
     },
     {
       label:'SPM · PLC / HMI / Servo', slug:'spm-machines-plc-hmi-and-servo-controlled',
       match:c=>/plc|hmi|servo/i.test(c),
-      preferred:/4\s*servo|slotting/i,
+      preferred:/4 hole drilling|chamfering|pick and place/i,
+      image:'media/v16/images/spm-machines-plc-hmi-and-servo-controlled/4-hole-drilling-and-chamfering-mc-with-auto-comp-pick-and-place-type/20230716-121301.webp',
       copy:'Machine projects where PLC, HMI, servo motion and control integration are central to the production result.'
     },
     {
@@ -58,7 +60,7 @@
         min-height:108px!important;
         margin:34px auto 0!important;
         display:grid!important;
-        grid-template-columns:170px minmax(0,1fr) 205px!important;
+        grid-template-columns:170px minmax(0,1fr) 230px!important;
         background:#0d1824!important;
         border:1px solid #23384b!important;
         box-shadow:0 20px 46px rgba(13,24,36,.12)!important;
@@ -77,10 +79,10 @@
         background:#164a9c!important;color:#fff!important;
       }
       body.v8.v13.v14[data-page="home"] .gallery-gateway-count b{
-        font:600 42px/.9 "Space Grotesk",sans-serif!important;letter-spacing:-.055em!important;color:#fff!important
+        font:600 25px/.95 "Space Grotesk",sans-serif!important;letter-spacing:-.035em!important;color:#fff!important
       }
       body.v8.v13.v14[data-page="home"] .gallery-gateway-count small{
-        margin-top:9px!important;font:500 8px/1.3 "IBM Plex Mono",monospace!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#c8ddf4!important
+        margin-top:9px!important;font:500 8px/1.3 "IBM Plex Mono",monospace!important;letter-spacing:.13em!important;text-transform:uppercase!important;color:#c8ddf4!important
       }
       body.v8.v13.v14[data-page="home"] .gallery-gateway-copy{
         min-width:0!important;padding:21px 32px!important;display:flex!important;flex-direction:column!important;justify-content:center!important
@@ -104,35 +106,23 @@
       }
       body.v8.v13.v14[data-page="home"] .capability-gallery-gateway:hover .gallery-gateway-action i{transform:translateX(4px)!important;background:#dcecff!important}
 
-      /* Engineering Depth: remove the accidental extra horizontal padding. */
+      /* Restore normal horizontal spacing in the three proof cells. */
       html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{
         padding-left:30px!important;
         padding-right:30px!important;
       }
 
-      /* Only the last blue Experience cell needs extra breathing room below the CTA. */
-      html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{
-        padding-bottom:56px!important;
-      }
-
-      @media (max-width:1599px){
-        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:52px!important}
-      }
-      @media (max-width:1180px){
-        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:48px!important}
-      }
       @media (max-width:900px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{grid-template-columns:130px minmax(0,1fr)!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-action{grid-column:1/-1!important;min-height:56px!important;border-left:0!important;border-top:1px solid #2c4154!important}
       }
       @media (max-width:760px){
         html body.v8.v13.v14[data-page="home"] .engineering-depth .metric-card{padding-left:26px!important;padding-right:26px!important}
-        html body.v8.v13.v14[data-page="home"] .engineering-depth .archive-callout{padding-bottom:42px!important}
       }
       @media (max-width:620px){
         body.v8.v13.v14[data-page="home"] .capability-gallery-gateway{width:calc(100% - 40px)!important;grid-template-columns:92px minmax(0,1fr)!important;margin-top:24px!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-count{padding:16px!important}
-        body.v8.v13.v14[data-page="home"] .gallery-gateway-count b{font-size:34px!important}
+        body.v8.v13.v14[data-page="home"] .gallery-gateway-count b{font-size:20px!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-copy{padding:18px!important}
         body.v8.v13.v14[data-page="home"] .gallery-gateway-copy strong{font-size:19px!important}
       }
@@ -164,12 +154,12 @@
       const title = media.querySelector('[data-capability-title]');
       const copy = media.querySelector('[data-capability-copy]');
       const tags = media.querySelector('[data-capability-tags]');
-      const visual = firstVisual(category.representative);
+      const visual = category.image || firstVisual(category.representative);
       if (image && visual) { image.src = visual; image.alt = `${category.label} — VSK Gallery category`; }
-      if (meta) meta.textContent = `GALLERY CATEGORY · ${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}`;
+      if (meta) meta.textContent = `GALLERY CATEGORY · ${category.groups.length} VISUAL PROJECT GROUP${category.groups.length===1?'':'S'}`;
       if (title) title.textContent = category.label;
       if (copy) copy.textContent = category.copy;
-      if (tags) tags.innerHTML = `<b>${category.groups.length} PROJECT GROUP${category.groups.length===1?'':'S'}</b><b>PHOTOS &amp; VIDEOS</b>`;
+      if (tags) tags.innerHTML = `<b>${category.groups.length} VISUAL PROJECT GROUP${category.groups.length===1?'':'S'}</b><b>PHOTOS &amp; VIDEOS</b>`;
       let link = media.querySelector('.capability-project-link');
       if (!link) {
         link = document.createElement('a');
@@ -177,7 +167,7 @@
         media.querySelector('figcaption')?.appendChild(link);
       }
       link.href = `gallery.html?category=${encodeURIComponent(category.slug)}`;
-      link.innerHTML = '<span>View category in Gallery</span><i>→</i>';
+      link.innerHTML = '<span>See related projects</span><i>→</i>';
     };
 
     const renderList = () => {
@@ -195,7 +185,7 @@
     };
 
     const intro = document.querySelector('.capabilities .section-intro > p');
-    if (intro) intro.textContent = 'Choose the engineering category closest to your requirement, then open the Gallery to inspect the complete project groups, photographs and videos behind that capability.';
+    if (intro) intro.textContent = 'Choose the engineering category closest to your requirement, then use the Gallery to inspect the project photographs, videos and machine details behind that capability.';
 
     document.querySelectorAll('.capability-gallery-cta').forEach(el=>el.remove());
     let gateway = document.querySelector('.capability-gallery-gateway');
@@ -206,9 +196,9 @@
       layout.insertAdjacentElement('afterend', gateway);
     }
     gateway.innerHTML = `
-      <span class="gallery-gateway-count"><b>${manifest.groups.length}</b><small>Project Groups</small></span>
-      <span class="gallery-gateway-copy"><small>VSK Project Gallery</small><strong>Browse the complete engineering record.</strong><em>4 core engineering categories · actual machine photographs · videos · project detail</em></span>
-      <span class="gallery-gateway-action"><b>Open Gallery</b><i>→</i></span>`;
+      <span class="gallery-gateway-count"><b>GALLERY</b><small>Visual project archive</small></span>
+      <span class="gallery-gateway-copy"><small>VSK Project Gallery</small><strong>See the machines behind the engineering.</strong><em>${manifest.groups.length} visual project groups · photographs · videos · project detail</em></span>
+      <span class="gallery-gateway-action"><b>Explore Project Gallery</b><i>→</i></span>`;
 
     renderList();
     renderCategory(0);
