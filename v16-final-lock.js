@@ -56,8 +56,16 @@
         body.v8.v13.v14 .desktop-nav a{font-size:10.3px!important;letter-spacing:.01em!important;font-weight:600!important}
       }
 
-      /* Runtime-triggered engineering opening. The prep state deliberately
-         resets any CSS animation that may have completed before first paint. */
+      /* Once the first-paint boot is complete, permanently retire all legacy
+         body pseudo-element loader layers. */
+      html.vsk-boot-done body.v8.v13.v14[data-page="home"]::before,
+      html.vsk-boot-done body.v8.v13.v14[data-page="home"]::after{
+        content:none!important;
+        display:none!important;
+        animation:none!important;
+      }
+
+      /* Runtime-triggered engineering opening. */
       @keyframes vskOpenEyebrow{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenLine{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
       @keyframes vskOpenCopy{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
@@ -136,17 +144,26 @@
     `;
   };
 
-  /* One stylesheet owns the final review proportions and palette across pages.
-     Re-appending the existing link makes it win without re-downloading it. */
+  /* On Home, the first-paint boot owns the first 1.75 seconds. Harmony is
+     attached only after that boot has completed, so it cannot interrupt the
+     loading line or move the boot identity. On subpages it loads immediately. */
   const ensureHarmonyStyles = () => {
+    if (page === 'home' && !document.documentElement.classList.contains('vsk-boot-done')) return;
     let link = document.querySelector('link[data-v16-site-harmony]');
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.dataset.v16SiteHarmony = '1';
-      link.href = `v16-site-harmony.css?review=${harmonyToken}`;
-    }
+    if (link) return;
+    link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.dataset.v16SiteHarmony = '1';
+    link.href = `v16-site-harmony.css?review=${harmonyToken}`;
     document.head.appendChild(link);
+  };
+
+  const finishHomeBoot = () => {
+    if (page !== 'home') return;
+    setTimeout(() => {
+      document.documentElement.classList.add('vsk-boot-done');
+      ensureHarmonyStyles();
+    }, 1780);
   };
 
   const normalizeNavigation = () => {
@@ -237,7 +254,6 @@
     if (spm) spm.innerHTML = 'Custom &amp; SPM <b>39</b>';
     if (retrofit) retrofit.innerHTML = 'Retrofit &amp; CNC <b>15</b>';
 
-    /* Legacy archive code expects this element even though V16 keeps visual mode hidden. */
     if (!document.querySelector('[data-visual-count]')) {
       const hiddenCount = document.createElement('span');
       hiddenCount.hidden = true;
@@ -292,11 +308,7 @@
     script.src = `gallery-categories.js?review=${Date.now()}`;
     script.dataset.v16GalleryCategories = '1';
     script.async = false;
-    script.onload = () => {
-      ensureHarmonyStyles();
-      setTimeout(ensureHarmonyStyles, 80);
-      setTimeout(ensureHarmonyStyles, 500);
-    };
+    script.onload = ensureHarmonyStyles;
     document.body.appendChild(script);
   };
 
@@ -333,25 +345,24 @@
 
   const apply = () => {
     ensureStyles();
-    ensureHarmonyStyles();
     normalizeNavigation();
     normalizeExperienceHero();
     bindExperienceStatus();
     syncExperienceStatus();
     ensureGalleryCategories();
+    if (page !== 'home') ensureHarmonyStyles();
     startHeroOpening();
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
   else apply();
 
+  finishHomeBoot();
+
   window.addEventListener('load', () => {
     apply();
     startHeroOpening();
-    setTimeout(ensureHarmonyStyles, 120);
-    setTimeout(ensureHarmonyStyles, 700);
-    setTimeout(ensureHarmonyStyles, 1800);
-    setTimeout(ensureHarmonyStyles, 3200);
+    if (page !== 'home') ensureHarmonyStyles();
     setTimeout(syncExperienceStatus, 80);
     setTimeout(syncExperienceStatus, 650);
     setTimeout(syncExperienceStatus, 1800);
