@@ -1,89 +1,189 @@
 /* =========================================================
-   V16.53 — CLIENT FINAL VISUAL AUTHORITY
+   V16.54 — CLIENT-APPROVED HOMEPAGE VISUAL AUTHORITY
    Loaded/re-appended last by v16-category-refinement.js.
+   The obsolete runtime balance style is also removed by that script.
    ========================================================= */
 
-/* Keep every homepage section true full-bleed while preserving the shared shell. */
+/* Keep every homepage section truly full-bleed. */
 html body.v8.v13.v14[data-page="home"] main#main>section{
+  box-sizing:border-box!important;
   width:100%!important;
   max-width:none!important;
   margin-inline:0!important;
 }
 
-/* FEATURED ENGINEERING — centered sharp machine over blurred context. */
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>.featured-case{
+/* =========================================================
+   FEATURED ENGINEERING
+   Sharp machine centered, touching the top/bottom of the media field,
+   with the same image softly blurred behind it.
+   ========================================================= */
+html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects>.featured-case{
   width:100%!important;
   max-width:none!important;
   min-width:0!important;
   margin:0!important;
   overflow:hidden!important;
 }
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
+html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
   position:relative!important;
   isolation:isolate!important;
   display:grid!important;
   place-items:center!important;
   overflow:hidden!important;
-  padding:22px 34px!important;
+  padding:0!important;
   background:#0e1a27!important;
 }
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
   content:""!important;
   display:block!important;
   position:absolute!important;
   z-index:0!important;
-  inset:-28px!important;
+  inset:-30px!important;
   background-image:url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
   background-size:cover!important;
   background-position:center 48%!important;
-  filter:blur(19px) saturate(.82) brightness(.64)!important;
-  transform:scale(1.09)!important;
-  opacity:.96!important;
+  filter:blur(20px) saturate(.82) brightness(.63)!important;
+  transform:scale(1.1)!important;
+  opacity:.97!important;
   pointer-events:none!important;
 }
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
+html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
   content:""!important;
   display:block!important;
   position:absolute!important;
   z-index:1!important;
   inset:0!important;
-  background:linear-gradient(90deg,rgba(13,24,36,.32) 0%,rgba(13,24,36,.10) 48%,rgba(13,24,36,.30) 100%)!important;
+  background:linear-gradient(90deg,rgba(13,24,36,.31) 0%,rgba(13,24,36,.08) 48%,rgba(13,24,36,.29) 100%)!important;
   pointer-events:none!important;
 }
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
   position:relative!important;
   z-index:2!important;
   display:block!important;
   width:auto!important;
-  max-width:min(760px,74%)!important;
-  height:calc(100% - 20px)!important;
-  max-height:458px!important;
-  min-height:0!important;
-  margin:auto!important;
+  max-width:min(780px,78%)!important;
+  height:100%!important;
+  max-height:none!important;
+  min-height:100%!important;
+  margin:0 auto!important;
+  padding:0!important;
   object-fit:contain!important;
   object-position:center!important;
   background:transparent!important;
   border:0!important;
-  box-shadow:0 20px 52px rgba(0,0,0,.24)!important;
+  box-shadow:0 16px 46px rgba(0,0,0,.22)!important;
   filter:none!important;
   transform:none!important;
 }
 
-/* GOOGLE REVIEWS — full dark trust band between warm proof and cool process. */
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews>.shell,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-grid,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list,
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
+/* =========================================================
+   MULTIDISCIPLINARY ENGINEERING — related projects is a link,
+   not a detached white button.
+   ========================================================= */
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.vsk-related-projects-cta,
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.capability-project-link{
+  width:max-content!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  margin-top:20px!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#1e56aa!important;
+  font:600 13.5px/1.3 "Space Grotesk",Inter,sans-serif!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+  text-decoration:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.vsk-related-projects-cta i,
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.capability-project-link i{
+  color:#1e56aa!important;
+  font-size:16px!important;
+  font-style:normal!important;
+  transition:transform .22s ease!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.vsk-related-projects-cta:hover,
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.capability-project-link:hover{
+  color:#167bc4!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.vsk-related-projects-cta:hover i,
+html body.v8.v13.v14[data-page="home"] main#main .capabilities .capability-media a.capability-project-link:hover i{
+  color:#167bc4!important;
+  transform:translateX(4px)!important;
+}
+
+/* =========================================================
+   ENGINEERING DEPTH
+   Match the cool grey-blue How VSK Works surface.
+   ========================================================= */
+html body.v8.v13.v14[data-page="home"] main#main>section.engineering-depth.section-ivory,
+html body.v8.v13.v14[data-page="home"] main#main>section.engineering-depth{
+  background:#eaf1f5!important;
+  background-image:none!important;
+  color:#102333!important;
+  border-top:1px solid #d3dfe6!important;
+  border-bottom:1px solid #d3dfe6!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .metric-card{
+  background:#fff!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout{
+  background:linear-gradient(145deg,#1e56aa 0%,#123f78 100%)!important;
+  color:#fff!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout-split span{
+  font-size:14px!important;
+  line-height:1.3!important;
+  font-weight:600!important;
+  letter-spacing:.025em!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout .btn,
+html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout a.btn{
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:.015em!important;
+}
+
+/* =========================================================
+   GOOGLE REVIEWS — TRUE FULL-WIDTH DARK TRUST BAND
+   Dark means the entire viewport band, not a dark card in a pale section.
+   ========================================================= */
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews{
+  position:relative!important;
+  left:50%!important;
+  width:100vw!important;
+  max-width:100vw!important;
+  margin-left:-50vw!important;
+  margin-right:0!important;
+  color:#f5f8fa!important;
+  background:#0d1824!important;
+  background-image:none!important;
+  border-top:1px solid #294057!important;
+  border-bottom:1px solid #294057!important;
+  box-shadow:0 0 0 100vmax #0d1824!important;
+  clip-path:inset(0 -100vmax)!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews>.shell,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-grid,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
   background:#0d1824!important;
   background-image:none!important;
 }
-html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews{
-  color:#f5f8fa!important;
-  border-top:1px solid #294057!important;
-  border-bottom:1px solid #294057!important;
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews>.shell{
+  width:min(1600px,calc(100% - 96px))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
 }
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .kicker,
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article>span{
@@ -96,13 +196,15 @@ html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro h2 em,
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating>strong,
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating b{
-  color:#2f79d0!important;
+  color:#4b92da!important;
 }
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro>p,
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating small{
   color:#a6b6c3!important;
 }
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating{
+  width:max-content!important;
+  min-width:0!important;
   margin:26px 0 22px!important;
   padding:17px 0!important;
   border-top:1px solid #32495d!important;
@@ -129,43 +231,45 @@ html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk
 }
 html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro>a:hover{
   border-color:#6cb7e8!important;
-  color:#ffffff!important;
+  color:#fff!important;
 }
 
-/* COMPANY ACTIONS — same blue language, slightly stronger weight. */
+/* Company actions — same blue language, slightly stronger weight. */
 html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions .text-arrow,
 html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions a{
   color:#1e56aa!important;
-  font-weight:600!important;
+  font-weight:650!important;
 }
 
-/* SELECTED ENGINEERING — preserve speed after increasing from four to six cells. */
+/* Selected Engineering — preserve pace after increasing from four to six cells. */
 html body.v8.v13.v14[data-page="home"] .vsk-selected-track{
   animation-duration:54s!important;
 }
 
 @media(max-width:1180px){
-  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
-    filter:blur(17px) saturate(.82) brightness(.64)!important;
+  html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews>.shell{
+    width:calc(100% - 48px)!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
-    max-width:80%!important;
-    max-height:398px!important;
+    max-width:82%!important;
   }
 }
 
 @media(max-width:720px){
-  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
-    padding:18px!important;
+  html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews>.shell{
+    width:calc(100% - 32px)!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
     inset:-20px!important;
     filter:blur(14px) saturate(.82) brightness(.62)!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
-    max-width:82%!important;
-    max-height:346px!important;
-    box-shadow:0 14px 34px rgba(0,0,0,.22)!important;
+    max-width:88%!important;
+    box-shadow:0 12px 30px rgba(0,0,0,.2)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout-split span,
+  html body.v8.v13.v14[data-page="home"] main#main .engineering-depth .archive-callout .btn{
+    font-size:13px!important;
   }
   html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
     border-right:0!important;
