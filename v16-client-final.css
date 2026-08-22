@@ -1,0 +1,181 @@
+/* =========================================================
+   V16.53 — CLIENT FINAL VISUAL AUTHORITY
+   Loaded/re-appended last by v16-category-refinement.js.
+   ========================================================= */
+
+/* Keep every homepage section true full-bleed while preserving the shared shell. */
+html body.v8.v13.v14[data-page="home"] main#main>section{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:0!important;
+}
+
+/* FEATURED ENGINEERING — centered sharp machine over blurred context. */
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects>.featured-case{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
+  position:relative!important;
+  isolation:isolate!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  padding:22px 34px!important;
+  background:#0e1a27!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:0!important;
+  inset:-28px!important;
+  background-image:url("media/v16/images/spm-machines-plc-hmi-and-servo-controlled/air-leak-testing-machine/20230415-191614.webp")!important;
+  background-size:cover!important;
+  background-position:center 48%!important;
+  filter:blur(19px) saturate(.82) brightness(.64)!important;
+  transform:scale(1.09)!important;
+  opacity:.96!important;
+  pointer-events:none!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  background:linear-gradient(90deg,rgba(13,24,36,.32) 0%,rgba(13,24,36,.10) 48%,rgba(13,24,36,.30) 100%)!important;
+  pointer-events:none!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+  position:relative!important;
+  z-index:2!important;
+  display:block!important;
+  width:auto!important;
+  max-width:min(760px,74%)!important;
+  height:calc(100% - 20px)!important;
+  max-height:458px!important;
+  min-height:0!important;
+  margin:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:0 20px 52px rgba(0,0,0,.24)!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* GOOGLE REVIEWS — full dark trust band between warm proof and cool process. */
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews>.shell,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-grid,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list,
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
+  background:#0d1824!important;
+  background-image:none!important;
+}
+html body.v8.v13.v14[data-page="home"][data-page="home"] main#main>section.vsk-google-reviews{
+  color:#f5f8fa!important;
+  border-top:1px solid #294057!important;
+  border-bottom:1px solid #294057!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .kicker,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article>span{
+  color:#6cb7e8!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro h2,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article>p{
+  color:#f5f8fa!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro h2 em,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating>strong,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating b{
+  color:#2f79d0!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro>p,
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating small{
+  color:#a6b6c3!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-rating{
+  margin:26px 0 22px!important;
+  padding:17px 0!important;
+  border-top:1px solid #32495d!important;
+  border-bottom:1px solid #32495d!important;
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list{
+  border-top:1px solid #32495d!important;
+  border-bottom:1px solid #32495d!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
+  border-right:1px solid #32495d!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article:last-child{
+  border-right:0!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro>a{
+  background:transparent!important;
+  border:1px solid #496176!important;
+  color:#7fc3ed!important;
+  font-weight:600!important;
+}
+html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-reviews-intro>a:hover{
+  border-color:#6cb7e8!important;
+  color:#ffffff!important;
+}
+
+/* COMPANY ACTIONS — same blue language, slightly stronger weight. */
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions .text-arrow,
+html body.v8.v13.v14[data-page="home"] main#main>.about#about .about-actions a{
+  color:#1e56aa!important;
+  font-weight:600!important;
+}
+
+/* SELECTED ENGINEERING — preserve speed after increasing from four to six cells. */
+html body.v8.v13.v14[data-page="home"] .vsk-selected-track{
+  animation-duration:54s!important;
+}
+
+@media(max-width:1180px){
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+    filter:blur(17px) saturate(.82) brightness(.64)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+    max-width:80%!important;
+    max-height:398px!important;
+  }
+}
+
+@media(max-width:720px){
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media{
+    padding:18px!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media::before{
+    inset:-20px!important;
+    filter:blur(14px) saturate(.82) brightness(.62)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.projects-showcase#projects .featured-case-media>img{
+    max-width:82%!important;
+    max-height:346px!important;
+    box-shadow:0 14px 34px rgba(0,0,0,.22)!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article{
+    border-right:0!important;
+    border-bottom:1px solid #32495d!important;
+  }
+  html body.v8.v13.v14[data-page="home"] main#main>section.vsk-google-reviews .vsk-google-review-list article:last-child{
+    border-bottom:0!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body.v8.v13.v14[data-page="home"] .vsk-selected-track{animation:none!important}
+}
